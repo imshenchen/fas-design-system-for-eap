@@ -1,0 +1,56 @@
+/**
+ * Breadcrumbs — FAS Design Kit
+ * @see components.md § Breadcrumbs
+ */
+
+.fas-breadcrumbs { display: inline-flex; }
+
+.fas-breadcrumbs__list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.fas-breadcrumbs__item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fas-breadcrumbs__link {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: var(--text-medium);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.fas-breadcrumbs__link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.fas-breadcrumbs__link--btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.fas-breadcrumbs__current {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: var(--text-high);
+  font-weight: 500;
+}
+
+.fas-breadcrumbs__sep {
+  color: var(--text-medium);
+  font-size: 14px;
+  user-select: none;
+}

@@ -1,0 +1,46 @@
+/**
+ * IconButton — FAS Design Kit
+ * @see components.md § Icon Button
+ */
+
+.fas-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--secondary);
+  transition: background-color 0.15s, color 0.15s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.fas-icon-btn:hover:not(:disabled) {
+  background: var(--comp-hover);
+  color: var(--primary);
+}
+
+.fas-icon-btn:disabled {
+  color: var(--comp-disabled-el);
+  cursor: not-allowed;
+}
+
+.fas-icon-btn:focus-visible {
+  outline: 2px solid var(--comp-focus);
+  outline-offset: 2px;
+}
+
+/* ─── Selected State ────────────────────────────────────────────────────────── */
+.fas-icon-btn--selected {
+  color: var(--primary);
+}
+.fas-icon-btn--selected:hover {
+  background: var(--comp-hover);
+}
+
+/* ─── Sizes ─────────────────────────────────────────────────────────────────── */
+.fas-icon-btn--l { width: 36px; height: 36px; font-size: 20px; }
+.fas-icon-btn--m { width: 32px; height: 32px; font-size: 18px; }
+.fas-icon-btn--s { width: 24px; height: 24px; font-size: 16px; }

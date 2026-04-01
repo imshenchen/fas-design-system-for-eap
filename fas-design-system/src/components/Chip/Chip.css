@@ -1,0 +1,134 @@
+/**
+ * Chip — FAS Design Kit
+ * @see components.md § Chip
+ */
+
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+.fas-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.035px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  padding: 0 8px;
+  border: 1px solid transparent;
+}
+
+/* ─── Shapes ────────────────────────────────────────────────────────────────── */
+.fas-chip--round      { border-radius: 16px; }
+.fas-chip--rectangle  { border-radius: 4px; }
+
+/* ─── Sizes ─────────────────────────────────────────────────────────────────── */
+.fas-chip--l { height: 32px; }
+.fas-chip--s { height: 24px; font-size: 12px; }
+
+/* ─── Status Colors (Filled) ────────────────────────────────────────────────── */
+.fas-chip--filled.fas-chip--processing { background: var(--chip-processing); color: var(--chip-text-processing); }
+.fas-chip--filled.fas-chip--success    { background: var(--chip-success);    color: var(--chip-text-success); }
+.fas-chip--filled.fas-chip--warning    { background: var(--chip-warning);    color: var(--chip-text-warning); }
+.fas-chip--filled.fas-chip--emergency  { background: var(--chip-emergency);  color: var(--chip-text-emergency); }
+.fas-chip--filled.fas-chip--error      { background: var(--chip-error);      color: var(--chip-text-error); }
+.fas-chip--filled.fas-chip--milestone  { background: var(--chip-milestone);  color: var(--chip-text-milestone); }
+.fas-chip--filled.fas-chip--idle       { background: var(--chip-idle);       color: var(--chip-text-idle); }
+.fas-chip--filled.fas-chip--mariner    { background: var(--chip-mariner);    color: var(--chip-text-mariner); }
+.fas-chip--filled.fas-chip--moss       { background: var(--chip-moss);       color: var(--chip-text-moss); }
+.fas-chip--filled.fas-chip--bronze     { background: var(--chip-bronze);     color: var(--chip-text-bronze); }
+.fas-chip--filled.fas-chip--salmon     { background: var(--chip-salmon);     color: var(--chip-text-salmon); }
+.fas-chip--filled.fas-chip--wine       { background: var(--chip-wine);       color: var(--chip-text-wine); }
+.fas-chip--filled.fas-chip--orchid     { background: var(--chip-orchid);     color: var(--chip-text-orchid); }
+.fas-chip--filled.fas-chip--slate      { background: var(--chip-slate);      color: var(--chip-text-slate); }
+.fas-chip--filled.fas-chip--indigo     { background: var(--chip-indigo);     color: var(--chip-text-indigo); }
+.fas-chip--filled.fas-chip--turquoise  { background: var(--chip-turquoise);  color: var(--chip-text-turquoise); }
+.fas-chip--filled.fas-chip--khaki      { background: var(--chip-khaki);      color: var(--chip-text-khaki); }
+.fas-chip--filled.fas-chip--cinnamon   { background: var(--chip-cinnamon);   color: var(--chip-text-cinnamon); }
+.fas-chip--filled.fas-chip--pink       { background: var(--chip-pink);       color: var(--chip-text-pink); }
+.fas-chip--filled.fas-chip--violet     { background: var(--chip-violet);     color: var(--chip-text-violet); }
+.fas-chip--filled.fas-chip--aqua       { background: var(--chip-aqua);       color: var(--chip-text-aqua); }
+
+/* ─── Status Colors (Outlined) ──────────────────────────────────────────────── */
+.fas-chip--outlined.fas-chip--processing { background: transparent; color: var(--chip-text-processing); border-color: var(--chip-outline-processing); }
+.fas-chip--outlined.fas-chip--success    { background: transparent; color: var(--chip-text-success);    border-color: var(--chip-outline-success); }
+.fas-chip--outlined.fas-chip--warning    { background: transparent; color: var(--chip-text-warning);    border-color: var(--chip-outline-warning); }
+.fas-chip--outlined.fas-chip--emergency  { background: transparent; color: var(--chip-text-emergency);  border-color: var(--chip-outline-emergency); }
+.fas-chip--outlined.fas-chip--error      { background: transparent; color: var(--chip-text-error);      border-color: var(--chip-outline-error); }
+.fas-chip--outlined.fas-chip--milestone  { background: transparent; color: var(--chip-text-milestone);  border-color: var(--chip-outline-milestone); }
+.fas-chip--outlined.fas-chip--idle       { background: transparent; color: var(--chip-text-idle);       border-color: var(--chip-outline-idle); }
+.fas-chip--outlined.fas-chip--mariner    { background: transparent; color: var(--chip-text-mariner);    border-color: var(--chip-outline-mariner); }
+.fas-chip--outlined.fas-chip--moss       { background: transparent; color: var(--chip-text-moss);       border-color: var(--chip-outline-moss); }
+.fas-chip--outlined.fas-chip--bronze     { background: transparent; color: var(--chip-text-bronze);     border-color: var(--chip-outline-bronze); }
+.fas-chip--outlined.fas-chip--salmon     { background: transparent; color: var(--chip-text-salmon);     border-color: var(--chip-outline-salmon); }
+.fas-chip--outlined.fas-chip--wine       { background: transparent; color: var(--chip-text-wine);       border-color: var(--chip-outline-wine); }
+.fas-chip--outlined.fas-chip--orchid     { background: transparent; color: var(--chip-text-orchid);     border-color: var(--chip-outline-orchid); }
+.fas-chip--outlined.fas-chip--slate      { background: transparent; color: var(--chip-text-slate);      border-color: var(--chip-outline-slate); }
+.fas-chip--outlined.fas-chip--indigo     { background: transparent; color: var(--chip-text-indigo);     border-color: var(--chip-outline-indigo); }
+.fas-chip--outlined.fas-chip--turquoise  { background: transparent; color: var(--chip-text-turquoise);  border-color: var(--chip-outline-turquoise); }
+.fas-chip--outlined.fas-chip--khaki      { background: transparent; color: var(--chip-text-khaki);      border-color: var(--chip-outline-khaki); }
+.fas-chip--outlined.fas-chip--cinnamon   { background: transparent; color: var(--chip-text-cinnamon);   border-color: var(--chip-outline-cinnamon); }
+.fas-chip--outlined.fas-chip--pink       { background: transparent; color: var(--chip-text-pink);       border-color: var(--chip-outline-pink); }
+.fas-chip--outlined.fas-chip--violet     { background: transparent; color: var(--chip-text-violet);     border-color: var(--chip-outline-violet); }
+.fas-chip--outlined.fas-chip--aqua       { background: transparent; color: var(--chip-text-aqua);       border-color: var(--chip-outline-aqua); }
+
+/* ─── Selectable Chip ───────────────────────────────────────────────────────── */
+.fas-chip--selectable {
+  background: transparent;
+  border: 1px solid var(--divider);
+  color: var(--text-medium);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  border-radius: 16px;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.fas-chip--selectable:hover:not(.fas-chip--disabled) {
+  background: var(--comp-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.fas-chip--selectable.fas-chip--selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+.fas-chip--selectable.fas-chip--selected:hover {
+  background: var(--comp-hover-contained);
+  border-color: var(--comp-hover-contained);
+}
+.fas-chip--selectable.fas-chip--disabled {
+  background: var(--comp-disabled-con);
+  border-color: var(--comp-disabled-con);
+  color: var(--comp-disabled-el);
+  cursor: not-allowed;
+}
+
+/* ─── Removable Chip ────────────────────────────────────────────────────────── */
+.fas-chip--removable {
+  background: var(--comp-hover);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  border-radius: 16px;
+}
+
+.fas-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  border-radius: 50%;
+  transition: background-color 0.15s;
+}
+.fas-chip__remove:hover {
+  background: rgba(0, 0, 0, 0.1);
+}

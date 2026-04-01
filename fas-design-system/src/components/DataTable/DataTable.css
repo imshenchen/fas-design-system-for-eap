@@ -1,0 +1,199 @@
+/**
+ * DataTable — FAS Design Kit
+ * @see components.md § Data Table
+ */
+
+/* ─── Wrapper ───────────────────────────────────────────────────────────────── */
+.fas-datatable__wrapper {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  background: var(--bg-surface);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--divider);
+}
+
+/* ─── Scroll Container ──────────────────────────────────────────────────────── */
+.fas-datatable__scroll {
+  overflow-x: auto;
+}
+
+/* ─── Table ─────────────────────────────────────────────────────────────────── */
+.fas-datatable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+/* ─── Header ────────────────────────────────────────────────────────────────── */
+.fas-datatable__th {
+  padding: 0 16px;
+  height: 40px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-high);
+  background: var(--bg-surface-dim-var);
+  border-bottom: 1px solid var(--divider);
+  white-space: nowrap;
+  user-select: none;
+}
+.fas-datatable__th--center { text-align: center; }
+.fas-datatable__th--right  { text-align: right; }
+
+.fas-datatable__th--sortable {
+  cursor: pointer;
+}
+.fas-datatable__th--sortable:hover {
+  background: var(--comp-hover);
+  color: var(--primary);
+}
+
+/* ─── Sort Icon ─────────────────────────────────────────────────────────────── */
+.fas-datatable__sort-icon {
+  display: inline-block;
+  margin-left: 4px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  opacity: 0.4;
+  position: relative;
+}
+.fas-datatable__sort-icon::before {
+  content: '↕';
+  font-size: 12px;
+  color: var(--text-medium);
+}
+.fas-datatable__sort-icon--active {
+  opacity: 1;
+}
+.fas-datatable__sort-icon--active::before {
+  color: var(--primary);
+}
+
+/* ─── Rows ──────────────────────────────────────────────────────────────────── */
+.fas-datatable__row {
+  transition: background-color 0.1s;
+}
+.fas-datatable__row:hover {
+  background: var(--comp-hover);
+}
+.fas-datatable__row--selected {
+  background: var(--table-selected) !important;
+}
+
+/* ─── Striped ───────────────────────────────────────────────────────────────── */
+.fas-datatable--striped .fas-datatable__row:nth-child(even) {
+  background: var(--table-striped);
+}
+.fas-datatable--striped .fas-datatable__row:nth-child(even):hover {
+  background: var(--comp-hover);
+}
+
+/* ─── Cell ──────────────────────────────────────────────────────────────────── */
+.fas-datatable__td {
+  padding: 0 16px;
+  height: 40px;
+  color: var(--text-body);
+  border-bottom: 1px solid var(--divider);
+  vertical-align: middle;
+}
+.fas-datatable__td--center { text-align: center; }
+.fas-datatable__td--right  { text-align: right; }
+.fas-datatable__td--empty,
+.fas-datatable__td--loading {
+  text-align: center;
+  color: var(--text-medium);
+  padding: 32px 16px;
+}
+.fas-datatable__td--checkbox,
+.fas-datatable__th--checkbox {
+  width: 48px;
+  text-align: center;
+}
+
+/* ─── Spin (loading state) ──────────────────────────────────────────────────── */
+.fas-spin {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--divider);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: fas-spin 0.7s linear infinite;
+}
+
+@keyframes fas-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Pagination ────────────────────────────────────────────────────────────── */
+.fas-datatable__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-top: 1px solid var(--divider);
+  background: var(--bg-surface);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fas-datatable__page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-medium);
+}
+
+.fas-datatable__page-size select {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text-high);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.fas-datatable__page-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--text-medium);
+}
+
+.fas-datatable__page-nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text-high);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.15s, color 0.15s;
+}
+.fas-datatable__page-nav button:hover:not(:disabled) {
+  background: var(--comp-hover);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.fas-datatable__page-nav button:disabled {
+  color: var(--comp-disabled-el);
+  cursor: not-allowed;
+}
+
+/* ─── Loading overlay ───────────────────────────────────────────────────────── */
+.fas-datatable--loading {
+  opacity: 0.6;
+  pointer-events: none;
+}

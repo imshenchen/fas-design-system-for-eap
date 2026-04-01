@@ -1,0 +1,92 @@
+/**
+ * Snackbar — FAS Design Kit
+ * @see components.md § Snackbar & Toast
+ */
+
+/* ─── Container (portal) ────────────────────────────────────────────────────── */
+.fas-snackbar__container {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 500;
+  max-width: 480px;
+}
+
+/* ─── Snackbar ──────────────────────────────────────────────────────────────── */
+.fas-snackbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--snackbar-bg);
+  color: var(--text-white);
+  border-radius: 4px;
+  padding: 12px 16px;
+  min-width: 280px;
+  max-width: 480px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  animation: fas-snackbar-in 0.2s ease;
+}
+
+@keyframes fas-snackbar-in {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+/* ─── Icon (color dot) ──────────────────────────────────────────────────────── */
+.fas-snackbar__icon {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+}
+.fas-snackbar--success    .fas-snackbar__icon { background: var(--snackbar-success); }
+.fas-snackbar--error      .fas-snackbar__icon { background: var(--snackbar-error); }
+.fas-snackbar--warning    .fas-snackbar__icon { background: var(--snackbar-warning); }
+.fas-snackbar--processing .fas-snackbar__icon { background: var(--snackbar-processing); }
+
+/* ─── Message ───────────────────────────────────────────────────────────────── */
+.fas-snackbar__message {
+  flex: 1;
+}
+
+/* ─── Action Button ─────────────────────────────────────────────────────────── */
+.fas-snackbar__action {
+  border: none;
+  background: none;
+  color: var(--snackbar-action);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: background-color 0.15s;
+}
+.fas-snackbar__action:hover {
+  background: var(--snackbar-action-hover);
+}
+
+/* ─── Close Button ──────────────────────────────────────────────────────────── */
+.fas-snackbar__close {
+  border: none;
+  background: none;
+  color: var(--text-medium);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: background-color 0.15s;
+}
+.fas-snackbar__close:hover {
+  background: var(--snackbar-action-hover);
+}

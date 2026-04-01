@@ -1,0 +1,28 @@
+/**
+ * FAS Design System — Global Styles
+ *
+ * 使用方式：在應用程式入口引入本檔案即可載入所有元件樣式。
+ *
+ *   import '@delta/fas-design-system/styles';
+ */
+
+/* 1. Design Tokens (CSS Custom Properties) */
+@import '../tokens/tokens.css';
+
+/* 2. Component Styles */
+@import '../components/Button/Button.css';
+@import '../components/Chip/Chip.css';
+@import '../components/TextField/TextField.css';
+@import '../components/Dialog/Dialog.css';
+@import '../components/DataTable/DataTable.css';
+@import '../components/Breadcrumbs/Breadcrumbs.css';
+@import '../components/Snackbar/Snackbar.css';
+@import '../components/IconButton/IconButton.css';
+@import '../components/Uploader/Uploader.css';
+
+/* 3. Global Base Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

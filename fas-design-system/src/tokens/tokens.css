@@ -1,0 +1,359 @@
+/**
+ * FAS Design System — CSS Custom Properties (Design Tokens)
+ * @see token.md for full specification
+ *
+ * Light Mode: :root
+ * Dark Mode:  [data-theme="dark"]
+ *
+ * 使用方式：在入口點引入本檔案，即可在所有元件 CSS 中使用 var(--token-name)
+ */
+
+/* ─── Light Mode (Default) ─────────────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --delta-blue: #0087dc;
+  --primary: #00adef;
+  --secondary: #727171;
+
+  /* System Status */
+  --status-processing: #00adef;
+  --status-success: #68ad23;
+  --status-warning: #f5b900;
+  --status-emergency: #f66d20;
+  --status-error: #f23a43;
+  --status-milestone: #8a74ad;
+  --status-idle: #808080;
+  --status-draft: #cccccc;
+
+  /* Background */
+  --bg-surface: #ffffff;
+  --bg-surface-dim: #fafafa;
+  --bg-surface-dim-var: #f6f7f9;
+  --bg-container-low: #f3f3f3;
+  --bg-container-high: #ebebeb;
+
+  /* Elevation Surface (Light Mode: all white) */
+  --elevation-00dp: #ffffff;
+  --elevation-02dp: #ffffff;
+  --elevation-04dp: #ffffff;
+  --elevation-06dp: #ffffff;
+  --elevation-08dp: #ffffff;
+  --elevation-12dp: #ffffff;
+  --elevation-16dp: #ffffff;
+  --elevation-24dp: #ffffff;
+
+  /* Text */
+  --text-white: #ffffff;
+  --text-black: #000000;
+  --text-body: #333333;
+  --text-high: #333333;
+  --text-medium: #727171;
+  --text-disabled: #bfbfbf;
+  --text-placeholder: #a6a6a6;
+
+  /* Component States */
+  --comp-hover: #f0fbff;
+  --comp-hover-error: #fef1f1;
+  --comp-hover-secondary: rgba(0, 0, 0, 0.08);
+  --comp-hover-contained: #0088bd;
+  --comp-focus: rgba(0, 173, 239, 0.12);
+  --comp-disabled-el: #bfbfbf;
+  --comp-disabled-con: #e6e6e6;
+
+  /* +4 BG (Saturated) */
+  --4bg-processing: #c2eeff;
+  --4bg-success: #e0fbc6;
+  --4bg-warning: #fff0c2;
+  --4bg-emergency: #feece2;
+  --4bg-error: #fde2e4;
+  --4bg-milestone: #ece9f2;
+  --4bg-idle: #ebebeb;
+  --4bg-turquoise: #bdffed;
+
+  /* +5 BG (Soft) */
+  --5bg-processing: #f0fbff;
+  --5bg-success: #effbe2;
+  --5bg-warning: #fffaeb;
+  --5bg-emergency: #fef5f0;
+  --5bg-error: #fef1f1;
+  --5bg-milestone: #f7f5f9;
+  --5bg-idle: #f3f3f3;
+
+  /* TextField */
+  --textfield-border: #727171;
+  --textfield-border-hover: #808080;
+
+  /* Data Table */
+  --table-striped: #f6f7f9;
+  --table-selected: #e0f7ff;
+
+  /* Snackbar / Tooltip */
+  --snackbar-bg: #333333;
+  --snackbar-action: #57cfff;
+  --snackbar-action-secondary: #cccccc;
+  --snackbar-action-hover: rgba(255, 255, 255, 0.08);
+  --snackbar-processing: #57cfff;
+  --snackbar-success: #82d52f;
+  --snackbar-error: #f56b71;
+  --snackbar-warning: #ffcb29;
+
+  /* Switch */
+  --switch-track-on: rgba(0, 173, 239, 0.38);
+  --switch-track-off: rgba(114, 114, 113, 0.38);
+  --switch-track-disabled: rgba(204, 204, 204, 0.38);
+  --switch-thumb-off: #ffffff;
+  --switch-thumb-disabled: #999999;
+
+  /* Card */
+  --card-outlined: #d9d9d9;
+
+  /* Divider */
+  --divider: #d9d9d9;
+
+  /* Overlay / Scroll */
+  --scrim: rgba(0, 0, 0, 0.7);
+  --scroll-bar: rgba(0, 0, 0, 0.3);
+
+  /* Chip — Background */
+  --chip-processing: #c2eeff;
+  --chip-success: #e0fbc6;
+  --chip-warning: #fff0c2;
+  --chip-emergency: #feece2;
+  --chip-error: #fde2e4;
+  --chip-milestone: #ece9f2;
+  --chip-idle: #ebebeb;
+  --chip-mariner: #ceddf2;
+  --chip-moss: #d5dabe;
+  --chip-bronze: #f2ddc0;
+  --chip-salmon: #fde0d8;
+  --chip-wine: #f4e1e5;
+  --chip-orchid: #f2e2f4;
+  --chip-slate: #e0e8eb;
+  --chip-indigo: #dadcfb;
+  --chip-turquoise: #bdffed;
+  --chip-khaki: #e6dcb2;
+  --chip-cinnamon: #f2dac9;
+  --chip-pink: #ffe5f1;
+  --chip-violet: #f0d9fc;
+  --chip-aqua: #baf6f7;
+
+  /* Chip — Text / Outline (Light: text = outline) */
+  --chip-text-processing: #00638a;
+  --chip-text-success: #365912;
+  --chip-text-warning: #5c4500;
+  --chip-text-emergency: #ac4207;
+  --chip-text-error: #bb0c15;
+  --chip-text-milestone: #594677;
+  --chip-text-idle: #585858;
+  --chip-text-mariner: #254f8e;
+  --chip-text-moss: #5b6237;
+  --chip-text-bronze: #7e541b;
+  --chip-text-salmon: #952918;
+  --chip-text-wine: #813132;
+  --chip-text-orchid: #762d65;
+  --chip-text-slate: #3d5561;
+  --chip-text-indigo: #121cba;
+  --chip-text-turquoise: #00664b;
+  --chip-text-khaki: #4d4319;
+  --chip-text-cinnamon: #7b4d37;
+  --chip-text-pink: #c20059;
+  --chip-text-violet: #6d1599;
+  --chip-text-aqua: #0e6567;
+
+  /* Chip — Outline (Light: same as text) */
+  --chip-outline-processing: #00638a;
+  --chip-outline-success: #365912;
+  --chip-outline-warning: #5c4500;
+  --chip-outline-emergency: #ac4207;
+  --chip-outline-error: #bb0c15;
+  --chip-outline-milestone: #594677;
+  --chip-outline-idle: #585858;
+  --chip-outline-mariner: #254f8e;
+  --chip-outline-moss: #5b6237;
+  --chip-outline-bronze: #7e541b;
+  --chip-outline-salmon: #952918;
+  --chip-outline-wine: #813132;
+  --chip-outline-orchid: #762d65;
+  --chip-outline-slate: #3d5561;
+  --chip-outline-indigo: #121cba;
+  --chip-outline-turquoise: #00664b;
+  --chip-outline-khaki: #4d4319;
+  --chip-outline-cinnamon: #7b4d37;
+  --chip-outline-pink: #c20059;
+  --chip-outline-violet: #6d1599;
+  --chip-outline-aqua: #0e6567;
+}
+
+/* ─── Dark Mode ─────────────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  /* Primary / Secondary */
+  --primary: #57cfff;
+  --secondary: #cccccc;
+
+  /* System Status */
+  --status-processing: #57cfff;
+  --status-success: #82d52f;
+  --status-warning: #ffcb29;
+  --status-emergency: #f88f53;
+  --status-error: #f56b71;
+  --status-milestone: #a695c1;
+  --status-idle: #a3a3a3;
+  --status-draft: #727171;
+
+  /* Background */
+  --bg-surface: #141414;
+  --bg-surface-dim: #1a1a1a;
+  --bg-surface-dim-var: #1a1a1a;
+  --bg-container-low: #262626;
+  --bg-container-high: #2e2e2e;
+
+  /* Elevation Surface (Dark: each level gets lighter) */
+  --elevation-00dp: #1a1a1a;
+  --elevation-02dp: #242424;
+  --elevation-04dp: #292929;
+  --elevation-06dp: #2e2e2e;
+  --elevation-08dp: #333333;
+  --elevation-12dp: #383838;
+  --elevation-16dp: #383838;
+  --elevation-24dp: #383838;
+
+  /* Text */
+  --text-white: #000000;
+  --text-black: #ffffff;
+  --text-body: #f3f3f3;
+  --text-high: #f3f3f3;
+  --text-medium: #cccccc;
+  --text-disabled: #595959;
+  --text-placeholder: #727171;
+
+  /* Component States */
+  --comp-hover: rgba(255, 255, 255, 0.08);
+  --comp-hover-error: rgba(255, 255, 255, 0.08);
+  --comp-hover-secondary: rgba(255, 255, 255, 0.08);
+  --comp-hover-contained: #8adeff;
+  --comp-focus: rgba(255, 255, 255, 0.08);
+  --comp-disabled-el: #595959;
+  --comp-disabled-con: #3d3d3d;
+
+  /* +4 BG */
+  --4bg-processing: #003e57;
+  --4bg-success: #29440e;
+  --4bg-warning: #5c4500;
+  --4bg-emergency: #7b2f05;
+  --4bg-error: #73171b;
+  --4bg-milestone: #413357;
+  --4bg-idle: #454545;
+  --4bg-turquoise: #003d2d;
+
+  /* +5 BG (same as +4 in dark) */
+  --5bg-processing: #003e57;
+  --5bg-success: #29440e;
+  --5bg-warning: #5c4500;
+  --5bg-emergency: #7b2f05;
+  --5bg-error: #73171b;
+  --5bg-milestone: #413357;
+  --5bg-idle: #454545;
+
+  /* TextField */
+  --textfield-border: #808080;
+  --textfield-border-hover: #a3a3a3;
+
+  /* Data Table */
+  --table-striped: #262626;
+  --table-selected: #00638a;
+
+  /* Snackbar / Tooltip */
+  --snackbar-bg: #ffffff;
+  --snackbar-action: #00adef;
+  --snackbar-action-secondary: #727171;
+  --snackbar-processing: #00adef;
+  --snackbar-success: #68ad23;
+  --snackbar-error: #f23a43;
+  --snackbar-warning: #f5b900;
+
+  /* Switch */
+  --switch-track-on: rgba(194, 238, 255, 0.38);
+  --switch-track-off: #727171;
+  --switch-track-disabled: rgba(114, 113, 113, 0.6);
+  --switch-thumb-off: #e0e0e0;
+  --switch-thumb-disabled: #727171;
+
+  /* Card */
+  --card-outlined: #4d4d4d;
+
+  /* Divider */
+  --divider: #4d4d4d;
+
+  /* Overlay / Scroll */
+  --scrim: rgba(0, 0, 0, 0.7);
+  --scroll-bar: rgba(255, 255, 255, 0.3);
+
+  /* Chip — Background (Dark) */
+  --chip-processing: #003e57;
+  --chip-success: #29440e;
+  --chip-warning: #5c4500;
+  --chip-emergency: #7b2f05;
+  --chip-error: #73171b;
+  --chip-milestone: #413357;
+  --chip-idle: #454545;
+  --chip-mariner: #143668;
+  --chip-moss: #3c4125;
+  --chip-bronze: #543812;
+  --chip-salmon: #65170b;
+  --chip-wine: #602436;
+  --chip-orchid: #58224b;
+  --chip-slate: #2c3d45;
+  --chip-indigo: #13197c;
+  --chip-turquoise: #003d2d;
+  --chip-khaki: #4d4319;
+  --chip-cinnamon: #4e3023;
+  --chip-pink: #880742;
+  --chip-violet: #400c5a;
+  --chip-aqua: #0a4648;
+
+  /* Chip — Text (Dark: all white) */
+  --chip-text-processing: #ffffff;
+  --chip-text-success: #ffffff;
+  --chip-text-warning: #ffffff;
+  --chip-text-emergency: #ffffff;
+  --chip-text-error: #ffffff;
+  --chip-text-milestone: #ffffff;
+  --chip-text-idle: #ffffff;
+  --chip-text-mariner: #ffffff;
+  --chip-text-moss: #ffffff;
+  --chip-text-bronze: #ffffff;
+  --chip-text-salmon: #ffffff;
+  --chip-text-wine: #ffffff;
+  --chip-text-orchid: #ffffff;
+  --chip-text-slate: #ffffff;
+  --chip-text-indigo: #ffffff;
+  --chip-text-turquoise: #ffffff;
+  --chip-text-khaki: #ffffff;
+  --chip-text-cinnamon: #ffffff;
+  --chip-text-pink: #ffffff;
+  --chip-text-violet: #ffffff;
+  --chip-text-aqua: #ffffff;
+
+  /* Chip — Outline (Dark: system status colors) */
+  --chip-outline-processing: #00adef;
+  --chip-outline-success: #68ad23;
+  --chip-outline-warning: #f5b900;
+  --chip-outline-emergency: #f66d20;
+  --chip-outline-error: #f23a43;
+  --chip-outline-milestone: #8a74ad;
+  --chip-outline-idle: #808080;
+  --chip-outline-mariner: #3672cb;
+  --chip-outline-moss: #848f50;
+  --chip-outline-bronze: #d28c2d;
+  --chip-outline-salmon: #e36551;
+  --chip-outline-wine: #ba484a;
+  --chip-outline-orchid: #bb4ea1;
+  --chip-outline-slate: #668c9e;
+  --chip-outline-indigo: #3b46ec;
+  --chip-outline-turquoise: #00bd8b;
+  --chip-outline-khaki: #b19838;
+  --chip-outline-cinnamon: #b87c60;
+  --chip-outline-pink: #ff5aa6;
+  --chip-outline-violet: #aa36e4;
+  --chip-outline-aqua: #1abdc2;
+}

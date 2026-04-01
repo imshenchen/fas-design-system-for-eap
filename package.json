@@ -1,0 +1,13 @@
+{
+  "name": "fas-design-system-for-eap",
+  "private": true,
+  "workspaces": [
+    "fas-design-system",
+    "showcase"
+  ],
+  "scripts": {
+    "storybook": "npm run storybook --workspace=fas-design-system",
+    "showcase": "npm run dev --workspace=showcase",
+    "dev": "concurrently \"npm run storybook\" \"npm run showcase\""
+  }
+}
