@@ -20,16 +20,21 @@
 ## 專案結構
 
 ```
-fas-design-system/
-├── CLAUDE.md                    ← 本檔（AI 全局設定）
-├── src/
-│   ├── tokens/
-│   │   └── token.md             ← Design Token 完整定義（色彩、間距、圓角等）
-│   ├── components/
-│   │   └── components.md        ← 元件規格（Variants、States、Token 對應）
-│   └── principles/              ← 通用設計原則（未來擴充）
-└── showcase/
-    └── components.html          ← 元件互動展示（靜態 HTML）
+fas-design-system-for-eap/
+├── fas-design-system/           ← 元件庫（本目錄）
+│   ├── CLAUDE.md                ← 本檔（AI 全局設定）
+│   ├── .storybook/              ← Storybook 設定
+│   └── src/
+│       ├── tokens/
+│       │   ├── token.md         ← Design Token 完整定義（色彩、間距、圓角等）
+│       │   ├── tokens.ts        ← Token JS 引用
+│       │   └── tokens.css       ← CSS 自訂屬性（Light / Dark mode）
+│       ├── styles/
+│       │   └── index.css        ← 全域樣式入口（引入所有元件 CSS）
+│       └── components/
+│           ├── components.md    ← 元件規格（Variants、States、Token 對應）
+│           └── */               ← 各元件（.tsx + .css + .stories.tsx）
+└── showcase/                    ← 即時預覽頁（Vite + React，localhost:5173）
 ```
 
 ---
