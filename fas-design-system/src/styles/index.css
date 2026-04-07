@@ -57,9 +57,19 @@
 @import '../components/NavigationBar/NavigationBar.css';
 @import '../components/SideMenu/SideMenu.css';
 
-/* 8. Global Base Reset */
+/* 9. Global Base Reset */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', 'Noto Sans TC', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-body);
+  background-color: var(--bg-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
