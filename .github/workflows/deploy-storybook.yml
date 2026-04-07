@@ -25,7 +25,7 @@ jobs:
         run: npm ci
 
       - name: Build Storybook
-        run: npm run build-storybook
+        run: npm run build-storybook --workspace=fas-design-system
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
