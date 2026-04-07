@@ -123,11 +123,14 @@
   background: none;
   cursor: pointer;
   color: inherit;
-  font-size: 16px;
   line-height: 1;
   padding: 0;
   border-radius: 50%;
   transition: background-color 0.15s;
+}
+
+.fas-chip__remove .material-symbols-outlined {
+  font-size: 14px;
 }
 .fas-chip__remove:hover {
   background: rgba(0, 0, 0, 0.1);

@@ -35,7 +35,7 @@ const COLUMNS: ColumnDef<Node>[] = [
 ];
 
 const meta: Meta<typeof DataTable> = {
-  title: 'Components/DataTable',
+  title: 'Data Display/DataTable',
   component: DataTable,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

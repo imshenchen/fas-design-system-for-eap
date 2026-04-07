@@ -137,7 +137,7 @@ export function DataTable<T = Record<string, unknown>>({
                 >
                   {col.header}
                   {col.sortable && (
-                    <span className={['fas-datatable__sort-icon', sortKey === col.key && 'fas-datatable__sort-icon--active'].filter(Boolean).join(' ')} aria-hidden />
+                    <span className={['material-symbols-outlined fas-datatable__sort-icon', sortKey === col.key && 'fas-datatable__sort-icon--active'].filter(Boolean).join(' ')} aria-hidden>unfold_more</span>
                   )}
                 </th>
               ))}
@@ -209,10 +209,10 @@ export function DataTable<T = Record<string, unknown>>({
           </div>
           <div className="fas-datatable__page-nav">
             <span>{((pagination.page - 1) * pagination.pageSize) + 1}–{Math.min(pagination.page * pagination.pageSize, pagination.total)} / {pagination.total}</span>
-            <button onClick={() => pagination.onPageChange(1)} disabled={pagination.page === 1}>«</button>
-            <button onClick={() => pagination.onPageChange(pagination.page - 1)} disabled={pagination.page === 1}>‹</button>
-            <button onClick={() => pagination.onPageChange(pagination.page + 1)} disabled={pagination.page * pagination.pageSize >= pagination.total}>›</button>
-            <button onClick={() => pagination.onPageChange(Math.ceil(pagination.total / pagination.pageSize))} disabled={pagination.page * pagination.pageSize >= pagination.total}>»</button>
+            <button onClick={() => pagination.onPageChange(1)} disabled={pagination.page === 1}><span className="material-symbols-outlined" aria-hidden>first_page</span></button>
+            <button onClick={() => pagination.onPageChange(pagination.page - 1)} disabled={pagination.page === 1}><span className="material-symbols-outlined" aria-hidden>chevron_left</span></button>
+            <button onClick={() => pagination.onPageChange(pagination.page + 1)} disabled={pagination.page * pagination.pageSize >= pagination.total}><span className="material-symbols-outlined" aria-hidden>chevron_right</span></button>
+            <button onClick={() => pagination.onPageChange(Math.ceil(pagination.total / pagination.pageSize))} disabled={pagination.page * pagination.pageSize >= pagination.total}><span className="material-symbols-outlined" aria-hidden>last_page</span></button>
           </div>
         </div>
       )}

@@ -6,21 +6,57 @@
  *   import '@delta/fas-design-system/styles';
  */
 
+/* 0. Google Material Symbols */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
 /* 1. Design Tokens (CSS Custom Properties) */
 @import '../tokens/tokens.css';
 
-/* 2. Component Styles */
+/* 2. Component Styles — Atoms */
 @import '../components/Button/Button.css';
-@import '../components/Chip/Chip.css';
-@import '../components/TextField/TextField.css';
-@import '../components/Dialog/Dialog.css';
-@import '../components/DataTable/DataTable.css';
-@import '../components/Breadcrumbs/Breadcrumbs.css';
-@import '../components/Snackbar/Snackbar.css';
 @import '../components/IconButton/IconButton.css';
+@import '../components/Chip/Chip.css';
+@import '../components/Avatar/Avatar.css';
+@import '../components/Badge/Badge.css';
+@import '../components/Divider/Divider.css';
+@import '../components/Spin/Spin.css';
+@import '../components/Progress/Progress.css';
+
+/* 3. Component Styles — Form Controls */
+@import '../components/TextField/TextField.css';
+@import '../components/Checkbox/Checkbox.css';
+@import '../components/Radio/Radio.css';
+@import '../components/Switch/Switch.css';
+@import '../components/Slider/Slider.css';
+
+/* 4. Component Styles — Navigation */
+@import '../components/Breadcrumbs/Breadcrumbs.css';
+@import '../components/Tab/Tab.css';
+@import '../components/Pagination/Pagination.css';
+@import '../components/Stepper/Stepper.css';
+
+/* 5. Component Styles — Feedback / Overlay */
+@import '../components/Alert/Alert.css';
+@import '../components/Tooltip/Tooltip.css';
+@import '../components/Snackbar/Snackbar.css';
+@import '../components/Dialog/Dialog.css';
+
+/* 6. Component Styles — Containers */
+@import '../components/Card/Card.css';
+@import '../components/Accordion/Accordion.css';
+@import '../components/Drawer/Drawer.css';
+@import '../components/List/List.css';
+@import '../components/Menu/Menu.css';
+
+/* 7. Component Styles — Data / Upload */
+@import '../components/DataTable/DataTable.css';
 @import '../components/Uploader/Uploader.css';
 
-/* 3. Global Base Reset */
+/* 8. Component Styles — Layout / Navigation */
+@import '../components/NavigationBar/NavigationBar.css';
+@import '../components/SideMenu/SideMenu.css';
+
+/* 8. Global Base Reset */
 *,
 *::before,
 *::after {

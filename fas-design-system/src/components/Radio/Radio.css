@@ -1,0 +1,65 @@
+/* Radio — FAS Design Kit */
+
+.fas-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text-body);
+}
+
+.fas-radio__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.fas-radio__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--secondary);
+  flex-shrink: 0;
+  transition: border-color 0.15s, background-color 0.15s;
+  background: transparent;
+}
+
+.fas-radio--checked .fas-radio__indicator {
+  border-color: var(--primary);
+}
+
+.fas-radio__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.fas-radio:hover:not(.fas-radio--disabled) .fas-radio__indicator {
+  background: var(--comp-hover);
+}
+
+.fas-radio--disabled {
+  cursor: not-allowed;
+  color: var(--text-disabled);
+}
+
+.fas-radio--disabled .fas-radio__indicator {
+  border-color: var(--comp-disabled-el);
+}
+
+.fas-radio--disabled .fas-radio__dot {
+  background: var(--comp-disabled-el);
+}
+
+.fas-radio__label {
+  line-height: 1.4;
+}

@@ -61,15 +61,14 @@
   opacity: 0.4;
   position: relative;
 }
-.fas-datatable__sort-icon::before {
-  content: '↕';
-  font-size: 12px;
+.fas-datatable__sort-icon {
+  font-size: 16px;
   color: var(--text-medium);
+  vertical-align: middle;
+  opacity: 0.4;
 }
 .fas-datatable__sort-icon--active {
   opacity: 1;
-}
-.fas-datatable__sort-icon--active::before {
   color: var(--primary);
 }
 

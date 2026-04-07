@@ -20,7 +20,7 @@ export interface BreadcrumbsProps {
 
 export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   items,
-  separator = '›',
+  separator = <span className="material-symbols-outlined" aria-hidden style={{ fontSize: 16 }}>chevron_right</span>,
   className,
 }) => {
   return (

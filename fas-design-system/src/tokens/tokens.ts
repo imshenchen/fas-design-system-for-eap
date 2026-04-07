@@ -1,7 +1,5 @@
 /**
  * FAS Design System — Design Tokens
- * @see token.md for full specification and Dark Mode values
- *
  * 使用方式：
  *   import { cssVars, rawTokens } from '@fas-design-system/tokens';
  *

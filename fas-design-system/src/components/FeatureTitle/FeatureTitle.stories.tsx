@@ -3,7 +3,7 @@ import { FeatureTitle } from './FeatureTitle';
 import { Button } from '../Button/Button';
 
 const meta: Meta<typeof FeatureTitle> = {
-  title: 'Components/FeatureTitle',
+  title: 'Data Display/FeatureTitle',
   component: FeatureTitle,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

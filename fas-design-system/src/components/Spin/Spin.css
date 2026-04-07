@@ -1,0 +1,24 @@
+/* Spin — FAS Design Kit */
+
+.fas-spin {
+  display: inline-block;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 50%;
+  animation: fas-spin-rotate 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* Sizes */
+.fas-spin--s { width: 16px; height: 16px; border-width: 2px; }
+.fas-spin--m { width: 24px; height: 24px; border-width: 2px; }
+.fas-spin--l { width: 40px; height: 40px; border-width: 3px; }
+
+/* Colors */
+.fas-spin--primary   { border-top-color: var(--primary); }
+.fas-spin--secondary { border-top-color: var(--secondary); }
+.fas-spin--white     { border-top-color: #ffffff; }
+
+@keyframes fas-spin-rotate {
+  to { transform: rotate(360deg); }
+}

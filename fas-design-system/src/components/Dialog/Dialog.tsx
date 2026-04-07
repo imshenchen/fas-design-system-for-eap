@@ -82,7 +82,7 @@ export const Dialog: React.FC<DialogProps> = ({
             aria-label="關閉"
             onClick={onClose}
           >
-            ×
+            <span className="material-symbols-outlined" aria-hidden>close</span>
           </button>
         </div>
 

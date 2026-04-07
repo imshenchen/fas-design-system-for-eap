@@ -1,0 +1,7 @@
+/* Tab — FAS Design Kit */
+/* Tabs use inline styles for state management; this file provides focus ring */
+
+.fas-tab:focus-visible {
+  outline: 2px solid var(--comp-focus);
+  outline-offset: -2px;
+}

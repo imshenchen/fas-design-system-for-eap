@@ -9,7 +9,7 @@ const ALL_STATUSES: ChipStatus[] = [
 ];
 
 const meta: Meta<typeof StatusChip> = {
-  title: 'Components/Chip',
+  title: 'Data Display/Chip',
   component: StatusChip,
   tags: ['autodocs'],
   argTypes: {

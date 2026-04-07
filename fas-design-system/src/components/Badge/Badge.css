@@ -1,0 +1,68 @@
+/**
+ * Badge — FAS Design Kit
+ */
+
+.fas-badge-root {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ─── Base badge ─────────────────────────────────────────────────────────── */
+.fas-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  line-height: 1;
+  z-index: 1;
+  transition: transform 0.2s ease;
+}
+
+.fas-badge--hidden {
+  display: none;
+}
+
+/* ─── Standard variant ───────────────────────────────────────────────────── */
+.fas-badge--standard {
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  font-size: 11px;
+  padding: 0 4px;
+}
+
+/* ─── Dot variant ────────────────────────────────────────────────────────── */
+.fas-badge--dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  padding: 0;
+  min-width: unset;
+  top: -4px;
+  right: -4px;
+}
+
+/* ─── Colors ─────────────────────────────────────────────────────────────── */
+.fas-badge--error {
+  background-color: var(--status-error);
+}
+
+.fas-badge--processing {
+  background-color: var(--status-processing);
+}
+
+.fas-badge--success {
+  background-color: var(--status-success);
+}
+
+.fas-badge--warning {
+  background-color: var(--status-warning);
+}

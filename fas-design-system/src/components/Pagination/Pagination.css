@@ -1,0 +1,74 @@
+/* Pagination — FAS Design Kit */
+
+.fas-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+}
+
+.fas-pagination__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text-body);
+  transition: background 0.15s, color 0.15s;
+  font-weight: 400;
+}
+
+/* Size m (default) */
+.fas-pagination--m .fas-pagination__item {
+  width: 32px;
+  height: 32px;
+}
+
+/* Size s */
+.fas-pagination--s .fas-pagination__item {
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+}
+
+/* Nav buttons */
+.fas-pagination__item--nav {
+  color: var(--text-medium);
+  font-size: 16px;
+}
+
+/* Active */
+.fas-pagination__item--active {
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Hover */
+.fas-pagination__item:hover:not(:disabled):not(.fas-pagination__item--active) {
+  background: var(--comp-hover);
+}
+
+/* Ellipsis */
+.fas-pagination__item--ellipsis {
+  cursor: default;
+  color: var(--text-disabled);
+  background: transparent !important;
+  pointer-events: none;
+}
+
+/* Disabled item */
+.fas-pagination__item:disabled {
+  color: var(--comp-disabled-el);
+  cursor: not-allowed;
+}
+
+/* Disabled container */
+.fas-pagination--disabled .fas-pagination__item {
+  pointer-events: none;
+  opacity: 0.5;
+}

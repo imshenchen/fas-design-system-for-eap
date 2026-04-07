@@ -116,7 +116,7 @@ export const RemovableChip: React.FC<RemovableChipProps> = ({
       onClick={onRemove}
       className="fas-chip__remove"
     >
-      ×
+      <span className="material-symbols-outlined" aria-hidden>close</span>
     </button>
   </span>
 );
