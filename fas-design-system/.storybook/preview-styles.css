@@ -1,8 +1,15 @@
-/* Storybook canvas background — follow design token */
+/* Storybook canvas + docs background — follow design token */
 html,
 body,
 .sb-show-main,
 #storybook-root {
   background-color: var(--bg-surface) !important;
   min-height: 100vh;
+}
+
+/* Docs page: override Emotion's `background` shorthand */
+:root .sbdocs-wrapper,
+:root .sbdocs,
+:root .docs-story {
+  background: var(--bg-surface) !important;
 }
