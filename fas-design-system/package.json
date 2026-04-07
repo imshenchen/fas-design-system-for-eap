@@ -32,7 +32,7 @@
   "scripts": {
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build": "vite build"
+    "build": "BUILD_TARGET=lib vite build"
   },
   "peerDependencies": {
     "react": ">=18",

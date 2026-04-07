@@ -147,9 +147,10 @@ export const TextField: React.FC<TextFieldProps> = ({
 };
 
 // ─── Textarea variant ────────────────────────────────────────────────────────
-export interface TextAreaProps extends Omit<TextFieldProps, 'type' | 'leadingIcon' | 'trailingIcon' | 'inputRef'> {
+export interface TextAreaProps extends Omit<TextFieldProps, 'type' | 'leadingIcon' | 'trailingIcon' | 'inputRef' | 'onBlur'> {
   rows?: number;
   textareaRef?: React.Ref<HTMLTextAreaElement>;
+  onBlur?: React.FocusEventHandler<HTMLTextAreaElement>;
 }
 
 export const TextArea: React.FC<TextAreaProps> = ({

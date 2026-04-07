@@ -3,15 +3,17 @@ import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
 
+const isLibBuild = process.env.BUILD_TARGET === 'lib';
+
 export default defineConfig({
   plugins: [
     react(),
-    dts({
+    ...(isLibBuild ? [dts({
       include: ['src'],
       exclude: ['src/**/*.stories.tsx'],
       tsconfigPath: './tsconfig.build.json',
       rollupTypes: true,
-    }),
+    })] : []),
   ],
   build: {
     lib: {
