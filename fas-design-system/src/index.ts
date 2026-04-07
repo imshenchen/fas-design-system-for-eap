@@ -2,7 +2,7 @@
  * FAS Design System — Package Entry Point
  *
  * 引用範例：
- *   import { Button, StatusChip, cssVars, spacing } from '@delta/fas-design-system';
+ *   import { Button, StatusChip, cssVars, spacing } from '@imshenchen/fas-design-system';
  */
 
 // Components

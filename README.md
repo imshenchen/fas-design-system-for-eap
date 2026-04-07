@@ -6,7 +6,7 @@ Delta 共用設計系統，提供 React 元件庫、設計 Token 與 Storybook �
 
 ```
 fas-design-system-for-eap/
-├── fas-design-system/          # npm 元件庫（@delta/fas-design-system）
+├── fas-design-system/          # npm 元件庫（@imshenchen/fas-design-system）
 │   ├── .storybook/             # Storybook 設定
 │   ├── src/
 │   │   ├── components/         # 元件（.tsx + .css + .stories.tsx）
@@ -26,7 +26,7 @@ fas-design-system-for-eap/
 ## 使用元件庫
 
 ```bash
-npm install @delta/fas-design-system
+npm install @imshenchen/fas-design-system
 ```
 
 詳細安裝與使用說明請參考 [fas-design-system/README.md](./fas-design-system/README.md)。

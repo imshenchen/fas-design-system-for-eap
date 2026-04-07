@@ -1,11 +1,11 @@
-# @delta/fas-design-system
+# @imshenchen/fas-design-system
 
 FAS Design System 是 Delta 共用的 React 元件庫，提供一致的設計語言、設計 Token 與可複用元件，供 EAP+、DIAWorks 等各產品線使用。
 
 ## 安裝
 
 ```bash
-npm install @delta/fas-design-system
+npm install @imshenchen/fas-design-system
 ```
 
 ## 快速開始
@@ -15,13 +15,13 @@ npm install @delta/fas-design-system
 在你的應用程式入口（`main.tsx` 或 `index.tsx`）加入：
 
 ```tsx
-import '@delta/fas-design-system/styles';
+import '@imshenchen/fas-design-system/styles';
 ```
 
 **2. 使用元件**
 
 ```tsx
-import { Button, TextField, StatusChip } from '@delta/fas-design-system';
+import { Button, TextField, StatusChip } from '@imshenchen/fas-design-system';
 
 function App() {
   return (

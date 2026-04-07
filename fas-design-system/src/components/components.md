@@ -2,8 +2,8 @@
 
 > **引用方式**
 > ```tsx
-> import { Button, Alert, StatusChip } from '@delta/fas-design-system';
-> import '@delta/fas-design-system/styles'; // 在應用程式入口引入一次
+> import { Button, Alert, StatusChip } from '@imshenchen/fas-design-system';
+> import '@imshenchen/fas-design-system/styles'; // 在應用程式入口引入一次
 > ```
 >
 > **Icon**：使用 Google Material Symbols

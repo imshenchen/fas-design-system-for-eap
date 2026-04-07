@@ -32,7 +32,7 @@
 ## 安裝
 
 ```bash
-npm install @delta/fas-design-system
+npm install @imshenchen/fas-design-system
 ```
 
 ## 引入樣式
@@ -40,13 +40,13 @@ npm install @delta/fas-design-system
 在應用程式入口（如 `main.tsx`）引入一次：
 
 ```tsx
-import '@delta/fas-design-system/styles';
+import '@imshenchen/fas-design-system/styles';
 ```
 
 ## 引入元件
 
 ```tsx
-import { Button, TextField, DataTable } from '@delta/fas-design-system';
+import { Button, TextField, DataTable } from '@imshenchen/fas-design-system';
 ```
 
 ## Design Tokens
@@ -59,7 +59,7 @@ Token 定義於 `fas-design-system/src/tokens/tokens.ts`，提供三組匯出：
 - `zIndex` — Z-index 層級（`zIndex.dialog` = `300`）
 
 ```tsx
-import { cssVars, rawTokens, spacing, zIndex } from '@delta/fas-design-system';
+import { cssVars, rawTokens, spacing, zIndex } from '@imshenchen/fas-design-system';
 ```
 
 ## 主題（Light / Dark）
