@@ -1,0 +1,5 @@
+/* Storybook canvas background — follow design token */
+.sb-show-main {
+  background-color: var(--bg-surface) !important;
+  min-height: 100vh;
+}
