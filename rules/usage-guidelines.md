@@ -87,3 +87,33 @@ document.documentElement.removeAttribute('data-theme'); // 回到 light
 4. **不創造新變體**：只使用 `components-usage.md` 中描述的視覺樣式與行為
 5. **Dark Mode 必須支援**：元件 CSS 需處理 `[data-theme="dark"]` 狀態
 6. **Token 異動需同步**：Token 更新後，所有使用該 Token 的元件同步更新
+
+---
+
+## 踩坑與繞過方式
+
+### CSS 變數未打包
+`@imshenchen/fas-design-system/styles` 內部使用 `var(--primary)` 等變數，但不包含 token 定義。
+需在應用程式自行建立 `tokens.css`，定義所有 `:root` token，Dark Mode 補 `[data-theme="dark"]` 覆蓋，並在 CSS 載入最前面引入。
+
+### 部分元件樣式缺失
+`fas-btn`、`fas-chip`、`fas-datatable`、`fas-feature-title` 在某些版本中樣式可能缺失。
+需另建 `missing-components.css` 補上對應規則，同步加入 `[data-theme="dark"]` 版本。
+
+### CSS 載入順序
+必須嚴格依照以下順序：
+1. `tokens.css`（自定義 token 定義）
+2. `@imshenchen/fas-design-system/styles`
+3. `missing-components.css`（補丁樣式）
+
+順序顛倒將導致變數無法解析或樣式被覆蓋。
+
+### 字型需同時載入兩套
+- `Material Symbols Outlined`：NavBar、SideMenu 使用
+- `Material Icons`（舊版）：FeatureTitle 分隔符使用
+
+兩套都必須在 `index.html` 的 `<head>` 中引入，缺一不可。
+
+### FeatureTitle 的 topOffset 行為
+當 `<main>` 設有 `overflow: auto` 時，sticky 定位相對於 `<main>` 而非 viewport。
+此情境下 `topOffset` 應設為 `0`，而非 NavBar 高度（60px）。
