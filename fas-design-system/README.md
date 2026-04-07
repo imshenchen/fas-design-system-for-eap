@@ -55,13 +55,13 @@ document.documentElement.removeAttribute('data-theme');
 | **Data Display** | Chip, DataTable, List, Card, FeatureTitle |
 | **Feedback** | Alert, Snackbar, Tooltip, Progress, Spin |
 | **Navigation** | Breadcrumbs, Tab, Pagination, Stepper, Menu |
-| **Layout** | Accordion, Dialog, Drawer |
+| **Layout** | Accordion, Dialog, Drawer, NavigationBar, SideMenu |
 
 ## Storybook
 
 完整的元件文件與互動展示請參考 Storybook：
 
-👉 [FAS Design System Storybook](https://your-org.github.io/fas-design-system-for-eap/)
+👉 [FAS Design System Storybook](https://imshenchen.github.io/fas-design-system-for-eap/)
 
 ## Peer Dependencies
 

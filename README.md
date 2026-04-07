@@ -15,10 +15,8 @@ fas-design-system-for-eap/
 │   ├── vite.config.ts          # Library build 設定
 │   └── package.json
 ├── rules/                      # AI 工具用設計規範文件
-│   ├── README.md               # 使用說明
-│   ├── design-tokens.md        # Token 完整定義
-│   ├── components.md           # 元件規格
-│   └── usage-guidelines.md     # 使用規範
+│   ├── usage-guidelines.md     # 安裝、引入、命名規則、給 AI 的核心規則
+│   └── components-usage.md     # 設計準則：視覺層級、互動規則、版面結構
 ├── CHANGELOG.md                # 版本異動記錄
 └── README.md                   # 本檔案
 ```
@@ -35,7 +33,7 @@ npm install @imshenchen/fas-design-system
 
 在線上預覽所有元件：
 
-👉 [FAS Design System Storybook](https://your-org.github.io/fas-design-system-for-eap/)
+👉 [FAS Design System Storybook](https://imshenchen.github.io/fas-design-system-for-eap/)
 
 本機啟動：
 
@@ -78,4 +76,4 @@ git push origin main --tags
 
 ## AI 規範文件
 
-`rules/` 資料夾包含供 AI 工具使用的設計規範，幫助 AI 在生成程式碼時遵循 FAS Design System 的設計語言。詳見 [rules/README.md](./rules/README.md)。
+`rules/` 資料夾包含供 AI 工具使用的設計規範，幫助 AI 在生成程式碼時遵循 FAS Design System 的設計語言。詳見 [rules/usage-guidelines.md](./rules/usage-guidelines.md)。
