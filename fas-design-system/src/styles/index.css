@@ -51,6 +51,7 @@
 
 /* 7. Component Styles — Data / Upload */
 @import '../components/DataTable/DataTable.css';
+@import '../components/DataTable/MasterDetailTable.css';
 @import '../components/Uploader/Uploader.css';
 
 /* 8. Component Styles — Layout / Navigation */

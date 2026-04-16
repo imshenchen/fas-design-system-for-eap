@@ -1,0 +1,202 @@
+/**
+ * MasterDetailTable — FAS Design Kit
+ */
+
+/* ─── Wrapper ───────────────────────────────────────────────────────────────── */
+.fas-mdt {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  background: var(--bg-surface);
+  border-radius: 4px;
+  border: 1px solid var(--divider);
+  overflow: hidden;
+}
+
+/* ─── Top Bar ───────────────────────────────────────────────────────────────── */
+.fas-mdt__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 48px;
+  border-bottom: 1px solid var(--divider);
+  background: var(--bg-surface);
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.fas-mdt__topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fas-mdt__topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.fas-mdt__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-high);
+  white-space: nowrap;
+}
+
+.fas-mdt__count {
+  font-size: 12px;
+  color: var(--text-medium);
+  white-space: nowrap;
+}
+
+.fas-mdt__expanded-badge {
+  font-size: 12px;
+  color: var(--primary);
+  background: var(--comp-focus);
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+/* ─── Search ────────────────────────────────────────────────────────────────── */
+.fas-mdt__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fas-mdt__search-icon {
+  position: absolute;
+  left: 8px;
+  font-size: 16px;
+  color: var(--text-medium);
+  pointer-events: none;
+}
+
+.fas-mdt__search-input {
+  height: 32px;
+  padding: 0 12px 0 32px;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text-body);
+  font-size: 13px;
+  width: 180px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.fas-mdt__search-input:focus {
+  border-color: var(--primary);
+}
+
+.fas-mdt__search-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* ─── Table ─────────────────────────────────────────────────────────────────── */
+.fas-mdt__scroll {
+  overflow-x: auto;
+}
+
+.fas-mdt__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+/* ─── Expand column ─────────────────────────────────────────────────────────── */
+.fas-mdt__th--expand,
+.fas-mdt__td--expand {
+  width: 40px;
+  min-width: 40px;
+  padding: 0 !important;
+  text-align: center;
+}
+
+.fas-mdt__expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-medium);
+  transition: background-color 0.15s, color 0.15s, transform 0.2s;
+}
+
+.fas-mdt__expand-btn:hover {
+  background: var(--comp-hover);
+  color: var(--primary);
+}
+
+.fas-mdt__expand-btn .material-symbols-outlined {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.fas-mdt__expand-btn--open .material-symbols-outlined {
+  transform: rotate(90deg);
+}
+
+/* ─── Master row ────────────────────────────────────────────────────────────── */
+.fas-mdt__master-row {
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.fas-mdt__master-row:hover {
+  background: var(--comp-hover);
+}
+
+.fas-mdt__master-row--expanded {
+  background: var(--bg-surface-dim) !important;
+}
+
+/* ─── Detail row ────────────────────────────────────────────────────────────── */
+.fas-mdt__detail-row > .fas-mdt__detail-cell {
+  padding: 0;
+  border-bottom: 1px solid var(--divider);
+  background: var(--bg-surface-dim-var);
+}
+
+.fas-mdt__detail-area {
+  padding: 12px 16px 16px 40px;
+}
+
+/* ─── Detail top bar ────────────────────────────────────────────────────────── */
+.fas-mdt__detail-topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.fas-mdt__detail-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-high);
+}
+
+/* ─── Detail table overrides ────────────────────────────────────────────────── */
+.fas-mdt__detail-table {
+  border: 1px solid var(--divider) !important;
+  border-radius: 4px !important;
+}
+
+/* ─── Dark Mode ─────────────────────────────────────────────────────────────── */
+[data-theme="dark"] .fas-mdt__master-row--expanded {
+  background: var(--bg-container-low) !important;
+}
+
+[data-theme="dark"] .fas-mdt__detail-row > .fas-mdt__detail-cell {
+  background: var(--bg-surface-dim);
+}
