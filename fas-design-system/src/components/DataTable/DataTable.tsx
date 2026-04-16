@@ -2,7 +2,60 @@
  * DataTable — FAS Design Kit
  * @see ../../components.md § Data Table
  */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+
+// ── Internal dropdown used by pagination ──────────────────────────────────────
+interface PaginationDropdownProps {
+  value: number;
+  options: number[];
+  onChange: (v: number) => void;
+  /** No border, primary-colored trigger text (used for page number) */
+  ghost?: boolean;
+}
+
+function PaginationDropdown({ value, options, onChange, ghost = false }: PaginationDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="fas-datatable__pd-wrap">
+      <button
+        className={['fas-datatable__pd-trigger', ghost && 'fas-datatable__pd-trigger--ghost'].filter(Boolean).join(' ')}
+        onClick={() => setOpen((v) => !v)}
+        type="button"
+      >
+        <span className={ghost ? 'fas-datatable__pd-value--primary' : ''}>{value}</span>
+        <span className="material-symbols-outlined fas-datatable__pd-arrow" aria-hidden>
+          arrow_drop_down
+        </span>
+      </button>
+      {open && (
+        <div className="fas-menu fas-datatable__pd-menu">
+          <ul className="fas-menu__list">
+            {options.map((opt) => (
+              <li
+                key={opt}
+                className={['fas-menu-item', opt === value && 'fas-menu-item--selected'].filter(Boolean).join(' ')}
+                onClick={() => { onChange(opt); setOpen(false); }}
+              >
+                {opt}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export type SortDirection = 'asc' | 'desc' | 'none';
 
@@ -240,15 +293,11 @@ export function DataTable<T = Record<string, unknown>>({
           <div className="fas-datatable__pagination">
             <div className="fas-datatable__page-size">
               <span className="fas-datatable__pagination-label">Items per page</span>
-              <select
-                className="fas-datatable__pagination-select"
+              <PaginationDropdown
                 value={pagination.pageSize}
-                onChange={(e) => pagination.onPageSizeChange?.(Number(e.target.value))}
-              >
-                {(pagination.pageSizeOptions ?? [10, 20, 50]).map((n) => (
-                  <option key={n} value={n}>{n}</option>
-                ))}
-              </select>
+                options={pagination.pageSizeOptions ?? [10, 20, 50]}
+                onChange={(n) => { pagination.onPageSizeChange?.(n); }}
+              />
             </div>
             <div className="fas-datatable__page-nav">
               <button onClick={() => pagination.onPageChange(1)} disabled={isFirst} className="fas-datatable__page-btn">
@@ -257,15 +306,12 @@ export function DataTable<T = Record<string, unknown>>({
               <button onClick={() => pagination.onPageChange(pagination.page - 1)} disabled={isFirst} className="fas-datatable__page-btn">
                 <span className="material-symbols-outlined" aria-hidden>chevron_left</span>
               </button>
-              <select
-                className="fas-datatable__pagination-select fas-datatable__pagination-select--page"
+              <PaginationDropdown
                 value={pagination.page}
-                onChange={(e) => pagination.onPageChange(Number(e.target.value))}
-              >
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>{i + 1}</option>
-                ))}
-              </select>
+                options={Array.from({ length: totalPages }, (_, i) => i + 1)}
+                onChange={pagination.onPageChange}
+                ghost
+              />
               <button onClick={() => pagination.onPageChange(pagination.page + 1)} disabled={isLast} className="fas-datatable__page-btn">
                 <span className="material-symbols-outlined" aria-hidden>chevron_right</span>
               </button>

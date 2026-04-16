@@ -70,6 +70,7 @@ FeatureTitle 與內容區不共用 padding，兩者結構分離。
 - 只適合顯示**範圍有限的語意狀態**（機台狀態、工單狀態等），不適合顯示任意文字
 - 系統狀態（processing / success / warning / error / milestone 等）有對應的語意色，不得自行指定顏色
 - 可選取（Selectable）用於過濾器，可移除（Removable）用於表單已選項目
+- 形狀預設使用 rectangle；尺寸預設使用 L，在表格內使用時改用 S
 
 ---
 
@@ -86,7 +87,7 @@ FeatureTitle 與內容區不共用 padding，兩者結構分離。
 
 **Alert**：行內訊息嵌入內容區，全頁橫幅則置於頁面頂端。只有錯誤和成功需要明確告知，一般提示勿過度使用。
 
-**Snackbar**：短暫通知，4 秒後自動消失，不要求使用者操作。重要錯誤請用 Alert 或 Dialog，不要用 Snackbar。
+**Snackbar**：短暫通知，4 秒後自動消失，不要求使用者操作。顯示位置為畫面頂部水平置中。重要錯誤請用 Alert 或 Dialog，不要用 Snackbar。
 
 **Dialog**：需要使用者確認才繼續的情境，背景加遮罩。危險操作的確認按鈕用 Error 色。
 
