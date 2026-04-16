@@ -114,6 +114,15 @@
   padding: 0;
   text-align: center;
 }
+/* The Checkbox's hidden input is position:absolute inside a sticky cell, which causes
+   the scroll container to jump when it receives focus. Fixed-position elements are
+   relative to the viewport so they never trigger scrollable-ancestor scrollIntoView. */
+.fas-datatable__td--checkbox .fas-checkbox__input,
+.fas-datatable__th--checkbox .fas-checkbox__input {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
 
 /* ─── Spin (loading state) ──────────────────────────────────────────────────── */
 .fas-spin {

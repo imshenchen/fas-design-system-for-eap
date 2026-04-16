@@ -242,9 +242,10 @@ export function MasterDetailTable<
                 toggleRow(key);
               }}
               aria-label={isExpanded ? '收折' : '展開'}
+              onMouseDown={(e) => e.preventDefault()}
             >
               <span className="material-symbols-outlined" aria-hidden>
-                chevron_right
+                expand_more
               </span>
             </button>
           );

@@ -144,7 +144,7 @@
 }
 
 .fas-mdt__expand-btn--open .material-symbols-outlined {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 
 /* ─── Remove divider between expanded row and detail area ──────────────────── */
