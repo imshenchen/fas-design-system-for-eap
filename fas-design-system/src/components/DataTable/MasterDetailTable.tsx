@@ -311,75 +311,50 @@ export function MasterDetailTable<
       </div>
 
       {/* ── Master Pagination ─────────────────────────────────────────────── */}
-      {pagination && (
-        <div className="fas-datatable__pagination">
-          <div className="fas-datatable__page-size">
-            <span>每頁顯示</span>
-            <select
-              value={pagination.pageSize}
-              onChange={(e) =>
-                pagination.onPageSizeChange?.(Number(e.target.value))
-              }
-            >
-              {(pagination.pageSizeOptions ?? [10, 20, 50]).map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
+      {pagination && (() => {
+        const totalPages = Math.max(1, Math.ceil(pagination.total / pagination.pageSize));
+        const isFirst = pagination.page === 1;
+        const isLast = pagination.page >= totalPages;
+        return (
+          <div className="fas-datatable__pagination">
+            <div className="fas-datatable__page-size">
+              <span className="fas-datatable__pagination-label">Items per page</span>
+              <select
+                className="fas-datatable__pagination-select"
+                value={pagination.pageSize}
+                onChange={(e) => pagination.onPageSizeChange?.(Number(e.target.value))}
+              >
+                {(pagination.pageSizeOptions ?? [10, 20, 50]).map((n) => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
+              </select>
+            </div>
+            <div className="fas-datatable__page-nav">
+              <button onClick={() => pagination.onPageChange(1)} disabled={isFirst} className="fas-datatable__page-btn">
+                <span className="material-symbols-outlined" aria-hidden>first_page</span>
+              </button>
+              <button onClick={() => pagination.onPageChange(pagination.page - 1)} disabled={isFirst} className="fas-datatable__page-btn">
+                <span className="material-symbols-outlined" aria-hidden>chevron_left</span>
+              </button>
+              <select
+                className="fas-datatable__pagination-select fas-datatable__pagination-select--page"
+                value={pagination.page}
+                onChange={(e) => pagination.onPageChange(Number(e.target.value))}
+              >
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>{i + 1}</option>
+                ))}
+              </select>
+              <button onClick={() => pagination.onPageChange(pagination.page + 1)} disabled={isLast} className="fas-datatable__page-btn">
+                <span className="material-symbols-outlined" aria-hidden>chevron_right</span>
+              </button>
+              <button onClick={() => pagination.onPageChange(totalPages)} disabled={isLast} className="fas-datatable__page-btn">
+                <span className="material-symbols-outlined" aria-hidden>last_page</span>
+              </button>
+            </div>
           </div>
-          <div className="fas-datatable__page-nav">
-            <span>
-              {(pagination.page - 1) * pagination.pageSize + 1}–
-              {Math.min(
-                pagination.page * pagination.pageSize,
-                pagination.total,
-              )}{' '}
-              / {pagination.total}
-            </span>
-            <button
-              onClick={() => pagination.onPageChange(1)}
-              disabled={pagination.page === 1}
-            >
-              <span className="material-symbols-outlined" aria-hidden>
-                first_page
-              </span>
-            </button>
-            <button
-              onClick={() => pagination.onPageChange(pagination.page - 1)}
-              disabled={pagination.page === 1}
-            >
-              <span className="material-symbols-outlined" aria-hidden>
-                chevron_left
-              </span>
-            </button>
-            <button
-              onClick={() => pagination.onPageChange(pagination.page + 1)}
-              disabled={
-                pagination.page * pagination.pageSize >= pagination.total
-              }
-            >
-              <span className="material-symbols-outlined" aria-hidden>
-                chevron_right
-              </span>
-            </button>
-            <button
-              onClick={() =>
-                pagination.onPageChange(
-                  Math.ceil(pagination.total / pagination.pageSize),
-                )
-              }
-              disabled={
-                pagination.page * pagination.pageSize >= pagination.total
-              }
-            >
-              <span className="material-symbols-outlined" aria-hidden>
-                last_page
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

@@ -133,62 +133,88 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: 6px 16px;
   border-top: 1px solid var(--divider);
   background: var(--bg-surface);
-  flex-wrap: wrap;
   gap: 8px;
+  min-height: 40px;
 }
 
 .fas-datatable__page-size {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: var(--text-medium);
 }
 
-.fas-datatable__page-size select {
+.fas-datatable__pagination-label {
+  font-size: 13px;
+  color: var(--text-medium);
+  white-space: nowrap;
+}
+
+/* ─── Shared select style ───────────────────────────────────────────────────── */
+.fas-datatable__pagination-select {
   height: 28px;
-  padding: 0 8px;
+  padding: 0 24px 0 8px;
   border: 1px solid var(--divider);
   border-radius: 4px;
   background: var(--bg-surface);
   color: var(--text-high);
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%23727171'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.fas-datatable__pagination-select:hover {
+  border-color: var(--primary);
+}
+.fas-datatable__pagination-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--comp-focus);
 }
 
+.fas-datatable__pagination-select--page {
+  min-width: 52px;
+  text-align: center;
+  padding-left: 12px;
+}
+
+/* ─── Nav buttons ───────────────────────────────────────────────────────────── */
 .fas-datatable__page-nav {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 14px;
-  color: var(--text-medium);
+  gap: 2px;
 }
 
-.fas-datatable__page-nav button {
+.fas-datatable__page-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 28px;
   height: 28px;
-  border: 1px solid var(--divider);
+  border: 1px solid transparent;
   border-radius: 4px;
-  background: var(--bg-surface);
-  color: var(--text-high);
+  background: transparent;
+  color: var(--text-medium);
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.15s, color 0.15s;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
-.fas-datatable__page-nav button:hover:not(:disabled) {
+.fas-datatable__page-btn:hover:not(:disabled) {
   background: var(--comp-hover);
   color: var(--primary);
-  border-color: var(--primary);
+  border-color: var(--divider);
 }
-.fas-datatable__page-nav button:disabled {
+.fas-datatable__page-btn:disabled {
   color: var(--comp-disabled-el);
   cursor: not-allowed;
+}
+.fas-datatable__page-btn .material-symbols-outlined {
+  font-size: 18px;
 }
 
 /* ─── Loading overlay ───────────────────────────────────────────────────────── */
