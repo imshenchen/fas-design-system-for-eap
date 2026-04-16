@@ -188,18 +188,19 @@ export function MasterDetailTable<
 
   const mdtStickyMeta = useMemo((): Map<string, MdtStickyInfo> => {
     const map = new Map<string, MdtStickyInfo>();
-
-    // __expand__ is always frozen-left at position 0
-    map.set('__expand__', { left: 0 });
-
     const leftCols = columns.filter(c => c.frozen === 'left');
+    const rightCols = columns.filter(c => c.frozen === 'right');
+    // Only activate if the consumer explicitly uses frozen columns
+    if (leftCols.length === 0 && rightCols.length === 0) return map;
+
+    // Left-frozen user columns start after the expand column
     let leftAcc = MDT_EXPAND_WIDTH;
     leftCols.forEach(col => {
       map.set(col.key, { left: leftAcc });
       leftAcc += mdtToPixels(col.width);
     });
 
-    const rightCols = columns.filter(c => c.frozen === 'right');
+    // Right-frozen user columns
     let rightAcc = 0;
     [...rightCols].reverse().forEach(col => {
       map.set(col.key, { right: rightAcc });
@@ -210,8 +211,6 @@ export function MasterDetailTable<
     if (leftCols.length > 0) {
       const key = leftCols[leftCols.length - 1].key;
       map.set(key, { ...map.get(key)!, lastLeft: true });
-    } else {
-      map.set('__expand__', { ...map.get('__expand__')!, lastLeft: true });
     }
     if (rightCols.length > 0) {
       map.set(rightCols[0].key, { ...map.get(rightCols[0].key)!, firstRight: true });
