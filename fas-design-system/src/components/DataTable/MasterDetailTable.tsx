@@ -227,7 +227,7 @@ export function MasterDetailTable<
 
       {/* ── Master Table ───────────────────────────────────────────────────── */}
       <div className="fas-mdt__scroll">
-        <table className={['fas-mdt__table', striped && 'fas-datatable--striped'].filter(Boolean).join(' ')}>
+        <table className="fas-mdt__table">
           <thead>
             <tr>
               {allColumns.map((col) => (
@@ -287,6 +287,7 @@ export function MasterDetailTable<
                         'fas-datatable__row',
                         'fas-mdt__master-row',
                         isExpanded && 'fas-mdt__master-row--expanded',
+                        striped && rowIndex % 2 === 1 && 'fas-mdt__master-row--striped',
                       ]
                         .filter(Boolean)
                         .join(' ')}

@@ -158,7 +158,12 @@
   transition: background-color 0.1s;
 }
 
-.fas-mdt__master-row:hover {
+.fas-mdt__master-row--striped {
+  background: var(--table-striped);
+}
+
+.fas-mdt__master-row:hover,
+.fas-mdt__master-row--striped:hover {
   background: var(--comp-hover);
 }
 
