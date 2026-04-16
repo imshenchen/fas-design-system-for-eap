@@ -110,6 +110,8 @@
 .fas-datatable__td--checkbox,
 .fas-datatable__th--checkbox {
   width: 48px;
+  min-width: 48px;
+  padding: 0;
   text-align: center;
 }
 
