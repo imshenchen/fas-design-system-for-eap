@@ -158,14 +158,14 @@
 }
 
 .fas-mdt__master-row--expanded {
-  background: var(--bg-surface-dim) !important;
+  /* keep natural row background — detail area matches via inline style */
 }
 
 /* ─── Detail row ────────────────────────────────────────────────────────────── */
 .fas-mdt__detail-row > .fas-mdt__detail-cell {
   padding: 0;
   border-bottom: 1px solid var(--divider);
-  background: var(--bg-surface-dim-var);
+  /* background set inline to match master row */
 }
 
 .fas-mdt__detail-area {
@@ -193,10 +193,3 @@
 }
 
 /* ─── Dark Mode ─────────────────────────────────────────────────────────────── */
-[data-theme="dark"] .fas-mdt__master-row--expanded {
-  background: var(--bg-container-low) !important;
-}
-
-[data-theme="dark"] .fas-mdt__detail-row > .fas-mdt__detail-cell {
-  background: var(--bg-surface-dim);
-}

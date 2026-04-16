@@ -27,7 +27,7 @@ export const Default: Story = {
   args: {
     status: 'processing',
     label: 'Processing',
-    shape: 'round',
+    shape: 'rectangle',
     variant: 'filled',
     size: 'l',
   },

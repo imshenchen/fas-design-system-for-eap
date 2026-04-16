@@ -132,11 +132,6 @@ export function MasterDetailTable<
               筆數 {data.length}
             </span>
           )}
-          {expandedCount > 0 && (
-            <span className="fas-mdt__expanded-badge">
-              已展開 {expandedCount}
-            </span>
-          )}
         </div>
         <div className="fas-mdt__topbar-right">
           {showSearch && (
@@ -238,6 +233,12 @@ export function MasterDetailTable<
                         <td
                           colSpan={allColumns.length}
                           className="fas-mdt__detail-cell"
+                          style={{
+                            background:
+                              striped && rowIndex % 2 === 1
+                                ? 'var(--table-striped)'
+                                : 'var(--bg-surface)',
+                          }}
                         >
                           <div className="fas-mdt__detail-area">
                             {/* Detail Top Bar */}

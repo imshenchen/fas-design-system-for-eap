@@ -32,7 +32,7 @@ export interface StatusChipProps {
 export const StatusChip: React.FC<StatusChipProps> = ({
   status,
   label,
-  shape   = 'round',
+  shape   = 'rectangle',
   variant = 'filled',
   size    = 'l',
   className,
