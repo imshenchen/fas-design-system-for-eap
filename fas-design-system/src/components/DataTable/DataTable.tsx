@@ -297,6 +297,7 @@ export function DataTable<T = Record<string, unknown>>({
                 value={pagination.pageSize}
                 options={pagination.pageSizeOptions ?? [10, 20, 50]}
                 onChange={(n) => { pagination.onPageSizeChange?.(n); }}
+                ghost
               />
             </div>
             <div className="fas-datatable__page-nav">
