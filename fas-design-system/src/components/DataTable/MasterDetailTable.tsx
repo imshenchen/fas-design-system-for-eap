@@ -310,20 +310,22 @@ export function MasterDetailTable<
                   style={{ width: col.width, ...getMdtStickyStyle(mdtStickyMeta.get(col.key), true) }}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
                 >
-                  {col.header}
-                  {col.sortable && (
-                    <span
-                      className={[
-                        'material-symbols-outlined fas-datatable__sort-icon',
-                        sortKey === col.key && sortDirection !== 'none' && 'fas-datatable__sort-icon--active',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      aria-hidden
-                    >
-                      {sortIcon(col.key)}
-                    </span>
-                  )}
+                  <span className="fas-datatable__th-content">
+                    {col.header}
+                    {col.sortable && (
+                      <span
+                        className={[
+                          'material-symbols-outlined fas-datatable__sort-icon',
+                          sortKey === col.key && sortDirection !== 'none' && 'fas-datatable__sort-icon--active',
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                        aria-hidden
+                      >
+                        {sortIcon(col.key)}
+                      </span>
+                    )}
+                  </span>
                 </th>
               ))}
             </tr>

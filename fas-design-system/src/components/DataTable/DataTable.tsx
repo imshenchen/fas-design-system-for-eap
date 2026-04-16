@@ -277,6 +277,7 @@ export function DataTable<T = Record<string, unknown>>({
                 <th
                   className={['fas-datatable__th fas-datatable__th--checkbox', getStickyClasses('__checkbox__')].filter(Boolean).join(' ')}
                   style={getStickyStyle('__checkbox__', true)}
+                  onMouseDown={(e) => e.preventDefault()}
                 >
                   <Checkbox
                     checked={!!allSelected}
@@ -309,20 +310,22 @@ export function DataTable<T = Record<string, unknown>>({
                       : undefined
                   }
                 >
-                  {col.header}
-                  {col.sortable && (
-                    <span
-                      className={[
-                        'material-symbols-outlined fas-datatable__sort-icon',
-                        sortKey === col.key && sortDirection !== 'none' && 'fas-datatable__sort-icon--active',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      aria-hidden
-                    >
-                      {sortIcon(col.key)}
-                    </span>
-                  )}
+                  <span className="fas-datatable__th-content">
+                    {col.header}
+                    {col.sortable && (
+                      <span
+                        className={[
+                          'material-symbols-outlined fas-datatable__sort-icon',
+                          sortKey === col.key && sortDirection !== 'none' && 'fas-datatable__sort-icon--active',
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                        aria-hidden
+                      >
+                        {sortIcon(col.key)}
+                      </span>
+                    )}
+                  </span>
                 </th>
               ))}
             </tr>
@@ -353,6 +356,7 @@ export function DataTable<T = Record<string, unknown>>({
                       <td
                         className={['fas-datatable__td fas-datatable__td--checkbox', getStickyClasses('__checkbox__')].filter(Boolean).join(' ')}
                         style={getStickyStyle('__checkbox__', false)}
+                        onMouseDown={(e) => e.preventDefault()}
                       >
                         <Checkbox
                           checked={isSelected}
