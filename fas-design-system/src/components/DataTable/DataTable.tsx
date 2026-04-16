@@ -3,6 +3,7 @@
  * @see ../../components.md § Data Table
  */
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { Checkbox } from '../Checkbox/Checkbox';
 
 // ── Internal dropdown used by pagination ──────────────────────────────────────
 interface PaginationDropdownProps {
@@ -159,6 +160,12 @@ export function DataTable<T = Record<string, unknown>>({
     data.length > 0 &&
     data.every((row, i) => selectedKeys?.has(rowKey(row, i)));
 
+  const someSelected =
+    selectable &&
+    !!selectedKeys &&
+    selectedKeys.size > 0 &&
+    !allSelected;
+
   const toggleAll = () => {
     if (!onSelectChange) return;
     const keys = data.map((row, i) => rowKey(row, i));
@@ -186,11 +193,11 @@ export function DataTable<T = Record<string, unknown>>({
             <tr>
               {selectable && (
                 <th className="fas-datatable__th fas-datatable__th--checkbox">
-                  <input
-                    type="checkbox"
-                    checked={allSelected}
+                  <Checkbox
+                    checked={!!allSelected}
+                    indeterminate={someSelected}
                     onChange={toggleAll}
-                    aria-label="全選"
+                    size="s"
                   />
                 </th>
               )}
@@ -258,11 +265,10 @@ export function DataTable<T = Record<string, unknown>>({
                   >
                     {selectable && (
                       <td className="fas-datatable__td fas-datatable__td--checkbox">
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={isSelected}
                           onChange={() => toggleRow(key)}
-                          aria-label={`選取第 ${rowIndex + 1} 列`}
+                          size="s"
                         />
                       </td>
                     )}
