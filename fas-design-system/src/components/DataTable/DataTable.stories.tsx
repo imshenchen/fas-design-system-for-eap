@@ -23,7 +23,7 @@ const MOCK_DATA: Node[] = [
 
 const COLUMNS: ColumnDef<Node>[] = [
   { key: 'name', header: '節點名稱', sortable: true },
-  { key: 'ip',   header: 'IP 位址' },
+  { key: 'ip',   header: 'IP 位址', sortable: true },
   {
     key: 'status',
     header: '狀態',

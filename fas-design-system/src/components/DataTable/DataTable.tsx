@@ -2,7 +2,7 @@
  * DataTable — FAS Design Kit
  * @see ../../components.md § Data Table
  */
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 
 export type SortDirection = 'asc' | 'desc' | 'none';
 
@@ -36,7 +36,7 @@ export interface DataTableProps<T = Record<string, unknown>> {
   /** row 的唯一 key 取得函式 */
   rowKey: (row: T, index: number) => string | number;
   pagination?: PaginationConfig;
-  /** 排序狀態（受控） */
+  /** 排序狀態（受控，搭配 onSort 使用） */
   sortKey?: string;
   sortDirection?: SortDirection;
   onSort?: (key: string, direction: SortDirection) => void;
@@ -58,8 +58,8 @@ export function DataTable<T = Record<string, unknown>>({
   data,
   rowKey,
   pagination,
-  sortKey,
-  sortDirection = 'none',
+  sortKey: controlledSortKey,
+  sortDirection: controlledSortDir = 'none',
   onSort,
   selectable = false,
   selectedKeys,
@@ -69,14 +69,37 @@ export function DataTable<T = Record<string, unknown>>({
   striped = true,
   className,
 }: DataTableProps<T>) {
+  // Internal sort state (used when onSort is not provided)
+  const [internalSortKey, setInternalSortKey] = useState<string | undefined>();
+  const [internalSortDir, setInternalSortDir] = useState<SortDirection>('none');
+
+  const isControlled = Boolean(onSort);
+  const sortKey = isControlled ? controlledSortKey : internalSortKey;
+  const sortDirection = isControlled ? controlledSortDir : internalSortDir;
+
   const handleSort = (key: string) => {
-    if (!onSort) return;
     let next: SortDirection = 'asc';
     if (sortKey === key) {
       next = sortDirection === 'asc' ? 'desc' : sortDirection === 'desc' ? 'none' : 'asc';
     }
-    onSort(key, next);
+    if (isControlled) {
+      onSort!(key, next);
+    } else {
+      setInternalSortKey(next === 'none' ? undefined : key);
+      setInternalSortDir(next);
+    }
   };
+
+  // Internal sort: sort data when not controlled
+  const displayData = useMemo(() => {
+    if (isControlled || !internalSortKey || internalSortDir === 'none') return data;
+    return [...data].sort((a, b) => {
+      const va = String((a as Record<string, unknown>)[internalSortKey] ?? '');
+      const vb = String((b as Record<string, unknown>)[internalSortKey] ?? '');
+      const cmp = va.localeCompare(vb, undefined, { numeric: true, sensitivity: 'base' });
+      return internalSortDir === 'asc' ? cmp : -cmp;
+    });
+  }, [data, isControlled, internalSortKey, internalSortDir]);
 
   const allSelected =
     selectable &&
@@ -94,6 +117,11 @@ export function DataTable<T = Record<string, unknown>>({
     const next = new Set(selectedKeys);
     next.has(key) ? next.delete(key) : next.add(key);
     onSelectChange(next);
+  };
+
+  const sortIcon = (colKey: string) => {
+    if (sortKey !== colKey) return 'unfold_more';
+    return sortDirection === 'asc' ? 'arrow_upward' : sortDirection === 'desc' ? 'arrow_downward' : 'unfold_more';
   };
 
   return (
@@ -137,7 +165,17 @@ export function DataTable<T = Record<string, unknown>>({
                 >
                   {col.header}
                   {col.sortable && (
-                    <span className={['material-symbols-outlined fas-datatable__sort-icon', sortKey === col.key && 'fas-datatable__sort-icon--active'].filter(Boolean).join(' ')} aria-hidden>unfold_more</span>
+                    <span
+                      className={[
+                        'material-symbols-outlined fas-datatable__sort-icon',
+                        sortKey === col.key && sortDirection !== 'none' && 'fas-datatable__sort-icon--active',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      aria-hidden
+                    >
+                      {sortIcon(col.key)}
+                    </span>
                   )}
                 </th>
               ))}
@@ -150,14 +188,14 @@ export function DataTable<T = Record<string, unknown>>({
                   <span className="fas-spin" aria-label="載入中" />
                 </td>
               </tr>
-            ) : data.length === 0 ? (
+            ) : displayData.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + (selectable ? 1 : 0)} className="fas-datatable__td fas-datatable__td--empty">
                   {emptyText}
                 </td>
               </tr>
             ) : (
-              data.map((row, rowIndex) => {
+              displayData.map((row, rowIndex) => {
                 const key = rowKey(row, rowIndex);
                 const isSelected = selectedKeys?.has(key) ?? false;
                 return (

@@ -49,7 +49,7 @@ const getDetailData = (masterRow: WorkOrder): WorkOrderItem[] =>
 
 const MASTER_COLUMNS: ColumnDef<WorkOrder>[] = [
   { key: 'id',       header: '序號',       width: 60 },
-  { key: 'name',     header: '檢驗類型' },
+  { key: 'name',     header: '檢驗類型',   sortable: true },
   {
     key: 'result',
     header: '檢驗項目結果',
@@ -61,9 +61,9 @@ const MASTER_COLUMNS: ColumnDef<WorkOrder>[] = [
       />
     ),
   },
-  { key: 'total',    header: '數量',    align: 'right', width: 80 },
-  { key: 'ok',       header: 'OK數',   align: 'right', width: 80 },
-  { key: 'ng',       header: 'NG數',   align: 'right', width: 80 },
+  { key: 'total',    header: '數量',    align: 'right', width: 80, sortable: true },
+  { key: 'ok',       header: 'OK數',   align: 'right', width: 80, sortable: true },
+  { key: 'ng',       header: 'NG數',   align: 'right', width: 80, sortable: true },
   { key: 'operator', header: '操作員' },
 ];
 

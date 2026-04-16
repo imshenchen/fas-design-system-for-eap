@@ -4,7 +4,7 @@
  */
 import React, { useState, useMemo } from 'react';
 import { DataTable } from './DataTable';
-import type { ColumnDef, PaginationConfig } from './DataTable';
+import type { ColumnDef, PaginationConfig, SortDirection } from './DataTable';
 
 export interface MasterDetailTableProps<
   M = Record<string, unknown>,
@@ -64,6 +64,8 @@ export function MasterDetailTable<
 }: MasterDetailTableProps<M, D>) {
   const [expandedKeys, setExpandedKeys] = useState<Set<string | number>>(new Set());
   const [searchValue, setSearchValue] = useState('');
+  const [sortKey, setSortKey] = useState<string | undefined>();
+  const [sortDirection, setSortDirection] = useState<SortDirection>('none');
 
   const toggleRow = (key: string | number) => {
     setExpandedKeys((prev) => {
@@ -78,7 +80,29 @@ export function MasterDetailTable<
     onSearch?.(value);
   };
 
-  const expandedCount = expandedKeys.size;
+  const handleSort = (key: string) => {
+    let next: SortDirection = 'asc';
+    if (sortKey === key) {
+      next = sortDirection === 'asc' ? 'desc' : sortDirection === 'desc' ? 'none' : 'asc';
+    }
+    setSortKey(next === 'none' ? undefined : key);
+    setSortDirection(next);
+  };
+
+  const sortedData = useMemo(() => {
+    if (!sortKey || sortDirection === 'none') return data;
+    return [...data].sort((a, b) => {
+      const va = String((a as Record<string, unknown>)[sortKey] ?? '');
+      const vb = String((b as Record<string, unknown>)[sortKey] ?? '');
+      const cmp = va.localeCompare(vb, undefined, { numeric: true, sensitivity: 'base' });
+      return sortDirection === 'asc' ? cmp : -cmp;
+    });
+  }, [data, sortKey, sortDirection]);
+
+  const sortIcon = (colKey: string) => {
+    if (sortKey !== colKey) return 'unfold_more';
+    return sortDirection === 'asc' ? 'arrow_upward' : sortDirection === 'desc' ? 'arrow_downward' : 'unfold_more';
+  };
 
   // Expand column prepended to master columns
   const allColumns = useMemo<ColumnDef<M>[]>(() => {
@@ -161,20 +185,35 @@ export function MasterDetailTable<
                   key={col.key}
                   className={[
                     'fas-datatable__th',
+                    col.sortable && 'fas-datatable__th--sortable',
                     col.align && `fas-datatable__th--${col.align}`,
                     col.key === '__expand__' && 'fas-mdt__th--expand',
                   ]
                     .filter(Boolean)
                     .join(' ')}
                   style={{ width: col.width }}
+                  onClick={col.sortable ? () => handleSort(col.key) : undefined}
                 >
                   {col.header}
+                  {col.sortable && (
+                    <span
+                      className={[
+                        'material-symbols-outlined fas-datatable__sort-icon',
+                        sortKey === col.key && sortDirection !== 'none' && 'fas-datatable__sort-icon--active',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      aria-hidden
+                    >
+                      {sortIcon(col.key)}
+                    </span>
+                  )}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data.length === 0 ? (
+            {sortedData.length === 0 ? (
               <tr>
                 <td
                   colSpan={allColumns.length}
@@ -184,7 +223,7 @@ export function MasterDetailTable<
                 </td>
               </tr>
             ) : (
-              data.map((row, rowIndex) => {
+              sortedData.map((row, rowIndex) => {
                 const key = rowKey(row, rowIndex);
                 const isExpanded = expandedKeys.has(key);
                 const detailData = isExpanded ? getDetailData(row) : [];

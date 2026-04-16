@@ -147,6 +147,11 @@
   transform: rotate(90deg);
 }
 
+/* ─── Remove divider between expanded row and detail area ──────────────────── */
+.fas-mdt__master-row--expanded .fas-datatable__td {
+  border-bottom: none;
+}
+
 /* ─── Master row ────────────────────────────────────────────────────────────── */
 .fas-mdt__master-row {
   cursor: pointer;
