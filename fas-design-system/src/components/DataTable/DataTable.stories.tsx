@@ -110,6 +110,46 @@ export const WithSelection: Story = {
   },
 };
 
+export const WithFrozenColumns: Story = {
+  render: () => {
+    const [selected, setSelected] = React.useState<Set<string | number>>(new Set());
+    const frozenColumns: ColumnDef<Node>[] = [
+      { key: 'name',     header: '節點名稱', frozen: 'left', width: 140 },
+      { key: 'ip',       header: 'IP 位址',  sortable: true },
+      { key: 'status',   header: '狀態',     render: (val) => <StatusChip status={val as Node['status']} label={String(val)} size="s" /> },
+      { key: 'lastSeen', header: '最後上線', sortable: true },
+      {
+        key: 'actions',
+        header: '操作',
+        frozen: 'right',
+        width: 100,
+        align: 'center',
+        render: () => (
+          <button style={{ fontSize: 12, color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer' }}>
+            詳細
+          </button>
+        ),
+      },
+    ];
+    return (
+      <div style={{ padding: 24, maxWidth: 480 }}>
+        <p style={{ marginBottom: 8, color: 'var(--text-medium)', fontSize: 13 }}>
+          視窗縮小或欄位過多時，selection / 節點名稱（左）與操作（右）維持可見
+        </p>
+        <DataTable
+          columns={frozenColumns}
+          data={MOCK_DATA}
+          rowKey={(row) => row.id}
+          selectable
+          selectedKeys={selected}
+          onSelectChange={setSelected}
+          striped
+        />
+      </div>
+    );
+  },
+};
+
 export const Loading: Story = {
   render: () => (
     <div style={{ padding: 24 }}>

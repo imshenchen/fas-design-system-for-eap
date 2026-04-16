@@ -202,4 +202,20 @@
   border-radius: 4px !important;
 }
 
+/* ─── Frozen cells in master table ─────────────────────────────────────────── */
+.fas-mdt__table .fas-datatable__th.fas-datatable__cell--frozen-left,
+.fas-mdt__table .fas-datatable__th.fas-datatable__cell--frozen-right {
+  background: var(--bg-surface-dim-var);
+}
+
+.fas-mdt__master-row .fas-datatable__td.fas-datatable__cell--frozen-left,
+.fas-mdt__master-row .fas-datatable__td.fas-datatable__cell--frozen-right {
+  background: var(--bg-surface);
+}
+
+.fas-mdt__master-row--striped .fas-datatable__td.fas-datatable__cell--frozen-left,
+.fas-mdt__master-row--striped .fas-datatable__td.fas-datatable__cell--frozen-right {
+  background: var(--table-striped);
+}
+
 /* ─── Dark Mode ─────────────────────────────────────────────────────────────── */

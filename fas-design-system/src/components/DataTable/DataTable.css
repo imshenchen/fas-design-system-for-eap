@@ -249,3 +249,38 @@
   opacity: 0.6;
   pointer-events: none;
 }
+
+/* ─── Frozen / Sticky columns ───────────────────────────────────────────────── */
+/* Background for frozen header cells */
+.fas-datatable__th.fas-datatable__cell--frozen-left,
+.fas-datatable__th.fas-datatable__cell--frozen-right {
+  background: var(--bg-surface-dim-var);
+}
+
+/* Background for frozen body cells */
+.fas-datatable__td.fas-datatable__cell--frozen-left,
+.fas-datatable__td.fas-datatable__cell--frozen-right {
+  background: var(--bg-surface);
+}
+
+/* Striped even rows: frozen cells must match */
+.fas-datatable--striped .fas-datatable__row:nth-child(even) .fas-datatable__td.fas-datatable__cell--frozen-left,
+.fas-datatable--striped .fas-datatable__row:nth-child(even) .fas-datatable__td.fas-datatable__cell--frozen-right {
+  background: var(--table-striped);
+}
+
+/* Selected rows: frozen cells must match */
+.fas-datatable__row--selected .fas-datatable__td.fas-datatable__cell--frozen-left,
+.fas-datatable__row--selected .fas-datatable__td.fas-datatable__cell--frozen-right {
+  background: var(--table-selected) !important;
+}
+
+/* Divider — right edge of last left-frozen column */
+.fas-datatable__cell--frozen-left-last {
+  box-shadow: inset -1px 0 0 var(--divider);
+}
+
+/* Divider — left edge of first right-frozen column */
+.fas-datatable__cell--frozen-right-first {
+  box-shadow: inset 1px 0 0 var(--divider);
+}

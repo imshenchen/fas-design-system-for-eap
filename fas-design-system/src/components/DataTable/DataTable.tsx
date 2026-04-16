@@ -73,6 +73,22 @@ export interface ColumnDef<T = Record<string, unknown>> {
   render?: (value: unknown, row: T, rowIndex: number) => React.ReactNode;
   /** 文字對齊 */
   align?: 'left' | 'center' | 'right';
+  /** 凍結欄位：left = 左側固定，right = 右側固定 */
+  frozen?: 'left' | 'right';
+}
+
+// ── Frozen column helpers ─────────────────────────────────────────────────────
+function toPixels(w: string | number | undefined): number {
+  if (typeof w === 'number') return w;
+  if (typeof w === 'string' && w.endsWith('px')) return parseFloat(w);
+  return 0;
+}
+
+interface StickyInfo {
+  left?: number;
+  right?: number;
+  lastLeft?: boolean;
+  firstRight?: boolean;
 }
 
 export interface PaginationConfig {
@@ -184,6 +200,72 @@ export function DataTable<T = Record<string, unknown>>({
     return sortDirection === 'asc' ? 'arrow_upward' : sortDirection === 'desc' ? 'arrow_downward' : 'unfold_more';
   };
 
+  // ── Frozen / sticky columns ─────────────────────────────────────────────────
+  const CHECKBOX_COL_WIDTH = 48;
+
+  const stickyMeta = useMemo((): Map<string, StickyInfo> => {
+    const map = new Map<string, StickyInfo>();
+    const leftCols = columns.filter(c => c.frozen === 'left');
+    const rightCols = columns.filter(c => c.frozen === 'right');
+    if (!selectable && leftCols.length === 0 && rightCols.length === 0) return map;
+
+    // Checkbox is always sticky-left when selectable
+    if (selectable) {
+      map.set('__checkbox__', { left: 0 });
+    }
+
+    // Left-frozen user columns
+    let leftAcc = selectable ? CHECKBOX_COL_WIDTH : 0;
+    leftCols.forEach(col => {
+      map.set(col.key, { left: leftAcc });
+      leftAcc += toPixels(col.width);
+    });
+
+    // Right-frozen user columns (iterate right-to-left for offset)
+    let rightAcc = 0;
+    [...rightCols].reverse().forEach(col => {
+      map.set(col.key, { right: rightAcc });
+      rightAcc += toPixels(col.width);
+    });
+
+    // Mark last-left for divider
+    if (leftCols.length > 0) {
+      const key = leftCols[leftCols.length - 1].key;
+      map.set(key, { ...map.get(key)!, lastLeft: true });
+    } else if (selectable) {
+      map.set('__checkbox__', { ...map.get('__checkbox__')!, lastLeft: true });
+    }
+
+    // Mark first-right for divider
+    if (rightCols.length > 0) {
+      map.set(rightCols[0].key, { ...map.get(rightCols[0].key)!, firstRight: true });
+    }
+
+    return map;
+  }, [columns, selectable]);
+
+  const getStickyStyle = (key: string, isHeader: boolean): React.CSSProperties => {
+    const sm = stickyMeta.get(key);
+    if (!sm) return {};
+    return {
+      position: 'sticky',
+      left: sm.left,
+      right: sm.right,
+      zIndex: isHeader ? 3 : 2,
+    };
+  };
+
+  const getStickyClasses = (key: string): string => {
+    const sm = stickyMeta.get(key);
+    if (!sm) return '';
+    return [
+      sm.left !== undefined && 'fas-datatable__cell--frozen-left',
+      sm.right !== undefined && 'fas-datatable__cell--frozen-right',
+      sm.lastLeft && 'fas-datatable__cell--frozen-left-last',
+      sm.firstRight && 'fas-datatable__cell--frozen-right-first',
+    ].filter(Boolean).join(' ');
+  };
+
   return (
     <div className={['fas-datatable__wrapper', className].filter(Boolean).join(' ')}>
       {/* Table */}
@@ -192,7 +274,10 @@ export function DataTable<T = Record<string, unknown>>({
           <thead>
             <tr>
               {selectable && (
-                <th className="fas-datatable__th fas-datatable__th--checkbox">
+                <th
+                  className={['fas-datatable__th fas-datatable__th--checkbox', getStickyClasses('__checkbox__')].filter(Boolean).join(' ')}
+                  style={getStickyStyle('__checkbox__', true)}
+                >
                   <Checkbox
                     checked={!!allSelected}
                     indeterminate={someSelected}
@@ -208,10 +293,11 @@ export function DataTable<T = Record<string, unknown>>({
                     'fas-datatable__th',
                     col.sortable && 'fas-datatable__th--sortable',
                     col.align && `fas-datatable__th--${col.align}`,
+                    getStickyClasses(col.key),
                   ]
                     .filter(Boolean)
                     .join(' ')}
-                  style={{ width: col.width }}
+                  style={{ width: col.width, ...getStickyStyle(col.key, true) }}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
                   aria-sort={
                     sortKey === col.key
@@ -264,7 +350,10 @@ export function DataTable<T = Record<string, unknown>>({
                     className={['fas-datatable__row', isSelected && 'fas-datatable__row--selected'].filter(Boolean).join(' ')}
                   >
                     {selectable && (
-                      <td className="fas-datatable__td fas-datatable__td--checkbox">
+                      <td
+                        className={['fas-datatable__td fas-datatable__td--checkbox', getStickyClasses('__checkbox__')].filter(Boolean).join(' ')}
+                        style={getStickyStyle('__checkbox__', false)}
+                      >
                         <Checkbox
                           checked={isSelected}
                           onChange={() => toggleRow(key)}
@@ -275,7 +364,8 @@ export function DataTable<T = Record<string, unknown>>({
                     {columns.map((col) => (
                       <td
                         key={col.key}
-                        className={['fas-datatable__td', col.align && `fas-datatable__td--${col.align}`].filter(Boolean).join(' ')}
+                        className={['fas-datatable__td', col.align && `fas-datatable__td--${col.align}`, getStickyClasses(col.key)].filter(Boolean).join(' ')}
+                        style={getStickyStyle(col.key, false)}
                       >
                         {col.render
                           ? col.render((row as Record<string, unknown>)[col.key], row, rowIndex)

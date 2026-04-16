@@ -6,6 +6,35 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { DataTable } from './DataTable';
 import type { ColumnDef, PaginationConfig, SortDirection } from './DataTable';
 
+// ── Sticky / frozen column helpers (mirrors DataTable logic) ──────────────────
+function mdtToPixels(w: string | number | undefined): number {
+  if (typeof w === 'number') return w;
+  if (typeof w === 'string' && w.endsWith('px')) return parseFloat(w);
+  return 0;
+}
+
+interface MdtStickyInfo {
+  left?: number;
+  right?: number;
+  lastLeft?: boolean;
+  firstRight?: boolean;
+}
+
+function getMdtStickyStyle(sm: MdtStickyInfo | undefined, isHeader: boolean): React.CSSProperties {
+  if (!sm || (sm.left === undefined && sm.right === undefined)) return {};
+  return { position: 'sticky', left: sm.left, right: sm.right, zIndex: isHeader ? 3 : 2 };
+}
+
+function getMdtStickyClasses(sm: MdtStickyInfo | undefined): string {
+  if (!sm) return '';
+  return [
+    sm.left !== undefined && 'fas-datatable__cell--frozen-left',
+    sm.right !== undefined && 'fas-datatable__cell--frozen-right',
+    sm.lastLeft && 'fas-datatable__cell--frozen-left-last',
+    sm.firstRight && 'fas-datatable__cell--frozen-right-first',
+  ].filter(Boolean).join(' ');
+}
+
 // ── Shared pagination dropdown (same as in DataTable) ─────────────────────────
 interface PaginationDropdownProps {
   value: number;
@@ -154,6 +183,43 @@ export function MasterDetailTable<
     return sortDirection === 'asc' ? 'arrow_upward' : sortDirection === 'desc' ? 'arrow_downward' : 'unfold_more';
   };
 
+  // ── Outer table sticky meta ─────────────────────────────────────────────────
+  const MDT_EXPAND_WIDTH = 40;
+
+  const mdtStickyMeta = useMemo((): Map<string, MdtStickyInfo> => {
+    const map = new Map<string, MdtStickyInfo>();
+
+    // __expand__ is always frozen-left at position 0
+    map.set('__expand__', { left: 0 });
+
+    const leftCols = columns.filter(c => c.frozen === 'left');
+    let leftAcc = MDT_EXPAND_WIDTH;
+    leftCols.forEach(col => {
+      map.set(col.key, { left: leftAcc });
+      leftAcc += mdtToPixels(col.width);
+    });
+
+    const rightCols = columns.filter(c => c.frozen === 'right');
+    let rightAcc = 0;
+    [...rightCols].reverse().forEach(col => {
+      map.set(col.key, { right: rightAcc });
+      rightAcc += mdtToPixels(col.width);
+    });
+
+    // Divider markers
+    if (leftCols.length > 0) {
+      const key = leftCols[leftCols.length - 1].key;
+      map.set(key, { ...map.get(key)!, lastLeft: true });
+    } else {
+      map.set('__expand__', { ...map.get('__expand__')!, lastLeft: true });
+    }
+    if (rightCols.length > 0) {
+      map.set(rightCols[0].key, { ...map.get(rightCols[0].key)!, firstRight: true });
+    }
+
+    return map;
+  }, [columns]);
+
   // Expand column prepended to master columns
   const allColumns = useMemo<ColumnDef<M>[]>(() => {
     return [
@@ -238,10 +304,11 @@ export function MasterDetailTable<
                     col.sortable && 'fas-datatable__th--sortable',
                     col.align && `fas-datatable__th--${col.align}`,
                     col.key === '__expand__' && 'fas-mdt__th--expand',
+                    getMdtStickyClasses(mdtStickyMeta.get(col.key)),
                   ]
                     .filter(Boolean)
                     .join(' ')}
-                  style={{ width: col.width }}
+                  style={{ width: col.width, ...getMdtStickyStyle(mdtStickyMeta.get(col.key), true) }}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
                 >
                   {col.header}
@@ -300,9 +367,11 @@ export function MasterDetailTable<
                             'fas-datatable__td',
                             col.align && `fas-datatable__td--${col.align}`,
                             col.key === '__expand__' && 'fas-mdt__td--expand',
+                            getMdtStickyClasses(mdtStickyMeta.get(col.key)),
                           ]
                             .filter(Boolean)
                             .join(' ')}
+                          style={getMdtStickyStyle(mdtStickyMeta.get(col.key), false)}
                         >
                           {col.render
                             ? col.render(
