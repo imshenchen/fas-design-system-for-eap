@@ -22,15 +22,19 @@
 
 /* ─── Table ─────────────────────────────────────────────────────────────────── */
 .fas-datatable {
-  width: 100%;
+  min-width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
+  table-layout: fixed;
+  --dt-row-height: 40px; /* M (default) */
 }
+.fas-datatable--size-l { --dt-row-height: 48px; }
+.fas-datatable--size-m { --dt-row-height: 40px; }
+.fas-datatable--size-s { --dt-row-height: 36px; }
 
 /* ─── Header ────────────────────────────────────────────────────────────────── */
 .fas-datatable__th {
   padding: 0 16px;
-  height: 40px;
+  height: var(--dt-row-height);
   text-align: left;
   font-size: 14px;
   font-weight: 500;
@@ -39,6 +43,7 @@
   border-bottom: 1px solid var(--divider);
   white-space: nowrap;
   user-select: none;
+  overflow: hidden;
 }
 .fas-datatable__th--center { text-align: center; }
 .fas-datatable__th--right  { text-align: right; }
@@ -56,6 +61,14 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  overflow: hidden;
+  max-width: 100%;
+}
+.fas-datatable__th-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 /* ─── Sort Icon ─────────────────────────────────────────────────────────────── */
@@ -94,10 +107,19 @@
 /* ─── Cell ──────────────────────────────────────────────────────────────────── */
 .fas-datatable__td {
   padding: 0 16px;
-  height: 40px;
+  height: var(--dt-row-height);
   color: var(--text-body);
   border-bottom: 1px solid var(--divider);
   vertical-align: middle;
+  overflow: hidden;
+}
+
+/* Cell content: truncate overflow with ellipsis, tooltip via title attribute */
+.fas-datatable__cell-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 .fas-datatable__td--center { text-align: center; }
 .fas-datatable__td--right  { text-align: right; }
@@ -117,11 +139,11 @@
 /* The Checkbox's hidden input is position:absolute inside a sticky cell, which causes
    the scroll container to jump when it receives focus. Fixed-position elements are
    relative to the viewport so they never trigger scrollable-ancestor scrollIntoView. */
+/* No top/left: browser places it at its visual position (in viewport), preventing any
+   scroll-container jump when the input receives focus via label click. */
 .fas-datatable__td--checkbox .fas-checkbox__input,
 .fas-datatable__th--checkbox .fas-checkbox__input {
   position: fixed;
-  top: 0;
-  left: 0;
 }
 
 /* ─── Spin (loading state) ──────────────────────────────────────────────────── */

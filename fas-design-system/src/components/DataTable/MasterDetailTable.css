@@ -12,7 +12,11 @@
   border-radius: 4px;
   border: 1px solid var(--divider);
   overflow: hidden;
+  --dt-row-height: 40px; /* M (default) */
 }
+.fas-mdt--size-l { --dt-row-height: 48px; }
+.fas-mdt--size-m { --dt-row-height: 40px; }
+.fas-mdt--size-s { --dt-row-height: 36px; }
 
 /* ─── Top Bar ───────────────────────────────────────────────────────────────── */
 .fas-mdt__topbar {
@@ -105,9 +109,9 @@
 }
 
 .fas-mdt__table {
-  width: 100%;
+  min-width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
+  table-layout: fixed;
 }
 
 /* ─── Expand column ─────────────────────────────────────────────────────────── */

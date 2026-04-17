@@ -9,6 +9,7 @@
   font-family: inherit;
   font-size: 14px;
   color: var(--text-body);
+  vertical-align: middle;
 }
 
 .fas-radio__input {
@@ -43,7 +44,7 @@
   background: var(--primary);
 }
 
-.fas-radio:hover:not(.fas-radio--disabled) .fas-radio__indicator {
+.fas-radio:not(.fas-radio--disabled):not(.fas-radio--checked):hover .fas-radio__indicator {
   background: var(--comp-hover);
 }
 

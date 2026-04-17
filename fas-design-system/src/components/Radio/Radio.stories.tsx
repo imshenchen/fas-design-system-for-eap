@@ -13,6 +13,11 @@ type Story = StoryObj<typeof Radio>;
 
 export const Default: Story = {
   args: { checked: false, label: 'Option A' },
+  render: (args) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [checked, setChecked] = useState(args.checked ?? false);
+    return <Radio {...args} checked={checked} onChange={setChecked} />;
+  },
 };
 
 export const Checked: Story = {

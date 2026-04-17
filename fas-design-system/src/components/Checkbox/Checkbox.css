@@ -10,6 +10,7 @@
   cursor: pointer;
   user-select: none;
   position: relative;
+  vertical-align: middle;
 }
 
 .fas-checkbox--disabled {
@@ -81,7 +82,7 @@
 }
 
 /* ─── Hover ─────────────────────────────────────────────────────────────────── */
-.fas-checkbox:not(.fas-checkbox--disabled):hover .fas-checkbox__box {
+.fas-checkbox:not(.fas-checkbox--disabled):not(.fas-checkbox--checked):not(.fas-checkbox--indeterminate):hover .fas-checkbox__box {
   background-color: var(--comp-hover);
 }
 

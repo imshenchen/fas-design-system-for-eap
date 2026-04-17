@@ -25,6 +25,11 @@ export const Default: Story = {
     checked: false,
     size: 'm',
   },
+  render: (args) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [checked, setChecked] = useState(args.checked ?? false);
+    return <Checkbox {...args} checked={checked} onChange={setChecked} />;
+  },
 };
 
 /* ─── All states ─────────────────────────────────────────────────────────────── */

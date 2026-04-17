@@ -117,6 +117,8 @@ export interface MasterDetailTableProps<
   pagination?: PaginationConfig;
 
   striped?: boolean;
+  /** 行高規格：l = 48px, m = 40px（預設）, s = 36px */
+  size?: 'l' | 'm' | 's';
   className?: string;
 }
 
@@ -139,6 +141,7 @@ export function MasterDetailTable<
   getDetailPagination,
   pagination,
   striped = true,
+  size = 'm',
   className,
 }: MasterDetailTableProps<M, D>) {
   const [expandedKeys, setExpandedKeys] = useState<Set<string | number>>(new Set());
@@ -262,7 +265,7 @@ export function MasterDetailTable<
   };
 
   return (
-    <div className={['fas-mdt', className].filter(Boolean).join(' ')}>
+    <div className={['fas-mdt', `fas-mdt--size-${size}`, className].filter(Boolean).join(' ')}>
       {/* ── Master Top Bar ─────────────────────────────────────────────────── */}
       <div className="fas-mdt__topbar">
         <div className="fas-mdt__topbar-left">
@@ -312,7 +315,7 @@ export function MasterDetailTable<
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
                 >
                   <span className="fas-datatable__th-content">
-                    {col.header}
+                    <span className="fas-datatable__th-label" title={col.header}>{col.header}</span>
                     {col.sortable && (
                       <span
                         className={[
@@ -362,30 +365,33 @@ export function MasterDetailTable<
                         .join(' ')}
                       onClick={() => toggleRow(key)}
                     >
-                      {allColumns.map((col) => (
-                        <td
-                          key={col.key}
-                          className={[
-                            'fas-datatable__td',
-                            col.align && `fas-datatable__td--${col.align}`,
-                            col.key === '__expand__' && 'fas-mdt__td--expand',
-                            getMdtStickyClasses(mdtStickyMeta.get(col.key)),
-                          ]
-                            .filter(Boolean)
-                            .join(' ')}
-                          style={getMdtStickyStyle(mdtStickyMeta.get(col.key), false)}
-                        >
-                          {col.render
-                            ? col.render(
-                                (row as Record<string, unknown>)[col.key],
-                                row,
-                                rowIndex,
-                              )
-                            : String(
-                                (row as Record<string, unknown>)[col.key] ?? '',
-                              )}
-                        </td>
-                      ))}
+                      {allColumns.map((col) => {
+                        const rawVal = (row as Record<string, unknown>)[col.key];
+                        const cellTitle = col.render || col.key === '__expand__' ? undefined : String(rawVal ?? '');
+                        return (
+                          <td
+                            key={col.key}
+                            className={[
+                              'fas-datatable__td',
+                              col.align && `fas-datatable__td--${col.align}`,
+                              col.key === '__expand__' && 'fas-mdt__td--expand',
+                              getMdtStickyClasses(mdtStickyMeta.get(col.key)),
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            style={getMdtStickyStyle(mdtStickyMeta.get(col.key), false)}
+                            title={cellTitle}
+                          >
+                            {col.key === '__expand__' ? (
+                              col.render!(rawVal, row, rowIndex)
+                            ) : (
+                              <div className="fas-datatable__cell-content">
+                                {col.render ? col.render(rawVal, row, rowIndex) : cellTitle}
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
                     </tr>
 
                     {/* Detail row */}
@@ -417,6 +423,7 @@ export function MasterDetailTable<
                               data={detailData}
                               rowKey={detailRowKey}
                               striped={striped}
+                              size={size}
                               pagination={detailPagination}
                               className="fas-mdt__detail-table"
                             />

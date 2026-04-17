@@ -120,6 +120,8 @@ export interface DataTableProps<T = Record<string, unknown>> {
   emptyText?: string;
   /** 斑馬紋 */
   striped?: boolean;
+  /** 行高規格：l = 48px, m = 40px（預設）, s = 36px */
+  size?: 'l' | 'm' | 's';
   className?: string;
 }
 
@@ -137,6 +139,7 @@ export function DataTable<T = Record<string, unknown>>({
   loading = false,
   emptyText = '目前沒有資料',
   striped = true,
+  size = 'm',
   className,
 }: DataTableProps<T>) {
   // Internal sort state (used when onSort is not provided)
@@ -198,6 +201,35 @@ export function DataTable<T = Record<string, unknown>>({
   const sortIcon = (colKey: string) => {
     if (sortKey !== colKey) return 'unfold_more';
     return sortDirection === 'asc' ? 'arrow_upward' : sortDirection === 'desc' ? 'arrow_downward' : 'unfold_more';
+  };
+
+  // ── Scroll restoration on checkbox focus ────────────────────────────────────
+  // When the hidden <input> inside a sticky checkbox cell receives focus via the
+  // label-click mechanism, the browser calls scrollIntoView and may shift the
+  // scroll container. We save the scroll position on mousedown and restore it.
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const savedScrollRef = useRef<{ x: number; y: number } | null>(null);
+
+  const handleScrollMouseDown = () => {
+    savedScrollRef.current = {
+      x: scrollContainerRef.current?.scrollLeft ?? 0,
+      y: window.scrollY,
+    };
+  };
+
+  const handleScrollFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (
+      e.target instanceof HTMLInputElement &&
+      e.target.classList.contains('fas-checkbox__input') &&
+      savedScrollRef.current !== null
+    ) {
+      const { x, y } = savedScrollRef.current;
+      savedScrollRef.current = null;
+      requestAnimationFrame(() => {
+        if (scrollContainerRef.current) scrollContainerRef.current.scrollLeft = x;
+        if (window.scrollY !== y) window.scrollTo({ left: window.scrollX, top: y, behavior: 'instant' });
+      });
+    }
   };
 
   // ── Frozen / sticky columns ─────────────────────────────────────────────────
@@ -269,15 +301,19 @@ export function DataTable<T = Record<string, unknown>>({
   return (
     <div className={['fas-datatable__wrapper', className].filter(Boolean).join(' ')}>
       {/* Table */}
-      <div className="fas-datatable__scroll">
-        <table className={['fas-datatable', striped && 'fas-datatable--striped', loading && 'fas-datatable--loading'].filter(Boolean).join(' ')}>
+      <div
+        className="fas-datatable__scroll"
+        ref={scrollContainerRef}
+        onMouseDown={handleScrollMouseDown}
+        onFocus={handleScrollFocus}
+      >
+        <table className={['fas-datatable', `fas-datatable--size-${size}`, striped && 'fas-datatable--striped', loading && 'fas-datatable--loading'].filter(Boolean).join(' ')}>
           <thead>
             <tr>
               {selectable && (
                 <th
                   className={['fas-datatable__th fas-datatable__th--checkbox', getStickyClasses('__checkbox__')].filter(Boolean).join(' ')}
                   style={getStickyStyle('__checkbox__', true)}
-                  onMouseDown={(e) => e.preventDefault()}
                 >
                   <Checkbox
                     checked={!!allSelected}
@@ -311,7 +347,7 @@ export function DataTable<T = Record<string, unknown>>({
                   }
                 >
                   <span className="fas-datatable__th-content">
-                    {col.header}
+                    <span className="fas-datatable__th-label" title={col.header}>{col.header}</span>
                     {col.sortable && (
                       <span
                         className={[
@@ -356,7 +392,6 @@ export function DataTable<T = Record<string, unknown>>({
                       <td
                         className={['fas-datatable__td fas-datatable__td--checkbox', getStickyClasses('__checkbox__')].filter(Boolean).join(' ')}
                         style={getStickyStyle('__checkbox__', false)}
-                        onMouseDown={(e) => e.preventDefault()}
                       >
                         <Checkbox
                           checked={isSelected}
@@ -365,17 +400,22 @@ export function DataTable<T = Record<string, unknown>>({
                         />
                       </td>
                     )}
-                    {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        className={['fas-datatable__td', col.align && `fas-datatable__td--${col.align}`, getStickyClasses(col.key)].filter(Boolean).join(' ')}
-                        style={getStickyStyle(col.key, false)}
-                      >
-                        {col.render
-                          ? col.render((row as Record<string, unknown>)[col.key], row, rowIndex)
-                          : String((row as Record<string, unknown>)[col.key] ?? '')}
-                      </td>
-                    ))}
+                    {columns.map((col) => {
+                      const rawVal = (row as Record<string, unknown>)[col.key];
+                      const cellTitle = col.render ? undefined : String(rawVal ?? '');
+                      return (
+                        <td
+                          key={col.key}
+                          className={['fas-datatable__td', col.align && `fas-datatable__td--${col.align}`, getStickyClasses(col.key)].filter(Boolean).join(' ')}
+                          style={getStickyStyle(col.key, false)}
+                          title={cellTitle}
+                        >
+                          <div className="fas-datatable__cell-content">
+                            {col.render ? col.render(rawVal, row, rowIndex) : cellTitle}
+                          </div>
+                        </td>
+                      );
+                    })}
                   </tr>
                 );
               })

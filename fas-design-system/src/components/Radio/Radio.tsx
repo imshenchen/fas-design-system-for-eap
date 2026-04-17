@@ -48,6 +48,7 @@ export const Radio: React.FC<RadioProps> = ({
         value={value}
         name={name}
         onChange={(e) => onChange?.(e.target.checked)}
+        onClick={() => { if (checked) onChange?.(false); }}
         className="fas-radio__input"
       />
       <span className="fas-radio__indicator" aria-hidden>
@@ -104,7 +105,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
         checked={value === opt.value}
         disabled={disabled || opt.disabled}
         label={opt.label}
-        onChange={() => onChange(opt.value)}
+        onChange={(checked) => onChange(checked ? opt.value : '')}
       />
     ))}
   </div>
