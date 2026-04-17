@@ -5,6 +5,9 @@
  *   import { Button, StatusChip, cssVars, spacing } from '@imshenchen/fas-design-system';
  */
 
+// Global styles (tokens + all component CSS)
+import './styles/index.css';
+
 // Components
 export * from './components';
 
