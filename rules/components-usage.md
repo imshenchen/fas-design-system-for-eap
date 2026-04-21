@@ -121,7 +121,7 @@ Sticky page-title bar (56px) displayed below the NavigationBar. Contains breadcr
 - Right-side `actions`: maximum **two buttons** — primary action uses `contained`, secondary uses `outlined`.
 - **Button placement rule**: place action buttons in FeatureTitle **only on edit pages**. On list/detail pages, keep buttons inside the content area.
 - Breadcrumb non-terminal items must provide `onClick` for navigation; the last item is plain text (current page) with no `onClick`.
-- **Breadcrumb depth**: the first breadcrumb level must always start with the same Feature name shown in the SideMenu. Do not skip or abbreviate it.
+- **Breadcrumb depth**: the first breadcrumb level must always be the **currently selected item in the SideMenu** (the active leaf node). Do not skip it or replace it with a parent section name.
 
 ### Breadcrumbs
 
