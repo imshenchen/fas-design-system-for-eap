@@ -4,6 +4,8 @@
  */
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Checkbox } from '../Checkbox/Checkbox';
+import { DataTableTopBar } from './DataTableTopBar';
+import type { DataTableTopBarProps } from './DataTableTopBar';
 
 // ── Internal dropdown used by pagination ──────────────────────────────────────
 interface PaginationDropdownProps {
@@ -122,6 +124,8 @@ export interface DataTableProps<T = Record<string, unknown>> {
   striped?: boolean;
   /** 行高規格：l = 48px, m = 40px（預設）, s = 36px */
   size?: 'l' | 'm' | 's';
+  /** TopBar 設定，傳入後自動渲染在表格上方 */
+  topBarProps?: DataTableTopBarProps;
   className?: string;
 }
 
@@ -140,6 +144,7 @@ export function DataTable<T = Record<string, unknown>>({
   emptyText = '目前沒有資料',
   striped = true,
   size = 'm',
+  topBarProps,
   className,
 }: DataTableProps<T>) {
   // Internal sort state (used when onSort is not provided)
@@ -300,6 +305,8 @@ export function DataTable<T = Record<string, unknown>>({
 
   return (
     <div className={['fas-datatable__wrapper', className].filter(Boolean).join(' ')}>
+      {/* TopBar */}
+      {topBarProps && <DataTableTopBar {...topBarProps} />}
       {/* Table */}
       <div
         className="fas-datatable__scroll"

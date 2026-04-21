@@ -21,9 +21,19 @@ const MOCK_DATA: Node[] = [
   { id: '6', name: 'Edge-Node-06', ip: '192.168.1.106', status: 'success',    lastSeen: '2026-04-01 09:10' },
 ];
 
+/** 序號欄：header 顯示 #，值從 1 連續到 n */
+const SEQ_COL: ColumnDef<Node> = {
+  key: '__seq__',
+  header: '#',
+  width: 52,
+  align: 'center',
+  render: (_val, _row, i) => i + 1,
+};
+
 const COLUMNS: ColumnDef<Node>[] = [
+  SEQ_COL,
   { key: 'name', header: '節點名稱', sortable: true },
-  { key: 'ip',   header: 'IP 位址', sortable: true },
+  { key: 'ip',   header: 'IP 位址',  sortable: true },
   {
     key: 'status',
     header: '狀態',
@@ -114,6 +124,7 @@ export const WithFrozenColumns: Story = {
   render: () => {
     const [selected, setSelected] = React.useState<Set<string | number>>(new Set());
     const frozenColumns: ColumnDef<Node>[] = [
+      SEQ_COL,
       { key: 'name',     header: '節點名稱', frozen: 'left', width: 140 },
       { key: 'ip',       header: 'IP 位址',  sortable: true },
       { key: 'status',   header: '狀態',     render: (val) => <StatusChip status={val as Node['status']} label={String(val)} size="s" /> },

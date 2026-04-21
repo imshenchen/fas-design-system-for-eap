@@ -5,6 +5,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { DataTable } from './DataTable';
 import type { ColumnDef, PaginationConfig, SortDirection } from './DataTable';
+import { DataTableTopBar } from './DataTableTopBar';
+import type { DataTableTopBarAction, DataTableTopBarTab } from './DataTableTopBar';
 
 // ── Sticky / frozen column helpers (mirrors DataTable logic) ──────────────────
 function mdtToPixels(w: string | number | undefined): number {
@@ -102,6 +104,14 @@ export interface MasterDetailTableProps<
   showSearch?: boolean;
   searchPlaceholder?: string;
   onSearch?: (value: string) => void;
+  /** Tab navigation items in the top bar */
+  topBarTabs?: DataTableTopBarTab[];
+  activeTab?: string;
+  onTabChange?: (key: string) => void;
+  /** Action buttons in the top bar (row 2) */
+  topBarActions?: DataTableTopBarAction[];
+  /** Selected row count — shown in top bar when > 0 */
+  selectedCount?: number;
 
   // ── Detail table ─────────────────────────────────────────────────────────────
   detailColumns: ColumnDef<D>[];
@@ -134,6 +144,11 @@ export function MasterDetailTable<
   showSearch = false,
   searchPlaceholder = '搜尋',
   onSearch,
+  topBarTabs,
+  activeTab,
+  onTabChange,
+  topBarActions,
+  selectedCount,
   detailColumns,
   getDetailData,
   detailRowKey,
@@ -267,32 +282,18 @@ export function MasterDetailTable<
   return (
     <div className={['fas-mdt', `fas-mdt--size-${size}`, className].filter(Boolean).join(' ')}>
       {/* ── Master Top Bar ─────────────────────────────────────────────────── */}
-      <div className="fas-mdt__topbar">
-        <div className="fas-mdt__topbar-left">
-          {title && <span className="fas-mdt__title">{title}</span>}
-          {showCount && (
-            <span className="fas-mdt__count">
-              筆數 {data.length}
-            </span>
-          )}
-        </div>
-        <div className="fas-mdt__topbar-right">
-          {showSearch && (
-            <div className="fas-mdt__search">
-              <span className="material-symbols-outlined fas-mdt__search-icon" aria-hidden>
-                search
-              </span>
-              <input
-                className="fas-mdt__search-input"
-                type="text"
-                placeholder={searchPlaceholder}
-                value={searchValue}
-                onChange={(e) => handleSearch(e.target.value)}
-              />
-            </div>
-          )}
-        </div>
-      </div>
+      <DataTableTopBar
+        title={title}
+        tabs={topBarTabs}
+        activeTab={activeTab}
+        onTabChange={onTabChange}
+        total={showCount ? data.length : undefined}
+        selectedCount={selectedCount}
+        actions={topBarActions}
+        showSearch={showSearch}
+        searchPlaceholder={searchPlaceholder}
+        onSearch={handleSearch}
+      />
 
       {/* ── Master Table ───────────────────────────────────────────────────── */}
       <div className="fas-mdt__scroll">

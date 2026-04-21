@@ -47,8 +47,25 @@ const getDetailData = (masterRow: WorkOrder): WorkOrderItem[] =>
 
 // ── Column defs ────────────────────────────────────────────────────────────────
 
+/** 序號欄：header 顯示 #，值從 1 連續到 n */
+const masterSeqCol: ColumnDef<WorkOrder> = {
+  key: '__seq__',
+  header: '#',
+  width: 52,
+  align: 'center',
+  render: (_val, _row, i) => i + 1,
+};
+
+const detailSeqCol: ColumnDef<WorkOrderItem> = {
+  key: '__seq__',
+  header: '#',
+  width: 52,
+  align: 'center',
+  render: (_val, _row, i) => i + 1,
+};
+
 const MASTER_COLUMNS: ColumnDef<WorkOrder>[] = [
-  { key: 'id',       header: '序號',       width: 60 },
+  masterSeqCol,
   { key: 'name',     header: '檢驗類型',   sortable: true },
   {
     key: 'result',
@@ -68,7 +85,7 @@ const MASTER_COLUMNS: ColumnDef<WorkOrder>[] = [
 ];
 
 const DETAIL_COLUMNS: ColumnDef<WorkOrderItem>[] = [
-  { key: 'id',            header: '序號',       width: 60 },
+  detailSeqCol,
   { key: 'serialNo',      header: '在製品代號' },
   {
     key: 'result',

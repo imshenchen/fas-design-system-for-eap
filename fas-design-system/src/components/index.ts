@@ -116,6 +116,8 @@ export { DataTable } from './DataTable/DataTable';
 export type { DataTableProps, ColumnDef, PaginationConfig, SortDirection } from './DataTable/DataTable';
 export { MasterDetailTable } from './DataTable/MasterDetailTable';
 export type { MasterDetailTableProps } from './DataTable/MasterDetailTable';
+export { DataTableTopBar } from './DataTable/DataTableTopBar';
+export type { DataTableTopBarProps, DataTableTopBarAction, DataTableTopBarTab } from './DataTable/DataTableTopBar';
 
 // Uploader
 export { Uploader } from './Uploader/Uploader';
