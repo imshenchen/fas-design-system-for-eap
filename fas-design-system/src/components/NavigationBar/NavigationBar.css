@@ -90,8 +90,7 @@
 }
 
 .fas-navbar__icon-btn:hover {
-  background: var(--comp-hover);
-  color: var(--primary);
+  background: var(--comp-hover-secondary);
 }
 
 /* Language button text */
