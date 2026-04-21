@@ -18,8 +18,7 @@
 }
 
 .fas-icon-btn:hover:not(:disabled) {
-  background: var(--comp-hover);
-  color: var(--primary);
+  background: var(--comp-hover-secondary);
 }
 
 .fas-icon-btn:disabled {
@@ -36,8 +35,8 @@
 .fas-icon-btn--selected {
   color: var(--primary);
 }
-.fas-icon-btn--selected:hover {
-  background: var(--comp-hover);
+.fas-icon-btn--selected:hover:not(:disabled) {
+  background: var(--comp-hover-secondary);
 }
 
 /* ─── Sizes ─────────────────────────────────────────────────────────────────── */
