@@ -67,32 +67,6 @@
   flex-shrink: 0;
 }
 
-/* ── Icon Button (共用) ── */
-.fas-navbar__icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--secondary);
-  cursor: pointer;
-  font-size: 14px;
-  font-family: 'Roboto', sans-serif;
-  transition: background-color 0.15s, color 0.15s;
-  flex-shrink: 0;
-}
-
-.fas-navbar__icon-btn .material-symbols-outlined {
-  font-size: 22px;
-}
-
-.fas-navbar__icon-btn:hover {
-  background: var(--comp-hover-secondary);
-}
-
 /* Language button text */
 .fas-navbar__lang {
   font-size: 13px;

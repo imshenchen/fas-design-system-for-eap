@@ -1,13 +1,12 @@
 /**
  * NavigationBar — FAS Design Kit
- * @see components.md § Layout
  *
  * 固定在頁面頂端的全寬導覽列。高度 60px，sticky，z-index 100。
  * 左側：漢堡選單按鈕 + Logo + App Name
  * 右側：操作按鈕組 + 使用者 Avatar
  */
 import React from 'react';
-import { Tooltip } from '../Tooltip/Tooltip';
+import { IconButton } from '../IconButton/IconButton';
 import './NavigationBar.css';
 
 export interface NavigationBarProps {
@@ -43,15 +42,12 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   >
     {/* ── Left ── */}
     <div className="fas-navbar__left">
-      <Tooltip title="Toggle menu" placement="bottom">
-        <button
-          className="fas-navbar__icon-btn"
-          onClick={onMenuToggle}
-          aria-label="Toggle side menu"
-        >
-          <span className="material-symbols-outlined">menu</span>
-        </button>
-      </Tooltip>
+      <IconButton
+        size="l"
+        aria-label="Toggle menu"
+        icon={<span className="material-symbols-outlined">menu</span>}
+        onClick={onMenuToggle}
+      />
       <div className="fas-navbar__brand">
         {logo ? (
           <div className="fas-navbar__logo">{logo}</div>
@@ -65,26 +61,26 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
     {/* ── Right ── */}
     <div className="fas-navbar__right">
       {actions}
-      <Tooltip title="User guide" placement="bottom">
-        <button className="fas-navbar__icon-btn" aria-label="User guide">
-          <span className="material-symbols-outlined">help</span>
-        </button>
-      </Tooltip>
-      <Tooltip title="Settings" placement="bottom">
-        <button className="fas-navbar__icon-btn" aria-label="Settings">
-          <span className="material-symbols-outlined">settings</span>
-        </button>
-      </Tooltip>
-      <Tooltip title="Language" placement="bottom">
-        <button className="fas-navbar__icon-btn" aria-label="Language">
-          <span className="fas-navbar__lang">En</span>
-        </button>
-      </Tooltip>
-      <Tooltip title="Notifications" placement="bottom">
-        <button className="fas-navbar__icon-btn" aria-label="Notifications">
-          <span className="material-symbols-outlined">notifications</span>
-        </button>
-      </Tooltip>
+      <IconButton
+        size="l"
+        aria-label="User guide"
+        icon={<span className="material-symbols-outlined">help</span>}
+      />
+      <IconButton
+        size="l"
+        aria-label="Settings"
+        icon={<span className="material-symbols-outlined">settings</span>}
+      />
+      <IconButton
+        size="l"
+        aria-label="Language"
+        icon={<span className="fas-navbar__lang">En</span>}
+      />
+      <IconButton
+        size="l"
+        aria-label="Notifications"
+        icon={<span className="material-symbols-outlined">notifications</span>}
+      />
       <button
         className="fas-navbar__avatar"
         onClick={onUserClick}
