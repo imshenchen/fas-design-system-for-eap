@@ -1,146 +1,218 @@
-# FAS Design System — 設計準則
+# FAS Design System — Usage Guidelines
 
-> 適用對象：任何為 Delta DIAAuto 系列產品（EAP+等）生成 UI 的 AI 系統。
-> 與框架無關，描述視覺與互動的設計決策。
-
----
-
-## 基礎原則
-
-- 顏色一律使用語意色票，不寫死色碼。
-- Dark Mode 透過切換色票實現，元件結構不變
-- 間距以 **4px** 為基本單位，常用值：8、12、16、24、32px
-- 圓角統一 **4px**（特殊情境 8px，圓形元件 50%）
-- 字體：拉丁字母與數字用 Roboto，中文用 Noto Sans TC
-- Icon 使用 Google Material Symbols（filled 變體，20px 標準尺寸）
+> **Audience**: Any AI system generating UI for Delta DIAAuto products (EAP+, DIAWorks, etc.).
+> Framework-agnostic — describes visual and interaction design decisions, not implementation details.
 
 ---
 
-## 版面結構
+## Foundations
 
-頂端導覽列（60px，sticky）→ 左側選單（展開 280px / 收折 80px，sticky）→ 主內容區
+- **Colors**: Always use semantic color tokens (`var(--primary)`, `var(--error)`, etc.). Never hardcode hex values.
+- **Dark Mode**: Achieved by toggling CSS token values via `[data-theme="dark"]`. Component structure never changes.
+- **Border radius**: Default **4px**; use 8px for larger surfaces (modals, cards); 50% for circular elements only.
+- **Typography**: Latin characters and numbers → Roboto; Chinese → Noto Sans TC.
+- **Icons**: Google Material Symbols, `filled` variant, 20px standard size.
 
-主內容區由兩層組成：FeatureTitle（sticky 頁首列）在上，功能內容（padding 32px）在下。
+---
 
-左側選單底部固定版本號，選單項目可滾動。
+## Spacing System
 
-Z-index 由低至高：一般內容 → Sticky 表頭（10）→ 選單（50）→ 導覽列（100）→ 下拉（200）→ Dialog（300）→ Tooltip（400）→ Snackbar（500）
+All spacing values are **multiples of 4px**. Choose a value based on the semantic relationship between content — not by visual intuition.
 
-### 版面 padding 結構
+| Value | Name | When to use |
+|-------|------|-------------|
+| **4px** | Micro | Minimum internal spacing: icon-to-label gap, badge offsets, adjacent icon gaps |
+| **8px** | Tight | Items **within the same group**: fields within a form section, rows within a card |
+| **12px** | Compact | Compact lists or table padding; spacing between a form label and its input |
+| **16px** | Default | **General-purpose spacing**: content within a card, paragraphs, fields within a form group. Use this when unsure. |
+| **24px** | Loose | **Between different groups on the same page**: separating multiple form sections or information clusters |
+| **32px** | Section | **Between independent content blocks**: DataTable vs. filter panel above it, card vs. card, major page divisions |
 
-`<main>` 本身設 `padding: 0`、`overflow: auto`，不直接套 padding。
+### Selection rules
 
-- FeatureTitle 緊貼頂部，直接放在 `<main>` 內，不包在 padding 容器中，確保 sticky 時能貼齊 NavBar
-- FeatureTitle 以下的功能內容包在 `padding: 32px` 的 wrapper `<div>` 中
+- **Closer relationship → smaller gap**: same group → 8px; across groups → 24px; across blocks → 32px.
+- **Default to 16px** when unsure, then adjust based on visual density.
+- **Never use off-system values** (e.g. 10px, 15px, 20px). If a nudge is needed, pick the adjacent tier.
+- Page-level outer padding is fixed at **32px** (enforced by the layout wrapper — do not re-specify).
+
+### Common examples
 
 ```
+Inside a card
+  ├── Card title → content body: 16px
+  ├── Label + value pair (same group): 8px
+  └── Card → adjacent card: 32px
+
+Form page
+  ├── Fields within the same section: 16px
+  ├── Field label → input: 4–8px
+  ├── Between field groups within a section: 24px
+  └── Between independent sections ("Basic Info" vs. "Advanced Settings"): 32px
+
+DataTable page
+  ├── TopBar → Table: 8px (same functional group visually)
+  ├── DataTable → filter panel above: 24px
+  └── FeatureTitle → main content: 32px (handled by the padding wrapper)
+```
+
+---
+
+## Layout
+
+### Page structure
+
+```
+NavigationBar (60px, sticky, z-100)
+├── SideMenu (280px expanded / 80px collapsed, sticky top: 60px)
+└── Main content area (flex: 1, background: var(--bg-surface-dim))
+    ├── FeatureTitle (sticky, no padding wrapper)
+    └── <div style="padding: 32px"> — feature content </div>
+```
+
+`<main>` uses `padding: 0; overflow: auto`. Do not apply padding directly to `<main>`.
+
+- **FeatureTitle** is placed directly inside `<main>`, outside the padding wrapper, so it stays flush to the NavBar when sticky.
+- All feature content below FeatureTitle lives inside a `padding: 32px` wrapper `<div>`.
+
+```html
 <main style="padding: 0; overflow: auto">
   <FeatureTitle ... />
   <div style="padding: 32px">
-    {/* 頁面功能內容 */}
+    {/* page content */}
   </div>
 </main>
 ```
 
-FeatureTitle 與內容區不共用 padding，兩者結構分離。
+### Z-index scale
+
+| Layer | z-index |
+|-------|---------|
+| Sticky table header | 10 |
+| Side menu (overlay) | 50 |
+| Navigation bar | 100 |
+| Dropdown / picker | 200 |
+| Dialog | 300 |
+| Tooltip | 400 |
+| Snackbar | 500 |
+
+---
+
+## Navigation
+
+### NavigationBar
+
+Fixed at the top of the page (60px height, sticky, z-100). Contains logo, app name, global actions, and user avatar.
+
+### SideMenu
+
+Permanent left navigation. Expanded: 280px; collapsed: 80px (icon-only).
+
+- Section headers are non-clickable; styled with primary color at a larger font size.
+- L1 items include an icon; show expand arrow when children exist.
+- L2 items are indented with a guide line; selected state uses a light-blue background.
+- In collapsed mode, only icons are visible; hovering shows a Tooltip with the label.
+- Version number is fixed at the bottom and does not scroll with menu items.
 
 ### FeatureTitle
 
-包含麵包屑導覽、頁面標題、右側操作按鈕，sticky 固定在主內容區頂部。
+Sticky page-title bar (56px) displayed below the NavigationBar. Contains breadcrumb navigation and optional right-side action buttons.
 
-- `topOffset` 預設為 NavBar 高度（60px）；若 `<main>` 有 `overflow: auto`，sticky 定位相對於 `<main>`，此時 `topOffset` 應設為 `0`
-- 右側 `actions` 最多兩個按鈕：主要動作用 `contained`，次要動作用 `outlined`
-- **按鈕擺放原則**：僅當當前頁面為**編輯頁面**時，才將操作按鈕置於 FeatureTitle 上；其餘情況建議將按鈕置於頁面內容區。
-- 麵包屑中非末層項目必須提供 `onClick` 處理導覽，末層為純文字（current），不傳 `onClick`
-- **階層顯示**：麵包屑第一層一律從與左側 Side menu 相同的 Feature name 開始，不得跳過或省略。
+- `topOffset` defaults to NavBar height (60px). If `<main>` has `overflow: auto`, set `topOffset` to `0` (sticky is relative to `<main>`).
+- Right-side `actions`: maximum **two buttons** — primary action uses `contained`, secondary uses `outlined`.
+- **Button placement rule**: place action buttons in FeatureTitle **only on edit pages**. On list/detail pages, keep buttons inside the content area.
+- Breadcrumb non-terminal items must provide `onClick` for navigation; the last item is plain text (current page) with no `onClick`.
+- **Breadcrumb depth**: the first breadcrumb level must always start with the same Feature name shown in the SideMenu. Do not skip or abbreviate it.
 
----
+### Breadcrumbs
 
-## 按鈕 Button
+Maximum 5 levels. The current page is the last item, non-clickable, and rendered in a darker text color.
 
-三種視覺層級：**實心（Contained）> 外框（Outlined）> 文字（Text）**
+### Tab
 
-- 一個頁面區域只放一個實心按鈕作為主要動作，且只能搭配主色
-- 外框為預設通用按鈕；文字按鈕用於工具列或空間緊湊情境
-- 危險操作用 Error 色，實心樣式除外（危險操作通常用外框）
-- 文字超出不換行，搭配 Tooltip 顯示完整內容
+Active tab is indicated by an underline indicator. Never use background color to indicate the active state.
 
----
+### Stepper
 
-## 狀態標籤 Chip
+Completed steps show a checkmark; the active step is filled with the primary color; future steps use gray.
 
-- 只適合顯示**範圍有限的語意狀態**（機台狀態、工單狀態等），不適合顯示任意文字
-- 系統狀態（processing / success / warning / error / milestone 等）有對應的語意色，不得自行指定顏色
-- 可選取（Selectable）用於過濾器，可移除（Removable）用於表單已選項目
-- 形狀預設使用 rectangle；尺寸預設使用 L，在表格內使用時改用 S
+### Pagination
+
+First-page and last-page buttons are disabled when already on the first or last page.
 
 ---
 
-## 表單元件
+## Buttons
 
-- 輸入框預設使用外框（Outlined）樣式，尺寸預設 M（40px）
-- 錯誤狀態在輸入框下方顯示說明文字，顏色用危險色
-- Checkbox 支援部分選取（Indeterminate）狀態
-- Switch 用於即時生效的開關，Checkbox 用於確認後提交的選項
+Three visual hierarchy levels: **Contained > Outlined > Text**
 
----
-
-## 通知與反饋
-
-**Alert**：行內訊息嵌入內容區，全頁橫幅則置於頁面頂端。只有錯誤和成功需要明確告知，一般提示勿過度使用。
-
-**Snackbar**：短暫通知，4 秒後自動消失，不要求使用者操作。顯示位置為畫面頂部水平置中。重要錯誤請用 Alert 或 Dialog，不要用 Snackbar。
-
-**Dialog**：需要使用者確認才繼續的情境，背景加遮罩。危險操作的確認按鈕用 Error 色。Dialog 可用於讓使用者填寫資訊，但**僅限簡單、簡短的內容**；若需填寫的欄位較多、或需進入下一層級進行操作，請勿使用 Dialog，改以整頁方式讓使用者進行編輯。
+- Only **one** `contained` button per page area, always paired with the primary color.
+- `outlined` is the default general-purpose button.
+- `text` is for toolbars and space-constrained contexts.
+- Destructive actions use the Error color — prefer `outlined` style (not `contained`) for destructive buttons.
+- Button text never wraps. Pair with a Tooltip if text may be truncated.
 
 ---
 
-## 資料呈現
+## Form Components
 
-**DataTable**：標題列背景略深，偶數行可使用斑馬紋增加可讀性，選取行用淡藍色背景。排序圖示在欄位 hover 時才明顯出現。
-
-**DataTableTopBar**：DataTable 的標題列，位於表格外框**上方**，背景透明（不帶底色），不包在 DataTable 的邊框框線內。
-
-- **命名必要**：每個 DataTable 都必須透過 `title` 為表格命名，讓使用者知道這張表呈現的是什麼資料
-- **樣式選擇原則**：
-  - 若 DataTable 無「新增」按鈕且無多選操作 → 優先使用只有 Row 1（title + counts）的精簡樣式，不必顯示 action row
-  - 若有 Actions → 顯示完整兩列（Row 1: title/tabs/counts；Row 2: 操作按鈕/搜尋）
-- **版面**：TopBar 與 DataTable 各自獨立渲染，不共用外框；DataTable 本體保有自己的白色背景與邊框
-
-**序號欄（必要）**：DataTable 與 MasterDetailTable 每次顯示時，**一律包含序號欄**作為第一個資料欄位。
-- Header 顯示為 `#`
-- 值從 `1` 連續排到 `n`（依當前頁顯示的資料列順序），不顯示資料庫 ID 或其他業務鍵
-- 欄寬固定，不可排序、不可過濾
-- 範例（如截圖所示）：第一欄 header 為 `#`，各列依序顯示 1、2、3…
-
-**Card**：用於工廠看板、儀表板等。深色底（#fafafa）搭配懸浮陰影卡片；白色底改用外框卡片。圓角一律 4px。
+- Text inputs default to `outlined` style, size `M` (40px height).
+- Error state: show helper text below the input in the error/danger color.
+- Use **Checkbox** for options that take effect on form submission; use **Switch** for settings that take effect immediately.
+- Checkbox supports an **indeterminate** state for partial selection (e.g. select-all in a table).
 
 ---
 
-## 導覽
+## Feedback & Notifications
 
-**麵包屑**：最多 5 層，當前頁面為最後一項且不可點擊，文字顏色較深以示區別。
+**Alert**  
+Inline messages are embedded in the content area; full-page banners are placed at the top of the page. Only use alerts for errors and successes that require explicit user awareness. Avoid overusing informational alerts.
 
-**Tab**：頁籤切換用底線指示器標示當前項，不使用背景色切換。
+**Snackbar**  
+Brief global notification, auto-dismisses after 4 seconds. Displayed at the top-center of the screen. Use Alert or Dialog for important errors — not Snackbar.
 
-**Stepper**：已完成步驟顯示打勾，當前步驟填滿主色，未來步驟用灰色。
+**Dialog**  
+Use when the user must confirm before proceeding; always includes a background overlay. Destructive-action confirm buttons use the Error color.  
+Dialogs may contain form fields, but **only for simple, brief inputs**. If the form has many fields or requires multi-level interaction, use a full page instead of a Dialog.
 
-**Pagination**：首頁 / 末頁按鈕在第一頁 / 最後一頁時 disabled。
+---
+
+## Data Display
+
+### DataTable & MasterDetailTable
+
+- Header row has a slightly darker background.
+- Striped (zebra) rows are optional but improve readability for dense data.
+- Selected rows use a light-blue background.
+- Sort icons appear clearly only on column hover.
+
+**Sequence column (required)**  
+Every DataTable and MasterDetailTable **must include a sequence column** as the first data column.
+- Column header: `#`
+- Values: sequential integers `1 → n` based on the current page's display order. Never use a database ID or business key.
+- Fixed width; not sortable; not filterable.
+
+### DataTableTopBar
+
+The title bar for DataTable sits **above** the table's border box — transparent background, not wrapped inside the table's border frame.
+
+- **Title is required**: every DataTable must have a `title` so users understand what the table represents.
+- **Style selection**:
+  - No "Add" button and no multi-select actions → use the minimal **Row 1 only** style (title + counts). Do not show the action row.
+  - Has actions → show both rows (Row 1: title / tabs / counts; Row 2: action buttons / search).
+- **Layout**: TopBar and DataTable render independently. DataTable retains its own white background and border; TopBar is transparent and sits above it.
+
+### Card
+
+Used for factory dashboards, monitoring panels, etc.
+- On a `#fafafa` page background: use `elevated` style (drop shadow).
+- On a white background: use `outlined` style (border).
+- Border radius: always 4px.
 
 ---
 
 ## Dark Mode
 
-透過 `document.documentElement.setAttribute('data-theme', 'dark')` 切換，移除 attribute 回到 light mode。
-元件結構不需改變，CSS 變數自動更新，所有顏色即時反映。
-切換邏輯由應用程式控制，設計系統不內建切換 UI。
-
----
-
-## 左側導覽選單
-
-- 章節標題（Section header）不可點擊，文字用主色，字級較大
-- L1 項目帶 icon，有子項目時顯示展開箭頭
-- L2 子項目縮排，左側有導引線，選中狀態用淡藍色背景
-- 收折時只顯示 icon，hover 顯示 Tooltip 補充文字
-- 版本號固定在底部，不隨選單捲動
+Toggle by setting `document.documentElement.setAttribute('data-theme', 'dark')`.  
+Remove the attribute to return to light mode.  
+Component structure is unchanged; CSS variables update automatically.  
+The toggle UI is controlled by the application — the design system does not provide a built-in toggle component.
