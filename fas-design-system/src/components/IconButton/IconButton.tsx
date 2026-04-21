@@ -3,6 +3,7 @@
  * @see ../../components.md § Icon Button
  */
 import React from 'react';
+import { Tooltip } from '../Tooltip/Tooltip';
 
 export type IconButtonSize = 'l' | 'm' | 's';
 
@@ -12,28 +13,43 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   size?: IconButtonSize;
   /** selected 狀態（用於 Toggle） */
   selected?: boolean;
-  /** aria-label 必填，提供無障礙說明 */
+  /** aria-label 必填，提供無障礙說明；同時作為 tooltip 文字 */
   'aria-label': string;
+  /**
+   * 滑鼠移入時顯示 tooltip（取自 aria-label）。
+   * 預設 true；設為 false 可關閉。
+   */
+  tooltip?: boolean;
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ icon, size = 'm', selected = false, className, ...rest }, ref) => (
-    <button
-      ref={ref}
-      type="button"
-      className={[
-        'fas-icon-btn',
-        `fas-icon-btn--${size}`,
-        selected && 'fas-icon-btn--selected',
-        className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      {...rest}
-    >
-      {icon}
-    </button>
-  ),
+  ({ icon, size = 'm', selected = false, tooltip = true, className, ...rest }, ref) => {
+    const btn = (
+      <button
+        ref={ref}
+        type="button"
+        className={[
+          'fas-icon-btn',
+          `fas-icon-btn--${size}`,
+          selected && 'fas-icon-btn--selected',
+          className,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        {...rest}
+      >
+        {icon}
+      </button>
+    );
+
+    if (!tooltip) return btn;
+
+    return (
+      <Tooltip title={rest['aria-label']} placement="top">
+        {btn}
+      </Tooltip>
+    );
+  },
 );
 
 IconButton.displayName = 'IconButton';

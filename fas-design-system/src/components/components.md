@@ -32,15 +32,25 @@
 ---
 
 ## Icon Button
-純圖示按鈕，無文字標籤。
+純圖示按鈕，無文字標籤。滑鼠移入時預設顯示 tooltip（文字取自 `aria-label`）。
 
 ```tsx
 <IconButton size="l" aria-label="設定">
   <span className="material-symbols-outlined">settings</span>
 </IconButton>
+
+{/* 關閉 tooltip */}
+<IconButton size="l" aria-label="設定" tooltip={false}>
+  <span className="material-symbols-outlined">settings</span>
+</IconButton>
 ```
 
-`size`: `l | m | s`（預設 `m`）
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `aria-label` | `string` | — | 必填；同時作為 tooltip 文字 |
+| `size` | `l \| m \| s` | `m` | 按鈕尺寸 |
+| `selected` | `boolean` | `false` | Toggle 選取狀態 |
+| `tooltip` | `boolean` | `true` | 是否顯示 hover tooltip |
 
 ---
 
