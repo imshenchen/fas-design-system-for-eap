@@ -81,7 +81,7 @@ export type { AlertProps, AlertSeverity, AlertVariant } from './Alert/Alert';
 
 // Tooltip
 export { Tooltip } from './Tooltip/Tooltip';
-export type { TooltipProps, TooltipPlacement } from './Tooltip/Tooltip';
+export type { TooltipProps, TooltipPlacement, TooltipVariant, TooltipAction } from './Tooltip/Tooltip';
 
 // Snackbar / Toast
 export { Snackbar, SnackbarProvider, SnackbarContext, useSnackbar } from './Snackbar/Snackbar';

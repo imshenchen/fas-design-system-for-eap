@@ -3,7 +3,7 @@
  * @see ../../components.md § Icon Button
  */
 import React from 'react';
-import { Tooltip } from '../Tooltip/Tooltip';
+import { Tooltip, TooltipPlacement } from '../Tooltip/Tooltip';
 
 export type IconButtonSize = 'l' | 'm' | 's';
 
@@ -21,7 +21,7 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
    */
   tooltip?: boolean;
   /** Tooltip 出現的位置。預設 'top' */
-  tooltipPlacement?: import('../Tooltip/Tooltip').TooltipPlacement;
+  tooltipPlacement?: TooltipPlacement;
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
