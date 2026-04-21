@@ -20,10 +20,12 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
    * 預設 true；設為 false 可關閉。
    */
   tooltip?: boolean;
+  /** Tooltip 出現的位置。預設 'top' */
+  tooltipPlacement?: import('../Tooltip/Tooltip').TooltipPlacement;
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ icon, size = 'm', selected = false, tooltip = true, className, ...rest }, ref) => {
+  ({ icon, size = 'm', selected = false, tooltip = true, tooltipPlacement = 'top', className, ...rest }, ref) => {
     const btn = (
       <button
         ref={ref}
@@ -45,7 +47,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
     if (!tooltip) return btn;
 
     return (
-      <Tooltip title={rest['aria-label']} placement="top">
+      <Tooltip title={rest['aria-label']} placement={tooltipPlacement}>
         {btn}
       </Tooltip>
     );

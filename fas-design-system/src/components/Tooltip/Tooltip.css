@@ -5,71 +5,142 @@
   display: inline-flex;
 }
 
-.fas-tooltip-popup {
+/* ─── Shared popup base ───────────────────────────────────────────────────── */
+.fas-tooltip-plain,
+.fas-tooltip-rich {
   position: absolute;
-  z-index: 1500;
+  z-index: 400;
   background: var(--snackbar-bg);
-  color: #ffffff;
+  border-radius: 4px;
+  pointer-events: none;
+  --tooltip-gap: 4px;
+}
+
+/* ─── Plain tooltip ───────────────────────────────────────────────────────── */
+.fas-tooltip-plain {
+  color: var(--text-white);
+  font-family: 'Roboto', sans-serif;
   font-size: 12px;
+  font-weight: 400;
   line-height: 18px;
   padding: 4px 8px;
-  border-radius: 4px;
   white-space: nowrap;
-  pointer-events: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* ─── Placement ─── */
-.fas-tooltip-popup--top {
-  bottom: calc(100% + 8px);
+/* ─── Plain placements ────────────────────────────────────────────────────── */
+.fas-tooltip-plain--top {
+  bottom: calc(100% + var(--tooltip-gap));
   left: 50%;
   transform: translateX(-50%);
 }
-.fas-tooltip-popup--bottom {
-  top: calc(100% + 8px);
+.fas-tooltip-plain--bottom {
+  top: calc(100% + var(--tooltip-gap));
   left: 50%;
   transform: translateX(-50%);
 }
-.fas-tooltip-popup--left {
-  right: calc(100% + 8px);
+.fas-tooltip-plain--left {
+  right: calc(100% + var(--tooltip-gap));
   top: 50%;
   transform: translateY(-50%);
 }
-.fas-tooltip-popup--right {
-  left: calc(100% + 8px);
+.fas-tooltip-plain--right {
+  left: calc(100% + var(--tooltip-gap));
   top: 50%;
   transform: translateY(-50%);
 }
 
-/* ─── Arrow ─── */
-.fas-tooltip-popup__arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border: 4px solid transparent;
+/* ─── Rich tooltip ────────────────────────────────────────────────────────── */
+.fas-tooltip-rich {
+  width: 261px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+  box-shadow:
+    0px -1px 3px rgba(46, 46, 46, 0.05),
+    0px 6px 12px rgba(46, 46, 46, 0.16),
+    inset 0px 0px 2px rgba(255, 255, 255, 0.12);
+  /* Rich tooltip has interactive buttons */
+  pointer-events: all;
 }
 
-.fas-tooltip-popup--top .fas-tooltip-popup__arrow {
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-top-color: var(--snackbar-bg);
+/* ─── Rich placements ─────────────────────────────────────────────────────── */
+.fas-tooltip-rich--top {
+  bottom: calc(100% + var(--tooltip-gap));
+  left: 0;
 }
-.fas-tooltip-popup--bottom .fas-tooltip-popup__arrow {
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-bottom-color: var(--snackbar-bg);
+.fas-tooltip-rich--bottom {
+  top: calc(100% + var(--tooltip-gap));
+  left: 0;
 }
-.fas-tooltip-popup--left .fas-tooltip-popup__arrow {
-  right: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  border-left-color: var(--snackbar-bg);
+.fas-tooltip-rich--left {
+  right: calc(100% + var(--tooltip-gap));
+  top: 0;
 }
-.fas-tooltip-popup--right .fas-tooltip-popup__arrow {
-  left: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  border-right-color: var(--snackbar-bg);
+.fas-tooltip-rich--right {
+  left: calc(100% + var(--tooltip-gap));
+  top: 0;
+}
+
+/* ─── Rich content ────────────────────────────────────────────────────────── */
+.fas-tooltip-rich__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px 4px;
+}
+
+.fas-tooltip-rich__title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.035px;
+  color: var(--text-white);
+}
+
+.fas-tooltip-rich__body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  color: var(--text-white);
+  white-space: normal;
+}
+
+/* ─── Rich actions ────────────────────────────────────────────────────────── */
+.fas-tooltip-rich__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.fas-tooltip-rich__btn {
+  border: none;
+  background: transparent;
+  padding: 12px 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+  white-space: nowrap;
+}
+
+.fas-tooltip-rich__btn--primary {
+  color: var(--snackbar-action);
+}
+.fas-tooltip-rich__btn--primary:hover {
+  background: var(--snackbar-action-hover);
+}
+
+.fas-tooltip-rich__btn--secondary {
+  color: var(--snackbar-action-secondary);
+}
+.fas-tooltip-rich__btn--secondary:hover {
+  background: var(--snackbar-action-hover);
 }

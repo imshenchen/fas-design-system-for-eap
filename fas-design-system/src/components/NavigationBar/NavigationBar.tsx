@@ -44,6 +44,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
     <div className="fas-navbar__left">
       <IconButton
         size="l"
+        tooltipPlacement="bottom"
         aria-label="Toggle menu"
         icon={<span className="material-symbols-outlined">menu</span>}
         onClick={onMenuToggle}
@@ -63,21 +64,25 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       {actions}
       <IconButton
         size="l"
+        tooltipPlacement="bottom"
         aria-label="User guide"
         icon={<span className="material-symbols-outlined">help</span>}
       />
       <IconButton
         size="l"
+        tooltipPlacement="bottom"
         aria-label="Settings"
         icon={<span className="material-symbols-outlined">settings</span>}
       />
       <IconButton
         size="l"
+        tooltipPlacement="bottom"
         aria-label="Language"
         icon={<span className="fas-navbar__lang">En</span>}
       />
       <IconButton
         size="l"
+        tooltipPlacement="bottom"
         aria-label="Notifications"
         icon={<span className="material-symbols-outlined">notifications</span>}
       />
