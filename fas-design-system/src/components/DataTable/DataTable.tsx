@@ -305,9 +305,10 @@ export function DataTable<T = Record<string, unknown>>({
 
   return (
     <div className={['fas-datatable__wrapper', className].filter(Boolean).join(' ')}>
-      {/* TopBar */}
+      {/* TopBar — outside the bordered box, transparent bg */}
       {topBarProps && <DataTableTopBar {...topBarProps} />}
-      {/* Table */}
+      {/* Bordered box: scroll + pagination */}
+      <div className="fas-datatable__box">
       <div
         className="fas-datatable__scroll"
         ref={scrollContainerRef}
@@ -470,6 +471,7 @@ export function DataTable<T = Record<string, unknown>>({
           </div>
         );
       })()}
+      </div>{/* /fas-datatable__box */}
     </div>
   );
 }

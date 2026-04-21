@@ -281,7 +281,7 @@ export function MasterDetailTable<
 
   return (
     <div className={['fas-mdt', `fas-mdt--size-${size}`, className].filter(Boolean).join(' ')}>
-      {/* ── Master Top Bar ─────────────────────────────────────────────────── */}
+      {/* ── Master Top Bar — outside the bordered box ──────────────────────── */}
       <DataTableTopBar
         title={title}
         tabs={topBarTabs}
@@ -295,6 +295,8 @@ export function MasterDetailTable<
         onSearch={handleSearch}
       />
 
+      {/* ── Bordered box: scroll + pagination ─────────────────────────────── */}
+      <div className="fas-mdt__box">
       {/* ── Master Table ───────────────────────────────────────────────────── */}
       <div className="fas-mdt__scroll">
         <table className="fas-mdt__table">
@@ -479,6 +481,7 @@ export function MasterDetailTable<
           </div>
         );
       })()}
+      </div>{/* /fas-mdt__box */}
     </div>
   );
 }

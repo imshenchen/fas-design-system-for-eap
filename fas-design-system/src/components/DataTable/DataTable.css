@@ -3,12 +3,18 @@
  * @see components.md § Data Table
  */
 
-/* ─── Wrapper ───────────────────────────────────────────────────────────────── */
+/* ─── Wrapper (outer, no border — TopBar lives here transparently) ──────────── */
 .fas-datatable__wrapper {
   display: flex;
   flex-direction: column;
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
+}
+
+/* ─── Box (inner bordered container: scroll + pagination) ───────────────────── */
+.fas-datatable__box {
+  display: flex;
+  flex-direction: column;
   background: var(--bg-surface);
   border-radius: 4px;
   overflow: hidden;

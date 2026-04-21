@@ -99,6 +99,14 @@ FeatureTitle 與內容區不共用 padding，兩者結構分離。
 
 **DataTable**：標題列背景略深，偶數行可使用斑馬紋增加可讀性，選取行用淡藍色背景。排序圖示在欄位 hover 時才明顯出現。
 
+**DataTableTopBar**：DataTable 的標題列，位於表格外框**上方**，背景透明（不帶底色），不包在 DataTable 的邊框框線內。
+
+- **命名必要**：每個 DataTable 都必須透過 `title` 為表格命名，讓使用者知道這張表呈現的是什麼資料
+- **樣式選擇原則**：
+  - 若 DataTable 無「新增」按鈕且無多選操作 → 優先使用只有 Row 1（title + counts）的精簡樣式，不必顯示 action row
+  - 若有 Actions → 顯示完整兩列（Row 1: title/tabs/counts；Row 2: 操作按鈕/搜尋）
+- **版面**：TopBar 與 DataTable 各自獨立渲染，不共用外框；DataTable 本體保有自己的白色背景與邊框
+
 **序號欄（必要）**：DataTable 與 MasterDetailTable 每次顯示時，**一律包含序號欄**作為第一個資料欄位。
 - Header 顯示為 `#`
 - 值從 `1` 連續排到 `n`（依當前頁顯示的資料列順序），不顯示資料庫 ID 或其他業務鍵

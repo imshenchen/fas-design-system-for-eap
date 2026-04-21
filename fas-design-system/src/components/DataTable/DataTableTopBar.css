@@ -3,8 +3,8 @@
  */
 
 .fas-dt-topbar {
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--divider);
+  /* transparent — inherits page background, sits outside DataTable's border box */
+  background: transparent;
 }
 
 /* ── Row 1: title + tabs + counts ───────────────────────────────────────────── */

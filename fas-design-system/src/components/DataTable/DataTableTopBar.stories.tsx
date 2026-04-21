@@ -122,7 +122,7 @@ export const WithDataTable: Story = {
     );
 
     return (
-      <div style={{ border: '1px solid var(--divider)', borderRadius: 4, overflow: 'hidden' }}>
+      <div>
         <DataTableTopBar
           title="節點清單"
           total={sampleData.length}
