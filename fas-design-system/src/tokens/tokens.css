@@ -264,6 +264,7 @@
   --snackbar-bg: #ffffff;
   --snackbar-action: #00adef;
   --snackbar-action-secondary: #727171;
+  --snackbar-action-hover: #f0fbff;
   --snackbar-processing: #00adef;
   --snackbar-success: #68ad23;
   --snackbar-error: #f23a43;
