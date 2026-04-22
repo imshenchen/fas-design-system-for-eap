@@ -11,14 +11,13 @@
   --dt-row-height: 40px; /* M (default) */
 }
 
-/* ─── Inner bordered box: scroll + pagination ───────────────────────────────── */
+/* ─── Inner box: scroll + pagination ─────────────────────────────────────────
+   Matches standalone DataTable: only top border, no left/right/bottom, no radius. */
 .fas-mdt__box {
   display: flex;
   flex-direction: column;
   background: var(--bg-surface);
-  border-radius: 4px;
-  border: 1px solid var(--divider);
-  overflow: hidden;
+  border-top: 1px solid var(--divider);
 }
 .fas-mdt--size-l { --dt-row-height: 48px; }
 .fas-mdt--size-m { --dt-row-height: 40px; }
@@ -206,10 +205,13 @@
   color: var(--text-high);
 }
 
-/* ─── Detail table overrides ────────────────────────────────────────────────── */
-.fas-mdt__detail-table {
-  border: 1px solid var(--divider) !important;
-  border-radius: 4px !important;
+/* ─── Detail table overrides ────────────────────────────────────────────────
+   Detail child restores the full border + radius on the inner box. The
+   standalone DataTable has only horizontal borders by default. */
+.fas-mdt__detail-table .fas-datatable__box {
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 /* ─── Frozen cells in master table ─────────────────────────────────────────── */

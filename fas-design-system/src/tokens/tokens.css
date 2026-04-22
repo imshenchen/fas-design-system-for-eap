@@ -99,8 +99,10 @@
   --switch-track-on: rgba(0, 173, 239, 0.38);
   --switch-track-off: rgba(114, 114, 113, 0.38);
   --switch-track-disabled: rgba(204, 204, 204, 0.38);
+  --switch-thumb-on: var(--primary);
   --switch-thumb-off: #ffffff;
   --switch-thumb-disabled: #999999;
+  --switch-shadow: 0 1px 3px rgba(46, 46, 46, 0.2), 0 1px 1px rgba(46, 46, 46, 0.08);
 
   /* Card */
   --card-outlined: #d9d9d9;
@@ -274,8 +276,10 @@
   --switch-track-on: rgba(194, 238, 255, 0.38);
   --switch-track-off: #727171;
   --switch-track-disabled: rgba(114, 113, 113, 0.6);
+  --switch-thumb-on: var(--primary);
   --switch-thumb-off: #e0e0e0;
   --switch-thumb-disabled: #727171;
+  --switch-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
 
   /* Card */
   --card-outlined: #4d4d4d;

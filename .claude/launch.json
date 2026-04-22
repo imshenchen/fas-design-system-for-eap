@@ -4,7 +4,7 @@
     {
       "name": "storybook",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "storybook"],
+      "runtimeArgs": ["run", "storybook", "--prefix", "fas-design-system"],
       "port": 6006
     }
   ]

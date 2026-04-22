@@ -11,14 +11,15 @@
   font-size: 14px;
 }
 
-/* ─── Box (inner bordered container: scroll + pagination) ───────────────────── */
+/* ─── Box (inner container: scroll + pagination) ────────────────────────────
+   Standalone DataTable: only top border (no left/right/bottom, no radius).
+   When used as a detail child inside MasterDetailTable, the
+   `.fas-mdt__detail-table` override adds the full border + radius. */
 .fas-datatable__box {
   display: flex;
   flex-direction: column;
   background: var(--bg-surface);
-  border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid var(--divider);
+  border-top: 1px solid var(--divider);
 }
 
 /* ─── Scroll Container ──────────────────────────────────────────────────────── */

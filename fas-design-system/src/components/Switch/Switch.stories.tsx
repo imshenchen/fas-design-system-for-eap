@@ -9,14 +9,22 @@ const meta: Meta<typeof Switch> = {
   argTypes: {
     checked: { control: 'boolean' },
     disabled: { control: 'boolean' },
+    label: { control: 'text' },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof Switch>;
 
+/** Fully interactive: click or use the `checked` control — either toggles the state. */
 export const Default: Story = {
-  args: { checked: false },
+  args: { checked: false, disabled: false, label: 'Option' },
+  render: (args) => {
+    const [on, setOn] = useState(!!args.checked);
+    // Keep story state in sync when the `checked` control is flipped
+    React.useEffect(() => { setOn(!!args.checked); }, [args.checked]);
+    return <Switch {...args} checked={on} onChange={setOn} />;
+  },
 };
 
 export const AllStates: Story = {
@@ -25,10 +33,10 @@ export const AllStates: Story = {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <Switch checked={on} onChange={setOn} label={on ? 'On' : 'Off'} />
-        <Switch checked={true} label="Always On" />
-        <Switch checked={false} label="Always Off" />
-        <Switch checked={true} disabled label="Disabled On" />
-        <Switch checked={false} disabled label="Disabled Off" />
+        <Switch checked={false} label="未選取狀態" />
+        <Switch checked={false} disabled label="未選取狀態 / 不可修改" />
+        <Switch checked={true} label="選取狀態" />
+        <Switch checked={true} disabled label="選取狀態 / 不可修改" />
       </div>
     );
   },

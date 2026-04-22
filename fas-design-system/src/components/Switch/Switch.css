@@ -1,4 +1,10 @@
-/* Switch — FAS Design Kit */
+/* Switch — FAS Design Kit
+   Spec (Figma 7004-49700):
+   - Touch area: 34 × 20 px
+   - Track: 34 × 14 px, radius 7 px, vertically centered inside touch area
+   - Thumb: 20 × 20 px circle, overflows track vertically; left-aligned when Off,
+     translated 14 px to the right when On (flush to right edge)
+   - Gap between switch and label: 8 px */
 
 .fas-switch {
   display: inline-flex;
@@ -19,40 +25,52 @@
   pointer-events: none;
 }
 
+/* Track container = 34×20 touch area. Visual track is drawn via ::before. */
 .fas-switch__track {
   position: relative;
   display: inline-block;
-  width: 36px;
+  width: 34px;
   height: 20px;
-  border-radius: 10px;
-  background: var(--switch-track-off);
-  transition: background 0.2s ease;
   flex-shrink: 0;
+  background: transparent;
 }
 
-.fas-switch--on .fas-switch__track {
+.fas-switch__track::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 0;
+  right: 0;
+  border-radius: 7px;
+  background: var(--switch-track-off);
+  transition: background 0.2s ease;
+}
+
+.fas-switch--on .fas-switch__track::before {
   background: var(--switch-track-on);
 }
 
-.fas-switch--disabled .fas-switch__track {
+.fas-switch--disabled .fas-switch__track::before {
   background: var(--switch-track-disabled);
 }
 
+/* Thumb: 20×20 circle, Off at left:0, On translated +14px */
 .fas-switch__thumb {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--switch-thumb-off);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--switch-shadow);
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .fas-switch--on .fas-switch__thumb {
-  transform: translateX(16px);
-  background: var(--primary);
+  transform: translateX(14px);
+  background: var(--switch-thumb-on);
 }
 
 .fas-switch--disabled .fas-switch__thumb {
