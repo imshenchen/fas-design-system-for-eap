@@ -416,7 +416,7 @@
   ]}
   actions={
     <>
-      <Button variant="outlined" color="secondary" size="s" onClick={handleCancel}>取消</Button>
+      <Button variant="text" color="secondary" size="s" onClick={handleCancel}>取消</Button>
       <Button variant="contained" size="s" onClick={handleCreate}>創建</Button>
     </>
   }
@@ -425,6 +425,7 @@
 
 - 最多 5 層 `items`
 - `topOffset` 預設 `56`（NavBar 高度），NavBar 高度異動時同步調整
+- **Action button 慣例**：主按鈕 `variant="contained"`（primary）；次按鈕 `variant="text" color="secondary"`（不使用 outlined，以減少視覺噪音）
 
 ---
 

@@ -37,7 +37,7 @@ export const Default: Story = {
       ]}
       actions={
         <>
-          <Button variant="outlined" color="secondary" size="s">Cancel</Button>
+          <Button variant="text" color="secondary" size="s">Cancel</Button>
           <Button variant="contained" size="s">Create</Button>
         </>
       }
@@ -74,7 +74,7 @@ export const MultiLevel: Story = {
       ]}
       actions={
         <>
-          <Button variant="outlined" color="secondary" size="s">Cancel</Button>
+          <Button variant="text" color="secondary" size="s">Cancel</Button>
           <Button variant="contained" size="s">Save</Button>
         </>
       }

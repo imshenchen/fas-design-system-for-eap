@@ -115,13 +115,13 @@ export const FeatureTitle = React.forwardRef<HTMLDivElement, FeatureTitleProps>(
                   </span>
                 )}
 
-                {/* Separator */}
+                {/* Separator — use Material Symbols Outlined to match the rest
+                    of the design system (consumers already load this font). */}
                 {!isLast && (
                   <span
-                    className="fas-feature-title__sep"
+                    className="material-symbols-outlined fas-feature-title__sep"
                     aria-hidden="true"
                     style={{
-                      fontFamily: '"Material Icons"',
                       fontSize:   '24px',
                       lineHeight: '24px',
                       color:      cssVars.secondary,

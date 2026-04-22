@@ -133,24 +133,29 @@ const ActionsBar: React.FC<ActionsBarProps> = ({ actions }) => {
   const overflowActions =
     visibleCount === null ? [] : actions.slice(visibleCount);
 
-  const renderButton = (action: DataTableTopBarAction, extraProps?: React.HTMLAttributes<HTMLElement>) => (
-    <Button
-      key={action.key}
-      size="s"
-      variant={action.variant ?? 'text'}
-      color={action.color ?? 'primary'}
-      disabled={action.disabled}
-      onClick={action.onClick}
-      iconLeft={
-        action.icon
-          ? <span className="material-symbols-outlined" aria-hidden>{action.icon}</span>
-          : undefined
-      }
-      {...(extraProps as any)}
-    >
-      {action.label}
-    </Button>
-  );
+  const renderButton = (action: DataTableTopBarAction, extraProps?: React.HTMLAttributes<HTMLElement>) => {
+    const variant = action.variant ?? 'text';
+    // Text buttons default to secondary; contained/outlined keep the primary default.
+    const defaultColor: ButtonColor = variant === 'text' ? 'secondary' : 'primary';
+    return (
+      <Button
+        key={action.key}
+        size="s"
+        variant={variant}
+        color={action.color ?? defaultColor}
+        disabled={action.disabled}
+        onClick={action.onClick}
+        iconLeft={
+          action.icon
+            ? <span className="material-symbols-outlined" aria-hidden>{action.icon}</span>
+            : undefined
+        }
+        {...(extraProps as any)}
+      >
+        {action.label}
+      </Button>
+    );
+  };
 
   return (
     // Wrapper: the real container that ResizeObserver watches
@@ -171,7 +176,7 @@ const ActionsBar: React.FC<ActionsBarProps> = ({ actions }) => {
           <Button
             size="s"
             variant="text"
-            color="primary"
+            color="secondary"
             iconLeft={<span className="material-symbols-outlined" aria-hidden>more_horiz</span>}
           >
             更多
@@ -188,7 +193,7 @@ const ActionsBar: React.FC<ActionsBarProps> = ({ actions }) => {
           <Button
             size="s"
             variant="text"
-            color="primary"
+            color="secondary"
             onClick={() => setMoreOpen((v) => !v)}
             iconLeft={<span className="material-symbols-outlined" aria-hidden>more_horiz</span>}
           >

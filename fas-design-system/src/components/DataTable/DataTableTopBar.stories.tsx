@@ -54,8 +54,8 @@ export const WithActionsAndSearch: Story = {
         actions={[
           { key: 'add',    label: '新增', icon: 'add',          variant: 'outlined', color: 'primary', onClick: () => alert('新增') },
           { key: 'delete', label: '刪除', icon: 'delete',        variant: 'text',     color: 'error',   onClick: () => alert('刪除'), disabled: true },
-          { key: 'export', label: '匯出', icon: 'file_download', variant: 'text',     color: 'primary', onClick: () => alert('匯出') },
-          { key: 'import', label: '匯入', icon: 'file_upload',   variant: 'text',     color: 'primary', onClick: () => alert('匯入') },
+          { key: 'export', label: '匯出', icon: 'file_download', variant: 'text',                       onClick: () => alert('匯出') },
+          { key: 'import', label: '匯入', icon: 'file_upload',   variant: 'text',                       onClick: () => alert('匯入') },
         ]}
         showSearch
         searchValue={search}
@@ -84,10 +84,10 @@ export const Full: Story = {
         actions={[
           { key: 'add',       label: '新增',         icon: 'add',             variant: 'outlined', color: 'primary', onClick: () => {} },
           { key: 'delete',    label: '刪除',         icon: 'delete',           variant: 'text',     color: 'error',   onClick: () => {}, disabled: true },
-          { key: 'export',    label: '匯出',         icon: 'file_download',    variant: 'text',     color: 'primary', onClick: () => {} },
-          { key: 'import',    label: '匯入',         icon: 'file_upload',      variant: 'text',     color: 'primary', onClick: () => {} },
-          { key: 'template',  label: 'Template',    icon: 'description',      variant: 'text',     color: 'primary', onClick: () => {} },
-          { key: 'colsetting',label: 'Column setting', icon: 'view_column',   variant: 'text',     color: 'primary', onClick: () => {} },
+          { key: 'export',    label: '匯出',         icon: 'file_download',    variant: 'text',                       onClick: () => {} },
+          { key: 'import',    label: '匯入',         icon: 'file_upload',      variant: 'text',                       onClick: () => {} },
+          { key: 'template',  label: 'Template',    icon: 'description',      variant: 'text',                       onClick: () => {} },
+          { key: 'colsetting',label: 'Column setting', icon: 'view_column',   variant: 'text',                       onClick: () => {} },
         ]}
         showSearch
         searchPlaceholder="快速搜尋"

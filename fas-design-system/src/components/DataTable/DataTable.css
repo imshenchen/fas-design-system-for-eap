@@ -13,18 +13,23 @@
 
 /* ─── Box (inner container: scroll + pagination) ────────────────────────────
    Standalone DataTable: only top border (no left/right/bottom, no radius).
+   The box itself is transparent — the surface background lives on the scroll
+   container so that pagination can be visually "no background" (transparent,
+   showing the page's dim background through it).
    When used as a detail child inside MasterDetailTable, the
-   `.fas-mdt__detail-table` override adds the full border + radius. */
+   `.fas-mdt__detail-table` override adds the full border + radius + bg. */
 .fas-datatable__box {
   display: flex;
   flex-direction: column;
-  background: var(--bg-surface);
+  background: transparent;
   border-top: 1px solid var(--divider);
 }
 
-/* ─── Scroll Container ──────────────────────────────────────────────────────── */
+/* ─── Scroll Container ──────────────────────────────────────────────────────
+   Carries the surface background so only the table body is on the surface. */
 .fas-datatable__scroll {
   overflow-x: auto;
+  background: var(--bg-surface);
 }
 
 /* ─── Table ─────────────────────────────────────────────────────────────────── */
@@ -168,14 +173,15 @@
   to { transform: rotate(360deg); }
 }
 
-/* ─── Pagination ────────────────────────────────────────────────────────────── */
+/* ─── Pagination ────────────────────────────────────────────────────────────
+   Transparent so the page's surrounding surface-dim shows through — pagination
+   is visually "no background". */
 .fas-datatable__pagination {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 6px 16px;
-  border-top: 1px solid var(--divider);
-  background: var(--bg-surface);
+  background: transparent;
   gap: 8px;
   min-height: 40px;
 }
