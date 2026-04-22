@@ -38,7 +38,7 @@
 /* ─── Contained ─────────────────────────────────────────────────────────────── */
 .fas-btn--contained.fas-btn--primary {
   background: var(--primary);
-  color: #ffffff;
+  color: var(--text-white);
   border-color: var(--primary);
 }
 .fas-btn--contained.fas-btn--primary:hover:not(:disabled) {
@@ -47,7 +47,7 @@
 }
 .fas-btn--contained.fas-btn--error {
   background: var(--status-error);
-  color: #ffffff;
+  color: var(--text-white);
   border-color: var(--status-error);
 }
 .fas-btn--contained.fas-btn--error:hover:not(:disabled) {
