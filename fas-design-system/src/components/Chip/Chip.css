@@ -92,7 +92,7 @@
 .fas-chip--selectable.fas-chip--selected {
   background: var(--primary);
   border-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-white);
 }
 .fas-chip--selectable.fas-chip--selected:hover {
   background: var(--comp-hover-contained);

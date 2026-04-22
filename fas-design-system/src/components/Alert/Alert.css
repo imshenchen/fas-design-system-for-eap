@@ -94,7 +94,7 @@
 
 /* ─── Filled ─── */
 .fas-alert--filled {
-  color: #ffffff;
+  color: var(--text-white);
 }
 .fas-alert--filled.fas-alert--info      { background: var(--status-processing); }
 .fas-alert--filled.fas-alert--success   { background: var(--status-success); }

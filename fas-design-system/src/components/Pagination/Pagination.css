@@ -44,7 +44,7 @@
 /* Active */
 .fas-pagination__item--active {
   background: var(--primary);
-  color: #ffffff;
+  color: var(--text-white);
   font-weight: 600;
 }
 

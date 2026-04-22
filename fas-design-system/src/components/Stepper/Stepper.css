@@ -77,19 +77,19 @@
 .fas-step--active .fas-step__circle {
   background: var(--primary);
   border-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 .fas-step--completed .fas-step__circle {
   background: var(--status-success);
   border-color: var(--status-success);
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 .fas-step--error .fas-step__circle {
   background: var(--status-error);
   border-color: var(--status-error);
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 /* Connector */

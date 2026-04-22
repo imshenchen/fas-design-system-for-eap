@@ -71,7 +71,7 @@
 
 .fas-checkbox__mark--dash {
   display: block;
-  color: #ffffff;
+  color: var(--text-white);
   font-size: 14px;
   line-height: 1;
   font-weight: 700;

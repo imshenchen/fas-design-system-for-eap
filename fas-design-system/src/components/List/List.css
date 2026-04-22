@@ -33,12 +33,12 @@
 }
 
 .fas-list-item--selected {
-  background: rgba(0, 173, 239, 0.08);
+  background: var(--comp-focus);
   color: var(--primary);
 }
 
 .fas-list-item--selected:hover {
-  background: rgba(0, 173, 239, 0.12);
+  background: var(--comp-focus);
 }
 
 .fas-list-item--disabled {

@@ -33,7 +33,7 @@
 /* ─── Type: Primary ──────────────────────────────────────────────────────── */
 .fas-avatar--primary {
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-white);
 }
 
 .fas-avatar--primary.fas-avatar--l .fas-avatar__initials { font-size: 16px; }
