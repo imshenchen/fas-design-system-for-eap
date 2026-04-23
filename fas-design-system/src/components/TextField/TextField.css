@@ -1,6 +1,17 @@
 /**
  * TextField / TextArea — FAS Design Kit
  * @see components.md § Text Field
+ *
+ * State matrix (Figma 7185:55633):
+ *   empty / empty-hover / focus / filled / filled-hover /
+ *   error / error hover+focus / disabled / read-only
+ * Rules:
+ *   - Label colour does NOT change with state (readability).
+ *   - Hover & focus thicken the frame by 1 px (via inset box-shadow to avoid
+ *     layout shift). No outer focus ring / glow.
+ *   - Clear icon only visible on focus + filled (rendered in TSX).
+ *   - Disabled: surface bg, muted border + muted text.
+ *   - Read-only: comp-disabled-con bg + text-black (still highly readable).
  */
 
 /* ─── Wrapper ───────────────────────────────────────────────────────────────── */
@@ -25,17 +36,13 @@
   min-width: 80px;
 }
 
-/* ─── Label ─────────────────────────────────────────────────────────────────── */
+/* ─── Label — static colour across all states ───────────────────────────────── */
 .fas-textfield__label {
   font-size: 14px;
   font-weight: 400;
   color: var(--text-medium);
   line-height: 20px;
 }
-.fas-textfield--focus .fas-textfield__label { color: var(--primary); }
-.fas-textfield--error .fas-textfield__label { color: var(--status-error); }
-.fas-textfield--disabled .fas-textfield__label { color: var(--text-disabled); }
-
 .fas-textfield__required {
   color: var(--status-error);
   margin-left: 2px;
@@ -49,7 +56,7 @@
   flex: 1;
 }
 
-/* ─── Input ─────────────────────────────────────────────────────────────────── */
+/* ─── Input (shared) ────────────────────────────────────────────────────────── */
 .fas-textfield__input {
   width: 100%;
   font-family: inherit;
@@ -57,7 +64,7 @@
   color: var(--text-high);
   background: transparent;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
 }
 .fas-textfield__input::placeholder {
   color: var(--text-placeholder);
@@ -69,28 +76,46 @@
   border-radius: 4px;
   padding: 0 12px;
   background: var(--bg-surface);
+  box-shadow: none;
 }
+/* Hover: +1 px inner ring, no layout shift */
 .fas-textfield--outlined .fas-textfield__input:hover {
   border-color: var(--textfield-border-hover);
+  box-shadow: inset 0 0 0 1px var(--textfield-border-hover);
 }
+/* Focus: +1 px inner ring in primary colour, no outer glow */
 .fas-textfield--outlined.fas-textfield--focus .fas-textfield__input,
 .fas-textfield--outlined .fas-textfield__input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--comp-focus);
+  box-shadow: inset 0 0 0 1px var(--primary);
 }
+/* Error: red 1 px border by default */
 .fas-textfield--outlined.fas-textfield--error .fas-textfield__input {
   border-color: var(--status-error);
+  box-shadow: none;
 }
+/* Error + hover / focus: thickened red border (+1 px inner ring) */
+.fas-textfield--outlined.fas-textfield--error .fas-textfield__input:hover,
+.fas-textfield--outlined.fas-textfield--error.fas-textfield--focus .fas-textfield__input,
+.fas-textfield--outlined.fas-textfield--error .fas-textfield__input:focus {
+  border-color: var(--status-error);
+  box-shadow: inset 0 0 0 1px var(--status-error);
+}
+/* Disabled: surface bg, muted border + muted text (no gray fill) */
 .fas-textfield--outlined.fas-textfield--disabled .fas-textfield__input {
   border-color: var(--comp-disabled-con);
-  background: var(--comp-disabled-con);
+  background: var(--bg-surface);
   color: var(--text-disabled);
   cursor: not-allowed;
+  box-shadow: none;
 }
+/* Read-only: comp-disabled-con bg + pure black text (high readability) */
 .fas-textfield--outlined.fas-textfield--readonly .fas-textfield__input {
   border-color: var(--divider);
-  color: var(--text-medium);
+  background: var(--comp-disabled-con);
+  color: var(--text-black);
   cursor: default;
+  box-shadow: none;
 }
 
 /* ─── Underline Style ───────────────────────────────────────────────────────── */
@@ -100,16 +125,45 @@
   border-radius: 0;
   padding: 0 4px;
   background: transparent;
+  box-shadow: none;
 }
+/* Hover: 2 px underline */
 .fas-textfield--underline .fas-textfield__input:hover {
   border-bottom-color: var(--textfield-border-hover);
+  box-shadow: inset 0 -1px 0 var(--textfield-border-hover);
 }
+/* Focus: 2 px primary underline, no glow */
 .fas-textfield--underline.fas-textfield--focus .fas-textfield__input,
 .fas-textfield--underline .fas-textfield__input:focus {
   border-bottom-color: var(--primary);
+  box-shadow: inset 0 -1px 0 var(--primary);
 }
+/* Error: 1 px red underline */
 .fas-textfield--underline.fas-textfield--error .fas-textfield__input {
   border-bottom-color: var(--status-error);
+  box-shadow: none;
+}
+/* Error + hover / focus: 2 px red underline */
+.fas-textfield--underline.fas-textfield--error .fas-textfield__input:hover,
+.fas-textfield--underline.fas-textfield--error.fas-textfield--focus .fas-textfield__input,
+.fas-textfield--underline.fas-textfield--error .fas-textfield__input:focus {
+  border-bottom-color: var(--status-error);
+  box-shadow: inset 0 -1px 0 var(--status-error);
+}
+/* Disabled */
+.fas-textfield--underline.fas-textfield--disabled .fas-textfield__input {
+  border-bottom-color: var(--comp-disabled-con);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+/* Read-only (underline): gray bg + pure black text */
+.fas-textfield--underline.fas-textfield--readonly .fas-textfield__input {
+  border-bottom-color: var(--divider);
+  background: var(--comp-disabled-con);
+  color: var(--text-black);
+  cursor: default;
+  box-shadow: none;
 }
 
 /* ─── Borderless Style ──────────────────────────────────────────────────────── */
@@ -119,22 +173,23 @@
   background: transparent;
 }
 
-/* ─── Sizes ─────────────────────────────────────────────────────────────────── */
+/* ─── Sizes (per Figma 7185:55692): XL48 / L44 / M40 / S36 / XS32 ───────────── */
 .fas-textfield--xs .fas-textfield__input { height: 32px; }
 .fas-textfield--s  .fas-textfield__input { height: 36px; }
 .fas-textfield--m  .fas-textfield__input { height: 40px; }
 .fas-textfield--l  .fas-textfield__input { height: 44px; }
 .fas-textfield--xl .fas-textfield__input { height: 48px; font-size: 16px; }
 
-/* ─── Textarea ──────────────────────────────────────────────────────────────── */
+/* ─── Textarea (min-height 64, per Figma 7205:99225) ────────────────────────── */
 .fas-textfield__textarea {
+  min-height: 64px;
   height: auto !important;
   resize: vertical;
   padding: 8px 12px;
   line-height: 1.5;
 }
 
-/* ─── Icons ─────────────────────────────────────────────────────────────────── */
+/* ─── Leading / Trailing decorative icons ───────────────────────────────────── */
 .fas-textfield__icon {
   position: absolute;
   top: 50%;
@@ -149,6 +204,35 @@
 
 .fas-textfield--outlined .fas-textfield__icon--leading  ~ .fas-textfield__input { padding-left: 36px; }
 .fas-textfield--outlined .fas-textfield__icon--trailing ~ .fas-textfield__input { padding-right: 36px; }
+
+/* ─── Clear button (focus + filled only) ────────────────────────────────────── */
+.fas-textfield__clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-medium);
+  cursor: pointer;
+  border-radius: 50%;
+}
+.fas-textfield__clear:hover { color: var(--text-high); }
+.fas-textfield__clear .material-symbols-outlined {
+  font-size: 20px;
+  line-height: 1;
+}
+/* Make room for the clear button on outlined fields */
+.fas-textfield--outlined .fas-textfield__clear ~ .fas-textfield__input,
+.fas-textfield--outlined .fas-textfield__input:has(~ .fas-textfield__clear) {
+  padding-right: 32px;
+}
 
 /* ─── Helper / Error / Count ────────────────────────────────────────────────── */
 .fas-textfield__helper {

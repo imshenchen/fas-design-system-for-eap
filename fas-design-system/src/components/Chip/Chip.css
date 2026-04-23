@@ -106,11 +106,13 @@
 }
 
 /* ─── Removable Chip ────────────────────────────────────────────────────────── */
+/* Shape comes from `fas-chip--rectangle` / `fas-chip--round` (default: rectangle).
+   Visual aligns with the design-system filled neutral chip (same look as
+   `<StatusChip status="idle" />`): soft neutral bg, no border, muted text. */
 .fas-chip--removable {
-  background: var(--comp-hover);
-  border: 1px solid var(--primary);
-  color: var(--primary);
-  border-radius: 16px;
+  background: var(--chip-idle);
+  color: var(--chip-text-idle);
+  border-color: transparent;
 }
 
 .fas-chip__remove {

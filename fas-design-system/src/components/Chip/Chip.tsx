@@ -94,6 +94,8 @@ export const SelectableChip: React.FC<SelectableChipProps> = ({
 export interface RemovableChipProps {
   label: string;
   onRemove?: () => void;
+  /** 外型：rectangle（預設，4px 圓角）或 round（pill） */
+  shape?: ChipShape;
   size?: ChipSize;
   className?: string;
 }
@@ -101,11 +103,17 @@ export interface RemovableChipProps {
 export const RemovableChip: React.FC<RemovableChipProps> = ({
   label,
   onRemove,
+  shape = 'rectangle',
   size = 'l',
   className,
 }) => (
   <span
-    className={['fas-chip fas-chip--removable', `fas-chip--${size}`, className]
+    className={[
+      'fas-chip fas-chip--removable',
+      `fas-chip--${shape}`,
+      `fas-chip--${size}`,
+      className,
+    ]
       .filter(Boolean)
       .join(' ')}
   >

@@ -1,0 +1,196 @@
+/**
+ * Select — FAS Design Kit
+ *
+ * Inherits all visual states from `.fas-textfield` (outlined / underline / sizes
+ * / hover / focus / error / disabled / readonly). Only the Select-specific
+ * pieces (trigger layout, chips, arrow, menu) live here.
+ */
+
+.fas-select {
+  position: relative;
+}
+
+/* ─── Trigger (div that looks like `.fas-textfield__input`) ─────────────────── */
+.fas-select__trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Single-select trigger inherits the fixed input height from `--{size}`. */
+
+/* Multi-select trigger grows with chips; min-height comes from the size class. */
+.fas-select--multiple .fas-select__trigger {
+  height: auto !important;
+  min-height: var(--dt-row-height, 40px);
+  padding-top: 4px;
+  padding-bottom: 4px;
+  flex-wrap: wrap;
+}
+.fas-textfield--xs.fas-select--multiple .fas-select__trigger { min-height: 32px; }
+.fas-textfield--s.fas-select--multiple  .fas-select__trigger { min-height: 36px; }
+.fas-textfield--m.fas-select--multiple  .fas-select__trigger { min-height: 40px; }
+.fas-textfield--l.fas-select--multiple  .fas-select__trigger { min-height: 44px; }
+.fas-textfield--xl.fas-select--multiple .fas-select__trigger { min-height: 48px; }
+
+/* Disabled/read-only cursor */
+.fas-textfield--disabled .fas-select__trigger { cursor: not-allowed; }
+.fas-textfield--readonly .fas-select__trigger { cursor: default; }
+
+/* ─── Single-value static display ───────────────────────────────────────────── */
+.fas-select__value {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-high);
+  font-size: inherit;
+}
+.fas-select__value--placeholder {
+  color: var(--text-placeholder);
+}
+
+/* ─── Chips row (multi) ────────────────────────────────────────────────────
+   `flex: 0 1 auto` — chips take only their content width (doesn't grow),
+   so the search input sits right next to the last chip (caret near chip). */
+.fas-select__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* ─── Inline search input ───────────────────────────────────────────────────
+   `flex: 1 1 <min>` — grows to fill remaining space after chips.
+   No `width: 100%` — let flex drive the size. */
+.fas-select__search {
+  flex: 1 1 60px;
+  min-width: 40px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: var(--text-high);
+  padding: 0;
+}
+.fas-select__search::placeholder {
+  color: var(--text-placeholder);
+  opacity: 1;
+}
+
+/* Searchable + filled: when no search query is being typed, the selected
+   label shows as the input's placeholder — use high-emphasis text colour so
+   it reads like a real value (matches the non-searchable single-select). */
+.fas-textfield--filled .fas-select__search::placeholder {
+  color: var(--text-high);
+}
+
+/* When multi + searchable the search input sits after the chips with small gap */
+.fas-select--multiple .fas-select__search {
+  flex: 1 1 60px;
+  min-width: 60px;
+}
+
+/* ─── Arrow ─────────────────────────────────────────────────────────────────── */
+.fas-select__arrow {
+  color: var(--text-medium);
+  font-size: 20px;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+.fas-select__arrow--open {
+  transform: rotate(180deg);
+}
+
+/* Leave room for the arrow on the right */
+.fas-textfield--outlined .fas-select__trigger {
+  padding-right: 32px;
+}
+.fas-textfield--outlined.fas-select__trigger,
+.fas-select__arrow {
+  /* arrow is absolute-positioned on the right; see below */
+}
+.fas-select__arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.fas-select__arrow--open {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* ─── Clear button (single mode) — sits to the left of the arrow ────────────── */
+.fas-select__clear {
+  right: 28px; /* 8 (arrow right) + 20 (arrow size) */
+}
+.fas-textfield--outlined .fas-select__clear ~ .fas-select__trigger,
+.fas-textfield--outlined .fas-select__trigger:has(~ .fas-select__clear) {
+  padding-right: 52px; /* 32 + 20 */
+}
+
+/* ─── Dropdown menu (positioned inside `.fas-textfield__control`) ───────────── */
+.fas-select__menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 1300;
+}
+
+/* Option rows */
+.fas-select__option {
+  gap: 8px;
+}
+
+.fas-select__empty {
+  justify-content: center;
+  color: var(--text-medium);
+}
+
+.fas-select__check {
+  color: var(--primary);
+  font-size: 18px;
+  margin-left: auto;
+}
+
+/* Selected multi option (optional visual — background hint) */
+.fas-select--multiple .fas-select__option[aria-selected='true'] {
+  background: var(--comp-hover);
+}
+
+/* ─── "新增" create row (creatable prop) ────────────────────────────────────
+   Highlighted so users can tell it's an action (add a new value), not an
+   existing option. Shown at the top of the dropdown. */
+.fas-select__create {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary);
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 1px solid var(--divider);
+}
+.fas-select__create:hover {
+  background: var(--comp-hover);
+}
+.fas-select__create-icon {
+  color: var(--primary);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+/* Typed query in default text colour so the action label (primary) and the
+   target word (neutral) are visually distinct. */
+.fas-select__create-query {
+  color: var(--text-high);
+  font-weight: 400;
+  margin-left: 4px;
+}

@@ -41,7 +41,11 @@ export type { ProgressProps, ProgressVariant, ProgressColor } from './Progress/P
 
 // TextField
 export { TextField, TextArea } from './TextField/TextField';
-export type { TextFieldProps, TextAreaProps, TextFieldStyle, TextFieldSize, TextFieldState } from './TextField/TextField';
+export type { TextFieldProps, TextAreaProps, TextFieldStyle, TextFieldSize } from './TextField/TextField';
+
+// Select
+export { Select } from './Select/Select';
+export type { SelectProps, SelectOption } from './Select/Select';
 
 // Checkbox
 export { Checkbox } from './Checkbox/Checkbox';

@@ -25,6 +25,7 @@
 
 /* 3. Component Styles — Form Controls */
 @import '../components/TextField/TextField.css';
+@import '../components/Select/Select.css';
 @import '../components/Checkbox/Checkbox.css';
 @import '../components/Radio/Radio.css';
 @import '../components/Switch/Switch.css';

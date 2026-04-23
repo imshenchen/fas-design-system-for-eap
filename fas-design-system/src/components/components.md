@@ -166,6 +166,38 @@
 
 ---
 
+## Select
+以 TextField 樣式為基礎的下拉選擇器。`multiple` × `searchable` × `creatable` 三個 flag 正交組合，涵蓋所有選擇 / 搜尋 / 新增情境。
+
+```tsx
+// 1. 單選
+<Select options={fruits} value={val} onChange={(v) => setVal(v as string)} />
+
+// 2. 多選（chip 顯示，點欄外才關）
+<Select multiple options={fruits} value={arr} onChange={(v) => setArr(v as string[])} />
+
+// 3. 搜尋（focus 後輸入過濾）
+<Select searchable options={fruits} value={val} onChange={setVal} />
+
+// 4. 搜尋 + 可新增（下拉出「新增『xxx』」列，Enter 或點擊可新增）
+<Select searchable creatable options={fruits} value={val} onChange={setVal} />
+<Select multiple searchable creatable options={tags} value={arr} onChange={setArr} />
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `options` | `SelectOption[]` | — | `{ value, label, disabled? }` |
+| `value` | `string \| string[]` | — | 單選 string；多選 string[] |
+| `multiple` | `boolean` | `false` | 啟用多選 + chip 顯示 |
+| `searchable` | `boolean` | `false` | focus 後可輸入文字過濾 |
+| `creatable` | `boolean` | `false` | 下拉顯示「新增」列，可建立不在 options 的新值（需搭配 `searchable`） |
+| `createLabel` | `string` | `'新增'` | 「新增」列的前綴文字 |
+| `clearable` | `boolean` | `true` | focus+有值時顯示 clear（單選清成 `''`、多選清成 `[]`） |
+| `style` / `size` / `labelPosition` | 同 TextField | — | TextField 所有視覺／狀態都適用 |
+| `disabled` / `readOnly` / `error` / `helperText` | 同 TextField | — | |
+
+---
+
 ## Stepper
 步驟流程指示器。`activeStep` 從 0 開始。
 

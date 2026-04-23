@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
 import { TextField, TextArea } from './TextField';
 
 const meta: Meta<typeof TextField> = {
@@ -39,6 +40,36 @@ export const AllStates: Story = {
       <TextField label="唯讀" readOnly defaultValue="唯讀文字" />
     </div>
   ),
+};
+
+/**
+ * State matrix matching Figma 7185:55633 — every row shows outlined + underline
+ * side by side. Click into a field to see focus state + clear icon.
+ */
+export const StateMatrix: Story = {
+  name: 'States (Figma spec)',
+  render: () => {
+    const row = (
+      label: string,
+      props: React.ComponentProps<typeof TextField>,
+    ) => (
+      <div style={{ display: 'grid', gridTemplateColumns: '160px 260px 260px', alignItems: 'start', gap: 24 }}>
+        <div style={{ fontSize: 14, color: 'var(--text-medium)', paddingTop: 32 }}>{label}</div>
+        <TextField style="outlined"  label="欄位名稱" {...props} />
+        <TextField style="underline" label="欄位名稱" {...props} />
+      </div>
+    );
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {row('Empty',           { placeholder: '請輸入' })}
+        {row('Filled',          { defaultValue: '輸入值' })}
+        {row('Focus (點擊)',    { defaultValue: '輸入值' })}
+        {row('Error',           { defaultValue: '輸入值', error: '錯誤訊息' })}
+        {row('Disabled',        { defaultValue: '輸入值', disabled: true })}
+        {row('Read-only',       { defaultValue: '輸入值', readOnly: true })}
+      </div>
+    );
+  },
 };
 
 export const AllStyles: Story = {
