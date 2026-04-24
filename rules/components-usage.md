@@ -7,6 +7,7 @@
 
 ## Foundations
 
+- **Templates**: When building a page, prefer one of the provided page templates first. Only generate a custom layout when none of the templates fit the feature's UI.
 - **Colors**: Always use semantic color tokens (`var(--primary)`, `var(--error)`, etc.). Never hardcode hex values.
 - **Dark Mode**: Achieved by toggling CSS token values via `[data-theme="dark"]`. Component structure never changes.
 - **Border radius**: Default **4px**; use 8px for larger surfaces (modals, cards); 50% for circular elements only.
@@ -94,6 +95,36 @@ NavigationBar (60px, sticky, z-100)
 | Dialog | 300 |
 | Tooltip | 400 |
 | Snackbar | 500 |
+
+---
+
+## Templates
+
+Page-level layout templates. Compose components into proven patterns for common page types — choose a template first, fall back to a custom layout only when none fit.
+
+### SectionedForm
+
+Use as the **standard full-page editor**. When an edit form is too complex to fit in a Dialog (multiple sections, nested inputs, or long scroll), use `SectionedForm` as the page template instead.
+
+- Each `FormSection` is a two-column grid: left column holds the section title + description, right column holds the form content (typically a `Card`).
+- Column ratio is driven by CSS Grid (`1fr 2.5fr` by default) — never hardcode widths.
+- Sections are separated by a divider by default; the layout auto-stacks into a single column below 768px.
+
+### SplitDetailView
+
+Use for **list-with-detail presentation**, ideal when each list item has **multiple layers and complex content** that a row or inline expander cannot comfortably show.
+
+- Selecting a single row in the master table opens an embedded detail drawer (`Drawer variant="float"`) on the right; closing the drawer lets the master table reclaim the full width.
+- The drawer spans the full main-content height, flush with the page header and page bottom.
+- The template handles layout only — selection state ↔ drawer open/close binding is controlled by the caller.
+
+### RepeatableList
+
+Use for **form sections with dynamically added / removed items** (e.g. deployment ports, container mounts, environment variables, configmap entries). Items are auto-numbered and each has a built-in remove button; an "Add" button sits at the bottom of the list.
+
+- Two density modes via `itemStyle`:
+  - `inline` (default) — compact rows sharing one outer `Card`. Suitable for simple key-value / path-path entries.
+  - `card` — each item is its own card; the empty state shows only the Add button with no card. Suitable when each item has many fields or complex nested content.
 
 ---
 

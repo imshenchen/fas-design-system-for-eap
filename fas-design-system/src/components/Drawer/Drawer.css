@@ -1,5 +1,6 @@
 /* Drawer — FAS Design Kit */
 
+/* ─── Portal (default variant only) ─────────────────────────────────────── */
 .fas-drawer-portal {
   position: fixed;
   inset: 0;
@@ -12,56 +13,88 @@
   background: var(--scrim);
 }
 
+/* ─── Panel base ────────────────────────────────────────────────────────── */
 .fas-drawer {
-  position: absolute;
-  background: var(--bg-surface);
+  background: var(--elevation-06dp, var(--bg-surface));
   display: flex;
   flex-direction: column;
+}
+
+/* ─── Variant: default (overlay + mask) ─────────────────────────────────── */
+.fas-drawer--default {
+  position: absolute;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-/* Placement */
-.fas-drawer--left  { top: 0; left: 0; height: 100%; }
-.fas-drawer--right { top: 0; right: 0; height: 100%; }
-.fas-drawer--top   { top: 0; left: 0; right: 0; width: 100%; }
-.fas-drawer--bottom { bottom: 0; left: 0; right: 0; width: 100%; }
+.fas-drawer--default.fas-drawer--left   { top: 0; left: 0; height: 100%; }
+.fas-drawer--default.fas-drawer--right  { top: 0; right: 0; height: 100%; }
+.fas-drawer--default.fas-drawer--top    { top: 0; left: 0; right: 0; width: 100%; }
+.fas-drawer--default.fas-drawer--bottom { bottom: 0; left: 0; right: 0; width: 100%; }
 
-/* Header */
+/* ─── Variant: float (inline, pushes sibling content) ───────────────────── */
+.fas-drawer--float {
+  position: relative;
+  flex-shrink: 0;
+  margin: 8px;
+  border-radius: 8px;
+  /* elevation 06dp shadow */
+  box-shadow: 0 4px 8px rgba(46, 46, 46, 0.14);
+}
+
+/* Keep the non-anchored axis stretched while the anchored side respects margin */
+.fas-drawer--float.fas-drawer--left,
+.fas-drawer--float.fas-drawer--right { align-self: stretch; }
+.fas-drawer--float.fas-drawer--top,
+.fas-drawer--float.fas-drawer--bottom { align-self: stretch; }
+
+/* ─── Size — horizontal anchor uses viewport width ──────────────────────── */
+.fas-drawer--left.fas-drawer--size-s,
+.fas-drawer--right.fas-drawer--size-s { width: 25vw; }
+
+.fas-drawer--left.fas-drawer--size-m,
+.fas-drawer--right.fas-drawer--size-m { width: 35vw; }
+
+.fas-drawer--left.fas-drawer--size-l,
+.fas-drawer--right.fas-drawer--size-l { width: 50vw; }
+
+/* ─── Size — vertical anchor uses viewport height ───────────────────────── */
+.fas-drawer--top.fas-drawer--size-s,
+.fas-drawer--bottom.fas-drawer--size-s { height: 25vh; }
+
+.fas-drawer--top.fas-drawer--size-m,
+.fas-drawer--bottom.fas-drawer--size-m { height: 35vh; }
+
+.fas-drawer--top.fas-drawer--size-l,
+.fas-drawer--bottom.fas-drawer--size-l { height: 50vh; }
+
+/* ─── Header ────────────────────────────────────────────────────────────── */
 .fas-drawer__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  gap: 12px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--divider);
   flex-shrink: 0;
 }
 
+.fas-drawer--float .fas-drawer__header {
+  border-bottom: none;
+}
+
 .fas-drawer__title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-high);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.fas-drawer__close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  color: var(--text-medium);
-  font-size: 14px;
-  line-height: 1;
-  transition: background 0.15s;
-}
-
-.fas-drawer__close:hover {
-  background: var(--comp-hover);
-  color: var(--text-body);
-}
-
-/* Body */
+/* ─── Body ──────────────────────────────────────────────────────────────── */
 .fas-drawer__body {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 16px 24px;
 }

@@ -305,13 +305,36 @@
 ---
 
 ## Drawer
-側邊滑出面板。
+側邊滑出面板。兩個 variant 對應不同的使用情境：
+
+- **`default`**（預設）— 從邊緣滑出覆蓋頁面，帶 backdrop mask。用於臨時、需要使用者專注的情境（如篩選、表單、詳情查看）。
+- **`float`** — 嵌入版面的浮動面板，**無 mask**，開啟時讓主內容縮窄並排共存。用於長時間檢視的輔助資訊（如部署詳情、屬性面板）。
 
 ```tsx
-<Drawer open={open} anchor="right" title="篩選條件" onClose={handleClose}>
+// Default — 覆蓋 + mask
+<Drawer open={open} anchor="right" title="篩選條件" onClose={handleClose} size="m">
   {/* 表單內容 */}
 </Drawer>
+
+// Float — 嵌入版面，需放在 flex 容器中作為 sibling
+<div style={{ display: 'flex' }}>
+  <main style={{ flex: 1 }}>{/* 主內容 */}</main>
+  <Drawer variant="float" open={open} onClose={handleClose} anchor="right" size="m" title="應用程式詳情">
+    {/* 詳情內容 */}
+  </Drawer>
+</div>
 ```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `variant` | `'default' \| 'float'` | `'default'` | 覆蓋 + mask / 嵌入版面無 mask |
+| `size` | `'s' \| 'm' \| 'l'` | `'m'` | 寬度用畫面比例：S=25%、M=35%、L=50%（橫向用 vw、縱向用 vh） |
+| `anchor` | `'left' \| 'right' \| 'top' \| 'bottom'` | `'right'` | 出現位置 |
+| `width` / `height` | `number \| string` | — | 自訂尺寸，會覆蓋 `size` |
+| `showBackdrop` | `boolean` | `true` | 僅 `default` variant 有效 |
+
+- `float` 必須放在 `display: flex` 的容器中作為 sibling，關閉時元件不 render，容器會自然回填
+- `float` 不會 portal，不會 lock body scroll；`default` 兩者皆會
 
 ---
 
@@ -458,6 +481,129 @@
 - 最多 5 層 `items`
 - `topOffset` 預設 `56`（NavBar 高度），NavBar 高度異動時同步調整
 - **Action button 慣例**：主按鈕 `variant="contained"`（primary）；次按鈕 `variant="text" color="secondary"`（不使用 outlined，以減少視覺噪音）
+
+---
+
+## Templates
+
+> 頁面級版面樣板。只包主內容，不包 NavigationBar / SideMenu / FeatureTitle —— 這些請在外層的 AppShell 自行組合。
+
+### SplitDetailView
+表格 + 嵌入式 detail drawer 的 split layout。單選一筆表格資料 → 右側開啟 `Drawer variant="float"`（嵌入版面、無 backdrop）顯示該項目詳細內容。適合「每筆資料內容多層且複雜」的情境。
+
+```tsx
+import { SplitDetailView, DataTable, Radio } from '@imshenchen/fas-design-system';
+
+const [selectedId, setSelectedId] = useState<string | null>(null);
+const selected = rows.find((r) => r.id === selectedId);
+
+<SplitDetailView
+  drawerOpen={selectedId !== null}
+  onDrawerClose={() => setSelectedId(null)}
+  drawerTitle={selected?.name ?? ''}
+  drawerSubtitle="Instance detail"
+  drawerContent={<>{/* Tabs / 嵌套表格 / 表單 */}</>}
+>
+  <DataTable
+    columns={[
+      {
+        key: 'select',
+        header: '',
+        render: (_v, row) => (
+          <Radio checked={selectedId === row.id} onChange={() => setSelectedId(row.id)} />
+        ),
+      },
+      /* ...其他欄位 */
+    ]}
+    data={rows}
+    rowKey={(r) => r.id}
+  />
+</SplitDetailView>
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `drawerOpen` | `boolean` | — | drawer 開關 |
+| `onDrawerClose` | `() => void` | — | X 按鈕 / 外部取消選取時呼叫 |
+| `drawerTitle` | `ReactNode` | — | drawer 大標題（通常是被選取項目名稱） |
+| `drawerSubtitle` | `ReactNode` | — | 標題下方小字副標（`text-medium`），可放描述、meta 資訊 |
+| `drawerContent` | `ReactNode` | — | drawer 主內容（Tabs / 嵌套表格 / 表單等） |
+| `drawerSize` | `'s' \| 'm' \| 'l'` | `'l'` | drawer 寬度級距（25 / 35 / 50 vw）|
+| `drawerWidth` | `number \| string` | — | 自訂寬度，會覆寫 `drawerSize` |
+| `children` | `ReactNode` | — | 左側內容（通常是 `DataTable`）|
+
+- Drawer 用 `variant="float"`：關閉時不 render、左側自然回填整個寬度
+- 選取狀態 ↔ drawer 開關的綁定由使用者控制；通常用 `drawerOpen={selectedId !== null}`
+- 不含 AppShell / FeatureTitle，請在外層自行組合
+
+---
+
+### RepeatableList / RepeatableItem
+動態可新增 / 刪除的 form 列表。常見於 Create 頁的 Deployment port / Container mount / Environment variable / ConfigMap 等「重複結構」區塊。自動編號 1、2、3…，Add 按鈕置於底部。
+
+```tsx
+import { RepeatableList, RepeatableItem, TextField } from '@imshenchen/fas-design-system';
+
+<RepeatableList addLabel="Add port" onAdd={addPort}>
+  {ports.map((p) => (
+    <RepeatableItem key={p.id} onRemove={() => removePort(p.id)}>
+      <TextField label="Port name" value={p.name} onChange={...} />
+      {/* ...其他欄位、Switch、甚至巢狀 RepeatableList 都可以 */}
+    </RepeatableItem>
+  ))}
+</RepeatableList>
+```
+
+| Prop | Type | 說明 |
+|------|------|------|
+| `addLabel` | `string` | "Add" 按鈕文字，例如 "Add port" |
+| `onAdd` | `() => void` | 點擊 Add 時呼叫 |
+| `itemStyle` | `'inline' \| 'card'` | `inline`（預設）項目間用間距分隔，搭配外層 Card；`card` 每個項目自帶 outlined + 02dp 卡片樣式，**空狀態時只剩 Add 按鈕無卡片**（適合 Deployment port 這種「一項一卡片」情境） |
+| `addDisabled` | `boolean` | 達到上限時 disable |
+| `hideAdd` | `boolean` | 隱藏 Add 按鈕（read-only 模式） |
+| `disableAutoIndex` | `boolean` | 關閉自動編號（預設為子項自動填 1、2、3...） |
+
+`RepeatableItem`：
+
+| Prop | Type | 說明 |
+|------|------|------|
+| `index` | `number \| string` | 自訂編號；未傳時由父層自動指派 |
+| `onRemove` | `() => void` | 未傳則不顯示刪除按鈕（唯一項用） |
+| `removeLabel` | `string` | 刪除鈕 aria-label，預設 "Remove" |
+
+---
+
+### SectionedForm / FormSection
+Create / Edit 頁的分段式表單主內容。每個 `FormSection` 是一列兩欄 grid：左欄放 section 標題與說明，右欄放表單內容（通常是 `Card`）。
+
+```tsx
+import { SectionedForm, FormSection, Card, TextField, Select } from '@imshenchen/fas-design-system';
+
+<SectionedForm>
+  <FormSection title="Basic settings">
+    <Card><TextField label="App name" required /></Card>
+  </FormSection>
+
+  <FormSection
+    title="Image setting"
+    description="Configure the container image and tag."
+  >
+    <Card><Select label="Image" options={imageOptions} /></Card>
+  </FormSection>
+</SectionedForm>
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `columns` | `string` | `'1fr 2.5fr'` | CSS `grid-template-columns`，左右欄比例。以 fr 為單位、不寫死寬度 |
+| `columnGap` | `number \| string` | `32` | 左右欄間距（px） |
+| `sectionPadding` | `number \| string` | `32` | 每個 section 上下 padding（px） |
+| `divider` | `boolean` | `true` | 是否在 section 之間顯示分隔線 |
+
+- **何時用**：Create / Edit 類型、欄位分組明確的長表單頁
+- **何時不用**：Wizard 類型的多步驟表單（請用 `Stepper`）、短表單（直接用 `Card` 包即可）
+- 視窗 < 768px 時自動堆疊為單欄
+- `FormSection` 可個別傳 `columns` 覆寫父層比例
 
 ---
 

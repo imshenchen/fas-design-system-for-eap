@@ -11,6 +11,9 @@ import './styles/index.css';
 // Components
 export * from './components';
 
+// Templates
+export * from './templates';
+
 // Tokens
 export { cssVars, rawTokens, spacing, zIndex } from './tokens/tokens';
 export type { CssVar, SpacingKey } from './tokens/tokens';

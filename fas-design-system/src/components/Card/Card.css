@@ -2,7 +2,8 @@
 
 .fas-card {
   border-radius: 8px;
-  overflow: hidden;
+  /* 不用 overflow: hidden — 會裁掉 Select/Menu 等子元件的下拉浮層。
+     需要邊角裁切的媒體請改用 `border-radius: inherit` 或獨立的 media slot。 */
   font-family: inherit;
   font-size: 14px;
   color: var(--text-body);

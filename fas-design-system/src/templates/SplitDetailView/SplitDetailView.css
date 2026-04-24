@@ -1,0 +1,30 @@
+/* SplitDetailView — FAS Design Kit (Template) */
+
+.fas-split-detail {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
+  /* 撐滿父層（通常是 column flex 的主內容區）剩餘高度，
+     讓 Drawer float 能 stretch 到整個頁面高度，而非只跟著 master 內容高度 */
+  flex: 1;
+  min-height: 0;
+}
+
+/* 左側 master：表格 / 列表（drawer 關閉時自動回填整個寬度；過高時自行捲動） */
+.fas-split-detail__master {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Drawer 內副標：title 下方、tabs / 主要內容上方
+   父層 .fas-drawer__body 已有 padding: 16px 24px，此處只加下方間距 */
+.fas-split-detail__subtitle {
+  margin: -8px 0 12px;
+  font-size: 13px;
+  line-height: 1.54;
+  color: var(--text-medium);
+}

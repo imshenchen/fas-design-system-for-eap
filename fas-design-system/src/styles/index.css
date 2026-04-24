@@ -59,7 +59,12 @@
 @import '../components/NavigationBar/NavigationBar.css';
 @import '../components/SideMenu/SideMenu.css';
 
-/* 9. Global Base Reset */
+/* 9. Templates (page-level layouts) */
+@import '../templates/SectionedForm/SectionedForm.css';
+@import '../templates/RepeatableList/RepeatableList.css';
+@import '../templates/SplitDetailView/SplitDetailView.css';
+
+/* 10. Global Base Reset */
 *,
 *::before,
 *::after {

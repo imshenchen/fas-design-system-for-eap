@@ -1,0 +1,57 @@
+/* RepeatableList / RepeatableItem — FAS Design Kit (Template) */
+
+.fas-repeatable-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── itemStyle: inline（預設，搭配外層 Card 使用）────────────────────────── */
+.fas-repeatable-list--inline {
+  gap: 24px;
+}
+.fas-repeatable-list--inline .fas-repeatable-list__add {
+  /* 對齊 content 欄（跳過 index 欄位） */
+  padding-left: 36px; /* 20px (index col) + 16px (column-gap) */
+}
+
+/* ── itemStyle: card（每個 item 自帶卡片樣式，無外層 Card）──────────────── */
+.fas-repeatable-list--card {
+  gap: 16px;
+}
+.fas-repeatable-list--card .fas-repeatable-item {
+  background: var(--elevation-02dp);
+  border: 1px solid var(--card-outlined);
+  border-radius: 8px;
+  padding: 24px;
+}
+.fas-repeatable-list--card .fas-repeatable-list__add {
+  padding-left: 0; /* card 模式無 index 偏移 */
+}
+
+/* ── Item ─────────────────────────────────────────────────────────────────── */
+
+.fas-repeatable-item {
+  display: grid;
+  grid-template-columns: 20px 1fr auto;
+  column-gap: 16px;
+  align-items: start;
+}
+
+.fas-repeatable-item__index {
+  /* 對齊第一列 input 中線（input height 40 → 中線 20px；index font 14 → 需 padding ~10px） */
+  padding-top: 10px;
+  color: var(--text-medium);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  user-select: none;
+}
+
+.fas-repeatable-item__content {
+  min-width: 0; /* 避免 children 的 long text 撐爆 grid */
+}
+
+.fas-repeatable-item__remove {
+  /* 對齊第一列 input 中線：輸入框 40px 高、IconButton 32px 高 → 上 padding 4px */
+  padding-top: 4px;
+}

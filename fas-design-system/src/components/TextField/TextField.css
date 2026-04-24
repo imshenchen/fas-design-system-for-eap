@@ -53,6 +53,10 @@
   position: relative;
   display: flex;
   align-items: center;
+}
+
+/* label-left：control 在 row 中需填滿剩餘寬度 */
+.fas-textfield--label-left .fas-textfield__control {
   flex: 1;
 }
 
@@ -181,13 +185,21 @@
 .fas-textfield--xl .fas-textfield__input { height: 48px; font-size: 16px; }
 
 /* ─── Textarea (min-height 64, per Figma 7205:99225) ────────────────────────── */
-.fas-textfield__textarea {
+/* 提高 specificity（雙 class）以覆寫 `.fas-textfield--outlined .fas-textfield__input` 的 padding。
+   上下 padding 依 size 對齊同 size TextField 的垂直置中距離：
+     (height - line-height) / 2，line-height 21px（14px font × 1.5）、xl 24px（16 × 1.5） */
+.fas-textfield__input.fas-textfield__textarea {
   min-height: 64px;
   height: auto !important;
   resize: vertical;
-  padding: 8px 12px;
+  padding: 10px 12px; /* size m 預設 */
   line-height: 1.5;
 }
+
+.fas-textfield--xs .fas-textfield__input.fas-textfield__textarea { padding-top: 6px;  padding-bottom: 6px; }
+.fas-textfield--s  .fas-textfield__input.fas-textfield__textarea { padding-top: 8px;  padding-bottom: 8px; }
+.fas-textfield--l  .fas-textfield__input.fas-textfield__textarea { padding-top: 12px; padding-bottom: 12px; }
+.fas-textfield--xl .fas-textfield__input.fas-textfield__textarea { padding-top: 12px; padding-bottom: 12px; }
 
 /* ─── Leading / Trailing decorative icons ───────────────────────────────────── */
 .fas-textfield__icon {
