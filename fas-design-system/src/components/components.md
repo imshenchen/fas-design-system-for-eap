@@ -446,17 +446,22 @@
 />
 ```
 
-`SideNavItem` 結構：
+三層結構：**群組（Group）→ 模組（Module）→ 功能（Feature）**
+
 ```ts
-{ key, label, icon?,        // Material Symbol name
-  children?,                // L2 子項目
-  isSection?,               // true → 不可點擊的章節標題
-  defaultOpen? }
+{ key, label, icon?,        // Material Symbol name（模組層使用）
+  children?,                // 模組下的功能；或群組下的模組
+  isSection?,               // true → 群組（藍色標題，可點擊展開／收合）
+  defaultOpen?,             // 模組層預設展開
+  defaultExpanded? }        // 群組預設展開
 ```
 
-- `isSection: true` 的項目作為章節標題（如「開發者工具」），其 `children` 為該章節下的 L1 項目
-- L1 項目有 `children` 時顯示展開箭頭；無 `children` 時為葉節點
-- `version` 字串固定顯示在底部，不隨選單捲動
+- **群組**（`isSection: true`）：藍色標題，整列可點擊展開／收合該群組內的模組。**整個 SideMenu 一次只展開一個群組**，點擊另一個群組會收合先前展開的；其 `children` 為該群組下的模組。
+- **模組**（L1，帶 icon）：可展開的二級項目；有 `children` 時顯示 chevron，無 `children` 時為葉節點直接觸發。
+- **功能**（L2，葉節點）：點擊後右側畫面切換到對應功能，受 `activeKey` 控制。
+- 群組預設展開順序：`defaultExpanded` > 含 `activeKey` 的群組 > 第一個群組。
+- 收折模式（80px）下隱藏群組標題，模組 icon 平鋪顯示。
+- `version` 字串固定顯示在底部，不隨選單捲動。
 
 ---
 
@@ -486,7 +491,66 @@
 
 ## Templates
 
-> 頁面級版面樣板。只包主內容，不包 NavigationBar / SideMenu / FeatureTitle —— 這些請在外層的 AppShell 自行組合。
+> 頁面級版面樣板。除 `AppShell` 為頁面最外層的整體框架外，其餘樣板只包主內容，由 `AppShell` 在外層提供 NavigationBar / SideMenu / FeatureTitle。
+
+### AppShell
+頁面最外層的版面樣板，**必須包含三大區塊**：
+
+- **NavigationBar** — 頂端 60px 導覽列
+- **SideMenu** — 左側永久選單（展開 280px / 收折 80px）
+- **FeatureTitle** — NavBar 下方的頁面標題列（含麵包屑與右側 CTA）
+
+`children` 即主內容區（FeatureTitle 下方的可滾動區）。SideMenu 收折狀態由 AppShell 內建管理，點擊 NavBar 的漢堡按鈕即可切換；也可改傳 `collapsed` / `onCollapsedChange` 改為受控模式。
+
+```tsx
+import { AppShell, Button, Card } from '@imshenchen/fas-design-system';
+
+<AppShell
+  appName="APP Name"
+  userInitial="K"
+  menuItems={menuItems}             // SideNavItem[]（群組／模組／功能三層）
+  activeKey={activeKey}
+  onMenuItemClick={(key) => navigate(key)}
+  version="v1.2.0"
+  breadcrumb={[
+    { label: '節點管理', onClick: () => navigate('/nodes') },
+    { label: '節點清單' },           // 最後一項當前頁面
+  ]}
+  actions={
+    <>
+      <Button variant="text" color="secondary" size="s">取消</Button>
+      <Button variant="contained" size="s">創建</Button>
+    </>
+  }
+>
+  <Card variant="elevated">{/* 功能畫面 */}</Card>
+</AppShell>
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `appName` | `string` | `'APP Name'` | NavBar 顯示的 App 名稱 |
+| `logo` | `ReactNode` | 占位方塊 | 自訂 Logo |
+| `userInitial` | `string` | `'K'` | NavBar Avatar 顯示文字 |
+| `onUserClick` | `() => void` | — | 點擊 Avatar callback |
+| `navActions` | `ReactNode` | — | NavBar 右側 Avatar 左方的自訂操作區 |
+| `menuItems` | `SideNavItem[]` | — | **必填**；SideMenu 結構（同 SideMenu `items`） |
+| `activeKey` | `string` | — | 目前選中的 menu item key |
+| `onMenuItemClick` | `(key, item) => void` | — | menu item 點擊 callback |
+| `version` | `string` | — | SideMenu 底部版本字串 |
+| `collapsed` | `boolean` | — | 受控收折狀態（傳此值即進入 controlled 模式） |
+| `defaultCollapsed` | `boolean` | `false` | 非受控模式的初始收折狀態 |
+| `onCollapsedChange` | `(next) => void` | — | 收折狀態變更 callback |
+| `breadcrumb` | `FeatureTitleItem[]` | — | **必填**；麵包屑層級（最多 5 層；最後一項當前頁面） |
+| `actions` | `ReactNode` | — | FeatureTitle 右側 CTA 按鈕區 |
+| `contentPadding` | `number \| string` | `32` | 主內容區 padding；傳 `0` 由 children 自行控制 |
+| `contentBackground` | `string` | `var(--bg-surface-dim)` | 主內容區背景色 |
+
+- 整體高度為 `100vh`，主內容欄為唯一滾動容器（FeatureTitle sticky 至頂）
+- 不需也不該再額外手動組合 NavBar / SideMenu / FeatureTitle —— 那違背 AppShell 的角色
+- 主內容若是表格 + drawer 的版面（如 `SplitDetailView`），直接傳入即可，會自動撐滿剩餘高度
+
+---
 
 ### SplitDetailView
 表格 + 嵌入式 detail drawer 的 split layout。單選一筆表格資料 → 右側開啟 `Drawer variant="float"`（嵌入版面、無 backdrop）顯示該項目詳細內容。適合「每筆資料內容多層且複雜」的情境。
@@ -570,6 +634,92 @@ import { RepeatableList, RepeatableItem, TextField } from '@imshenchen/fas-desig
 | `index` | `number \| string` | 自訂編號；未傳時由父層自動指派 |
 | `onRemove` | `() => void` | 未傳則不顯示刪除按鈕（唯一項用） |
 | `removeLabel` | `string` | 刪除鈕 aria-label，預設 "Remove" |
+
+---
+
+### Transfer
+雙欄選擇器：左側「可選」、右側「已選」，使用者透過 checkbox + 中央按鈕在兩側搬移項目。常見於「註冊設備」、「成員授權」等「從候選池挑選一組值」的情境。
+
+```tsx
+import { Transfer } from '@imshenchen/fas-design-system';
+
+const [value, setValue] = useState<string[]>([]);
+
+<Transfer
+  options={[
+    { value: 'aoi-002', label: 'AOI檢測機002' },
+    { value: 'laser-002', label: 'LASER雷射雕刻機002', chip: { label: '未啟用同步', status: 'idle' } },
+    { value: 'old-mes', label: 'Legacy MES', disabled: true, chip: { label: '已停用', status: 'idle' } },
+  ]}
+  value={value}
+  onChange={setValue}
+  searchable                            // 兩側都顯示搜尋
+  sourceSearchPlaceholder="搜尋設備"
+  forwardLabel="加入"
+  backwardLabel="移除"
+/>
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `options` | `TransferOption[]` | — | `{ value, label, disabled?, chip? }` |
+| `value` | `string[]` | — | 已選 values（右欄內容），controlled |
+| `onChange` | `(next: string[]) => void` | — | value 變動 callback |
+| `searchable` | `boolean \| { source?, target? }` | `false` | 兩側統一或分別控制是否顯示搜尋 |
+| `sourceSearchPlaceholder` / `targetSearchPlaceholder` | `string` | — | 搜尋欄 placeholder |
+| `filterOption` | `(keyword, opt) => boolean` | 預設以 label 文字包含比對 | 自訂搜尋邏輯（label 為 ReactNode 時建議自訂） |
+| `sourceTitle` / `targetTitle` | `string` | `'全部'` | 全選列標題前綴；自動帶上 `(N)` 計數 |
+| `showSelectAll` | `boolean` | `true` | 是否顯示全選列 |
+| `sourceEmpty` / `targetEmpty` | `ReactNode` | 預設插畫 + 「尚無項目／請加入項目」 | 空狀態自訂內容 |
+| `forwardLabel` / `backwardLabel` | `string` | `'加入'` / `'移除'` | 中央按鈕文字 |
+| `listHeight` | `number \| string` | `320` | 列表區高度（不含 search bar / select-all） |
+
+- **disabled option**：仍會顯示於列表，但 checkbox 不可勾且不受全選影響；游標顯示 `not-allowed`
+- **chip**：每個 option 可帶 `{ label, status? }`，使用 StatusChip 顯示在 label 右側（同步狀態、版本、權限提示等）
+- **全選列**：勾選範圍受目前 search 過濾結果限制；indeterminate 自動處理
+- **空狀態**：`options` 為空 → 顯示 `sourceEmpty / targetEmpty`；search 無結果 → 統一顯示「找不到符合的項目」
+- 通常放在 Dialog（重現 Figma「註冊設備」對話框）或 SectionedForm 的 right column 中
+
+---
+
+### OverviewDetailTable
+「實體概覽 + 子項列表」的版面樣板。常見於節點管理、應用程式管理、機台管理等「主檔頁面」：上方是當前實體的 overview 摘要卡片（icon、名稱、狀態、meta、actions），下方是該實體底下的細項清單（toolbar + DataTable）。
+
+```tsx
+import { OverviewDetailTable, Card, Tabs, Tab, DataTable, Button, Select, TextField } from '@imshenchen/fas-design-system';
+
+<OverviewDetailTable
+  tabs={
+    <Tabs value={tab} onChange={setTab}>
+      <Tab value="overview" label="概覽" />
+      <Tab value="dashboard" label="儀表板" />
+    </Tabs>
+  }
+  overview={
+    <Card variant="outlined">{/* icon ＋ 名稱 ＋ 狀態 ＋ meta ＋ actions */}</Card>
+  }
+  toolbar={
+    <>
+      <span>設備列表</span>
+      {/* counts、主操作、篩選、搜尋 */}
+    </>
+  }
+>
+  <DataTable columns={columns} data={rows} rowKey={(r) => r.id} />
+</OverviewDetailTable>
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `tabs` | `ReactNode` | — | 頁面層級 Tabs（如「概覽 / 儀表板」），顯示在 overview 上方 |
+| `overview` | `ReactNode` | — | Overview 區塊內容（通常是一張帶 icon、名稱、狀態、meta 的 `Card`） |
+| `toolbar` | `ReactNode` | — | 表格上方工具列：清單標題 + 計數 + 主操作 + 篩選 + 搜尋 |
+| `children` | `ReactNode` | — | 主內容（通常是 `DataTable`） |
+| `gap` | `number \| string` | `24` | 區塊之間的垂直間距（px） |
+
+- 樣板只負責版面與間距，overview / toolbar 內容皆由使用者組合
+- 不含 AppShell / FeatureTitle，請在外層自行組合
+- 對比 `SplitDetailView`：本樣板強調「一個實體的摘要 + 它的子項列表」（垂直堆疊）；`SplitDetailView` 是「列表 + 點選項目開 detail drawer」（水平 split）
 
 ---
 

@@ -40,11 +40,29 @@
   margin-bottom: 4px;
 }
 
-.fas-sidemenu__section-label {
-  display: block;
+/* 群組標題：可點擊整列以展開／收合該群組 */
+.fas-sidemenu__section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
   height: 40px;
-  line-height: 40px;
   padding: 0 12px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.12s;
+}
+
+.fas-sidemenu__section-header:hover {
+  background: var(--comp-hover);
+}
+
+.fas-sidemenu__section-label {
+  flex: 1;
+  min-width: 0;
   font-family: 'Noto Sans TC', 'Roboto', sans-serif;
   font-weight: 500;
   font-size: 13px;
@@ -204,6 +222,99 @@
 
 .fas-sidemenu--collapsed .fas-sidemenu__scroll {
   padding: 8px 12px;
+}
+
+/* 收折模式下隱藏群組標題（僅平鋪模組 icon） */
+.fas-sidemenu--collapsed .fas-sidemenu__section-header {
+  display: none;
+}
+
+/* ── Hover flyout（收折模式 hover 模組時浮出） ── */
+.fas-sidemenu__flyout {
+  position: fixed;
+  width: 240px;
+  background: var(--bg-surface);
+  border-radius: 4px;
+  box-shadow:
+    0 -1px 3px rgba(46, 46, 46, 0.05),
+    0 6px 12px rgba(46, 46, 46, 0.16);
+  padding: 0 16px 16px 8px;
+  z-index: 200;
+  font-family: 'Noto Sans TC', 'Roboto', sans-serif;
+}
+
+.fas-sidemenu__flyout-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 4px 0 12px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--text-high);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.fas-sidemenu__flyout-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  color: var(--text-high);
+}
+
+.fas-sidemenu__flyout-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fas-sidemenu__flyout-children {
+  position: relative;
+  padding-left: 28px;
+}
+
+.fas-sidemenu__flyout-guide {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--divider);
+  pointer-events: none;
+}
+
+.fas-sidemenu__flyout-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-high);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.12s, color 0.12s;
+}
+
+.fas-sidemenu__flyout-item:hover {
+  background: var(--comp-hover);
+  color: var(--primary);
+}
+
+.fas-sidemenu__flyout-item--active {
+  background: var(--comp-focus);
+  color: var(--primary);
 }
 
 .fas-sidemenu--collapsed .fas-sidemenu__footer {

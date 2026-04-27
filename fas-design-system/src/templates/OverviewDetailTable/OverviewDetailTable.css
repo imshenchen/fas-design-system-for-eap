@@ -1,0 +1,158 @@
+/* OverviewDetailTable — FAS Design Kit (Template) */
+
+.fas-overview-detail-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fas-odt-gap);
+  width: 100%;
+  min-width: 0;
+}
+
+.fas-overview-detail-table__tabs,
+.fas-overview-detail-table__overview {
+  width: 100%;
+  min-width: 0;
+}
+
+.fas-overview-detail-table__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Toolbar 預設為 block 容器，讓內部 DataTableTopBar 自行撐滿寬度。
+   若使用者要塞多個並排元素，可在 children 裡自己用 flex 排版 */
+.fas-overview-detail-table__toolbar {
+  width: 100%;
+  min-width: 0;
+}
+
+.fas-overview-detail-table__table {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Overview summary helpers
+   提供常見的「icon + 名稱 + 狀態 + meta + actions」一列式版面，
+   並具備 RWD：寬版一列、平板換行、手機堆疊。
+   使用方式：放在 <CardBody> 內。
+--------------------------------------------------------------------------- */
+.fas-overview-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  width: 100%;
+  min-width: 0;
+}
+
+.fas-overview-summary__identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.fas-overview-summary__icon {
+  width: 72px;
+  height: 56px;
+  border-radius: 4px;
+  background: var(--bg-surface-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-medium);
+  flex-shrink: 0;
+}
+
+.fas-overview-summary__title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.fas-overview-summary__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-high);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fas-overview-summary__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 32px;
+  flex: 1;
+  min-width: 0;
+}
+
+.fas-overview-summary__meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 100px;
+}
+
+.fas-overview-summary__meta-label {
+  font-size: 12px;
+  color: var(--text-medium);
+  line-height: 1.4;
+}
+
+.fas-overview-summary__meta-value {
+  font-size: 14px;
+  color: var(--text-high);
+  line-height: 1.4;
+}
+
+.fas-overview-summary__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* 表格 cell 內的 icon-button 群組（編輯 / 更多…） */
+.fas-overview-detail-table__row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Tablet（≤ 1023px）：actions 換行到底下，meta 仍保留 wrap 行為 ── */
+@media (max-width: 1023px) {
+  .fas-overview-summary__actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* ── Mobile（≤ 767px）：整個摘要堆疊，meta 改為兩欄 ── */
+@media (max-width: 767px) {
+  .fas-overview-summary {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .fas-overview-summary__identity {
+    width: 100%;
+  }
+  .fas-overview-summary__meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+  }
+  .fas-overview-summary__actions {
+    justify-content: flex-start;
+  }
+}

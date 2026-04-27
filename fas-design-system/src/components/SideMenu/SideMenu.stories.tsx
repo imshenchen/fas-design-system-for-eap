@@ -83,9 +83,30 @@ const demoItems: SideNavItem[] = [
     ],
   },
   {
-    key: 'maintenance',
+    key: 'ops',
     label: '維運助手',
-    icon: 'build',
+    isSection: true,
+    children: [
+      {
+        key: 'monitoring',
+        label: '系統監控',
+        icon: 'monitoring',
+        children: [
+          { key: 'machine-status', label: '機台監控' },
+          { key: 'service-health', label: '服務健康度' },
+        ],
+      },
+      {
+        key: 'tickets',
+        label: '工單管理',
+        icon: 'assignment',
+        children: [
+          { key: 'ticket-list', label: '工單列表' },
+          { key: 'maintenance-schedule', label: '維修排程' },
+        ],
+      },
+      { key: 'backup', label: '備份還原', icon: 'backup' },
+    ],
   },
 ];
 
