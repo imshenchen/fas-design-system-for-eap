@@ -56,10 +56,13 @@ const ModuleItem: React.FC<{
   onFlyoutEnter?: (key: string, anchor: HTMLElement) => void;
   onFlyoutLeave?: () => void;
 }> = ({ item, activeKey, onItemClick, collapsed, onFlyoutEnter, onFlyoutLeave }) => {
-  const [open, setOpen] = useState(item.defaultOpen ?? false);
-
+  // 預設展開：明確的 defaultOpen 優先，其次自動展開含 activeKey 的模組。
+  // 之後完全由使用者控制（點擊 chevron 可任意展開／收合）。
+  const [open, setOpen] = useState(
+    () => item.defaultOpen ?? (item.children?.some((c) => c.key === activeKey) ?? false),
+  );
   const hasActiveChild = item.children?.some((c) => c.key === activeKey);
-  const isOpen = open || hasActiveChild;
+  const isOpen = open;
   const flyoutEnabled = collapsed && (item.children?.length ?? 0) > 0;
 
   return (
