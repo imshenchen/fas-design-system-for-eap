@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Alert } from './Alert';
 
 const meta: Meta<typeof Alert> = {
-  title: 'Feedback/Alert',
+  title: 'Core/Feedback/Alert',
   component: Alert,
   tags: ['autodocs'],
   argTypes: {

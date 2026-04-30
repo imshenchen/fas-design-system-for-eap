@@ -4,7 +4,7 @@ import { Menu, MenuItem, MenuDivider } from './Menu';
 import { Button } from '../Button/Button';
 
 const meta: Meta<typeof Menu> = {
-  title: 'Navigation/Menu',
+  title: 'Core/Navigation/Menu',
   component: Menu,
   tags: ['autodocs'],
 };

@@ -3,7 +3,7 @@ import React from 'react';
 import { List, ListItem, ListItemIcon, ListItemText, ListDivider, ListSubheader } from './List';
 
 const meta: Meta<typeof List> = {
-  title: 'Data Display/List',
+  title: 'Core/Data Display/List',
   component: List,
   tags: ['autodocs'],
 };

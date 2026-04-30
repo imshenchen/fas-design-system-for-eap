@@ -23,7 +23,7 @@ import { Icon } from '../../components/Icon/Icon';
  * 不寫死寬度；視窗 < 768px 時自動堆疊為單欄。
  */
 const meta: Meta<typeof SectionedForm> = {
-  title: 'Templates/SectionedForm',
+  title: 'Core/Templates/SectionedForm',
   component: SectionedForm,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

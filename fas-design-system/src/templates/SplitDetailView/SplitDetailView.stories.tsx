@@ -20,7 +20,7 @@ import { Icon } from '../../components/Icon/Icon';
  * 樣板只管 layout，不管選取邏輯 —— 選取 state 與 `drawerOpen` 的綁定由使用者控制。
  */
 const meta: Meta<typeof SplitDetailView> = {
-  title: 'Templates/SplitDetailView',
+  title: 'Core/Templates/SplitDetailView',
   component: SplitDetailView,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

@@ -4,7 +4,7 @@ import { Snackbar, SnackbarProvider, useSnackbar } from './Snackbar';
 import { Button } from '../Button/Button';
 
 const meta: Meta<typeof Snackbar> = {
-  title: 'Feedback/Snackbar',
+  title: 'Core/Feedback/Snackbar',
   component: Snackbar,
   tags: ['autodocs'],
   parameters: { layout: 'padded' },

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Spin } from './Spin';
 
 const meta: Meta<typeof Spin> = {
-  title: 'Feedback/Spin',
+  title: 'Core/Feedback/Spin',
   component: Spin,
   tags: ['autodocs'],
   argTypes: {

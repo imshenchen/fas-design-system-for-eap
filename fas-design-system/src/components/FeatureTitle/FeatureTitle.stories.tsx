@@ -14,7 +14,7 @@ import { Button } from '../Button/Button';
  */
 
 const meta: Meta<typeof FeatureTitle> = {
-  title: 'Data Display/FeatureTitle',
+  title: 'Core/Data Display/FeatureTitle',
   component: FeatureTitle,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

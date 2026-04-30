@@ -1,6 +1,6 @@
 {
   "name": "@imshenchen/fas-design-system",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "FAS Design System — Delta 共用 React 元件庫",
   "keywords": [
     "react",
@@ -20,7 +20,13 @@
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     },
-    "./styles": "./dist/style.css"
+    "./styles": "./dist/style.css",
+    "./lm": {
+      "import": "./dist/lm.js",
+      "require": "./dist/lm.cjs",
+      "types": "./dist/lm.d.ts"
+    },
+    "./lm/styles": "./dist/style.css"
   },
   "files": [
     "dist",

@@ -4,7 +4,7 @@ import { SideMenu, SideNavItem } from './SideMenu';
 import { NavigationBar } from '../NavigationBar/NavigationBar';
 
 const meta: Meta<typeof SideMenu> = {
-  title: 'Layout/SideMenu',
+  title: 'Core/Layout/SideMenu',
   component: SideMenu,
   parameters: {
     layout: 'fullscreen',

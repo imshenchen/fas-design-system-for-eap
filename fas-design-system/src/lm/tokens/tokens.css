@@ -1,0 +1,14 @@
+/**
+ * LM Tier — 專屬 CSS Tokens
+ *
+ * 共用 core tokens（src/tokens/tokens.css）；本檔僅放 LM 專屬變數。
+ * 命名前綴一律 `--lm-*`，禁止覆寫 core 既有變數。
+ *
+ * 範例（待 LM 實際需求補上）：
+ *   :root {
+ *     --lm-accent: #...;
+ *   }
+ *   [data-theme="dark"] {
+ *     --lm-accent: #...;
+ *   }
+ */

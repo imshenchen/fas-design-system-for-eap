@@ -3,7 +3,7 @@ import React from 'react';
 import { TextField, TextArea } from './TextField';
 
 const meta: Meta<typeof TextField> = {
-  title: 'Data Entry/TextField',
+  title: 'Core/Data Entry/TextField',
   component: TextField,
   tags: ['autodocs'],
   argTypes: {

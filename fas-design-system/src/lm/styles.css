@@ -1,0 +1,9 @@
+/**
+ * LM Tier — Global Styles Entry
+ *
+ * 在 LM 專案應用程式入口引入一次：
+ *   import '@imshenchen/fas-design-system/styles';      // core tokens + 元件 CSS
+ *   import '@imshenchen/fas-design-system/lm/styles';   // lm tokens (+ 未來元件 CSS)
+ */
+
+@import './tokens/tokens.css';

@@ -17,7 +17,7 @@ import { Button } from '../../components/Button/Button';
  *   - 任何「從候選池中挑選一組值」的場景
  */
 const meta: Meta<typeof Transfer> = {
-  title: 'Templates/Transfer',
+  title: 'Core/Templates/Transfer',
   component: Transfer,
   tags: ['autodocs'],
   parameters: { layout: 'centered' },

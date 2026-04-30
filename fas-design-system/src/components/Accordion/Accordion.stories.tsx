@@ -3,7 +3,7 @@ import React from 'react';
 import { Accordion, AccordionItem } from './Accordion';
 
 const meta: Meta<typeof Accordion> = {
-  title: 'Layout/Accordion',
+  title: 'Core/Layout/Accordion',
   component: Accordion,
   tags: ['autodocs'],
 };

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Uploader } from './Uploader';
 
 const meta: Meta<typeof Uploader> = {
-  title: 'Data Entry/Uploader',
+  title: 'Core/Data Entry/Uploader',
   component: Uploader,
   tags: ['autodocs'],
   argTypes: {

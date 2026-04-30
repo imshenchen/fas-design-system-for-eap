@@ -111,7 +111,7 @@ const DETAIL_COLUMNS: ColumnDef<WorkOrderItem>[] = [
 // ── Stories ────────────────────────────────────────────────────────────────────
 
 const meta: Meta<typeof MasterDetailTable> = {
-  title: 'Data Display/MasterDetailTable',
+  title: 'Core/Data Display/MasterDetailTable',
   component: MasterDetailTable,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

@@ -5,7 +5,7 @@ import { Button } from '../Button/Button';
 import { TextField } from '../TextField/TextField';
 
 const meta: Meta<typeof Dialog> = {
-  title: 'Layout/Dialog',
+  title: 'Core/Layout/Dialog',
   component: Dialog,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Radio, RadioGroup } from './Radio';
 
 const meta: Meta<typeof Radio> = {
-  title: 'Data Entry/Radio',
+  title: 'Core/Data Entry/Radio',
   component: Radio,
   tags: ['autodocs'],
 };

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NavigationBar } from './NavigationBar';
 
 const meta: Meta<typeof NavigationBar> = {
-  title: 'Layout/NavigationBar',
+  title: 'Core/Layout/NavigationBar',
   component: NavigationBar,
   parameters: {
     layout: 'fullscreen',

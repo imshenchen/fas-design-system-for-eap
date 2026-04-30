@@ -4,7 +4,7 @@ import { Tooltip } from './Tooltip';
 import { Button } from '../Button/Button';
 
 const meta: Meta<typeof Tooltip> = {
-  title: 'Data Display/Tooltip',
+  title: 'Core/Data Display/Tooltip',
   component: Tooltip,
   tags: ['autodocs'],
   parameters: { layout: 'centered' },

@@ -5,7 +5,7 @@ import { Button } from '../Button/Button';
 import { Avatar } from '../Avatar/Avatar';
 
 const meta: Meta<typeof Card> = {
-  title: 'Data Display/Card',
+  title: 'Core/Data Display/Card',
   component: Card,
   tags: ['autodocs'],
   argTypes: {

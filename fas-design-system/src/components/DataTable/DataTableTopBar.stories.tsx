@@ -5,7 +5,7 @@ import type { DataTableTopBarProps } from './DataTableTopBar';
 import { DataTable } from './DataTable';
 
 const meta: Meta<typeof DataTableTopBar> = {
-  title: 'Data Display/DataTableTopBar',
+  title: 'Core/Data Display/DataTableTopBar',
   component: DataTableTopBar,
   tags: ['autodocs'],
 };

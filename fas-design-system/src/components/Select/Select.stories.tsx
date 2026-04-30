@@ -4,7 +4,7 @@ import { Select } from './Select';
 import type { SelectOption } from './Select';
 
 const meta: Meta<typeof Select> = {
-  title: 'Data Entry/Select',
+  title: 'Core/Data Entry/Select',
   component: Select,
   tags: ['autodocs'],
   argTypes: {

@@ -23,7 +23,7 @@ import type { ColumnDef } from '../../components/DataTable/DataTable';
  * Toolbar 建議使用既有的 `DataTableTopBar` 元件以維持一致樣式。
  */
 const meta: Meta<typeof OverviewDetailTable> = {
-  title: 'Templates/OverviewDetailTable',
+  title: 'Core/Templates/OverviewDetailTable',
   component: OverviewDetailTable,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },

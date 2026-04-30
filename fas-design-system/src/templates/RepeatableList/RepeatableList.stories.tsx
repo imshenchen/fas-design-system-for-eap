@@ -17,7 +17,7 @@ import { Icon } from '../../components/Icon/Icon';
  * Stories 以 UX 模式命名（`Inline*` / `Cards*`），而非功能名稱。
  */
 const meta: Meta<typeof RepeatableList> = {
-  title: 'Templates/RepeatableList',
+  title: 'Core/Templates/RepeatableList',
   component: RepeatableList,
   tags: ['autodocs'],
   parameters: { layout: 'centered' },

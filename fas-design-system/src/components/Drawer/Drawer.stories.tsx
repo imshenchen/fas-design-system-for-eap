@@ -5,7 +5,7 @@ import { Button } from '../Button/Button';
 import { List, ListItem, ListItemIcon, ListItemText } from '../List/List';
 
 const meta: Meta<typeof Drawer> = {
-  title: 'Layout/Drawer',
+  title: 'Core/Layout/Drawer',
   component: Drawer,
   tags: ['autodocs'],
   argTypes: {

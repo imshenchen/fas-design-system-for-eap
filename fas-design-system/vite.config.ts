@@ -17,10 +17,13 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        lm:    resolve(__dirname, 'src/lm/index.ts'),
+      },
       name: 'FasDesignSystem',
       formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
+      fileName: (format, name) => `${name}.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
@@ -30,6 +33,8 @@ export default defineConfig({
           'react-dom': 'ReactDOM',
           'react/jsx-runtime': 'ReactJsxRuntime',
         },
+        // 多 entry 共用一份 style.css（core + lm 元件 CSS + tokens）
+        // 消費端從 `./styles` 或 `./lm/styles` 引用都指向同一份檔案。
         assetFileNames: 'style[extname]',
       },
     },

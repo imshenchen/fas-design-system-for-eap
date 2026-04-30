@@ -13,7 +13,7 @@ import { Card } from '../../components/Card/Card';
  * 也可改傳 `collapsed` / `onCollapsedChange` 改為受控模式。
  */
 const meta: Meta<typeof AppShell> = {
-  title: 'Templates/AppShell',
+  title: 'Core/Templates/AppShell',
   component: AppShell,
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },
