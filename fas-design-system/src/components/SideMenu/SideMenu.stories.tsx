@@ -169,6 +169,36 @@ export const Collapsed: Story = {
   ),
 };
 
+export const CollapsedHidden: Story = {
+  args: {
+    items: demoItems,
+    activeKey: 'node-mgmt',
+    collapsed: true,
+    collapsedMode: 'hidden',
+    version: 'v1.2.0',
+  },
+  render: (args) => (
+    <div style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}>
+      <NavigationBar appName="APP Name" />
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        <SideMenu {...args} />
+        <main
+          style={{
+            flex: 1,
+            padding: 32,
+            background: 'var(--bg-surface-dim)',
+            color: 'var(--text-medium)',
+            fontFamily: 'Roboto, sans-serif',
+          }}
+        >
+          SideMenu is fully hidden (width: 0). Toggle <code>collapsedMode</code>{' '}
+          to <code>'narrow'</code> in the Controls panel to switch to icon-only mode.
+        </main>
+      </div>
+    </div>
+  ),
+};
+
 export const WithToggle: Story = {
   args: {
     items: demoItems,

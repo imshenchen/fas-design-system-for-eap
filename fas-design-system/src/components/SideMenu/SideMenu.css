@@ -19,6 +19,14 @@
   width: 80px;
 }
 
+/* 完全隱藏：寬度 0、不顯示內容、不可被聚焦／hover；佔位也消失 */
+.fas-sidemenu--hidden {
+  width: 0;
+  border-right: none;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* ── Scrollable area ── */
 .fas-sidemenu__scroll {
   flex: 1;

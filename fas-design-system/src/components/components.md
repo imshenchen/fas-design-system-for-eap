@@ -434,13 +434,14 @@
 ---
 
 ## SideMenu
-左側永久導覽選單。展開 280px，收折 80px（icon only）。
+左側永久導覽選單。展開 280px，收折時可選 narrow（80px icon only）或完全隱藏。
 
 ```tsx
 <SideMenu
   items={navItems}
   activeKey="node-mgmt"
   collapsed={collapsed}
+  collapsedMode="narrow"     // 'narrow'（預設，80px icon-only）或 'hidden'（width: 0 完全隱藏）
   version="v1.2.0"
   onItemClick={(key) => navigate(key)}
 />
@@ -460,7 +461,8 @@
 - **模組**（L1，帶 icon）：可展開的二級項目；有 `children` 時顯示 chevron，無 `children` 時為葉節點直接觸發。
 - **功能**（L2，葉節點）：點擊後右側畫面切換到對應功能，受 `activeKey` 控制。
 - 群組預設展開順序：`defaultExpanded` > 含 `activeKey` 的群組 > 第一個群組。
-- 收折模式（80px）下隱藏群組標題，模組 icon 平鋪顯示。
+- `collapsedMode='narrow'`（80px）下隱藏群組標題，模組 icon 平鋪顯示；hover 模組會在右側浮出 flyout。
+- `collapsedMode='hidden'` 下 SideMenu 寬度為 0、視覺上完全消失（`visibility: hidden`），用於需要將整個版面讓出來的情境。
 - `version` 字串固定顯示在底部，不隨選單捲動。
 
 ---
@@ -541,6 +543,7 @@ import { AppShell, Button, Card } from '@imshenchen/fas-design-system';
 | `collapsed` | `boolean` | — | 受控收折狀態（傳此值即進入 controlled 模式） |
 | `defaultCollapsed` | `boolean` | `false` | 非受控模式的初始收折狀態 |
 | `onCollapsedChange` | `(next) => void` | — | 收折狀態變更 callback |
+| `collapsedMode` | `'narrow' \| 'hidden'` | `'narrow'` | `collapsed=true` 時的呈現方式：narrow（80px icon-only）或 hidden（width 0，完全隱藏） |
 | `breadcrumb` | `FeatureTitleItem[]` | — | **必填**；麵包屑層級（最多 5 層；最後一項當前頁面） |
 | `actions` | `ReactNode` | — | FeatureTitle 右側 CTA 按鈕區 |
 | `contentPadding` | `number \| string` | `32` | 主內容區 padding；傳 `0` 由 children 自行控制 |

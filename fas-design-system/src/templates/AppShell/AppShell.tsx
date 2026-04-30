@@ -56,6 +56,12 @@ export interface AppShellProps {
   defaultCollapsed?: boolean;
   /** 收折狀態變更 callback（受控／非受控皆會觸發） */
   onCollapsedChange?: (next: boolean) => void;
+  /**
+   * `collapsed=true` 時 SideMenu 的呈現方式：
+   *  - `'narrow'`（預設）— 縮成 80px 顯示 icon
+   *  - `'hidden'` — 完全隱藏（width: 0）
+   */
+  collapsedMode?: 'narrow' | 'hidden';
 
   // ── FeatureTitle ─────────────────────────────────────────
   /** 麵包屑導航層級，最多 5 層；最後一項為當前頁面 */
@@ -90,6 +96,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   collapsed,
   defaultCollapsed = false,
   onCollapsedChange,
+  collapsedMode = 'narrow',
   // FeatureTitle
   breadcrumb,
   actions,
@@ -133,6 +140,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           activeKey={activeKey}
           onItemClick={onMenuItemClick}
           collapsed={isCollapsed}
+          collapsedMode={collapsedMode}
           version={version}
         />
 

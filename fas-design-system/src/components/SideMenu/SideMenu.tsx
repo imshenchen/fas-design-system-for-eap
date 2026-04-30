@@ -39,8 +39,14 @@ export interface SideMenuProps {
   activeKey?: string;
   /** 點擊 item 的回呼 */
   onItemClick?: (key: string, item: SideNavItem) => void;
-  /** 收折模式（只顯示 icon，80px 寬） */
+  /** 收折模式 */
   collapsed?: boolean;
+  /**
+   * `collapsed=true` 時的呈現方式：
+   *  - `'narrow'`（預設）— 縮成 80px、僅顯示 icon；hover 模組會浮出 flyout
+   *  - `'hidden'` — 完全隱藏（width: 0、不可見也不佔空間）
+   */
+  collapsedMode?: 'narrow' | 'hidden';
   /** 顯示在底部的版本號文字 */
   version?: string;
   className?: string;
@@ -229,10 +235,13 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   activeKey,
   onItemClick,
   collapsed = false,
+  collapsedMode = 'narrow',
   version,
   className,
   style,
 }) => {
+  const isHidden = collapsed && collapsedMode === 'hidden';
+  const isNarrow = collapsed && collapsedMode === 'narrow';
   // 群組層：一次只展開一個。優先順序：defaultExpanded > 含 activeKey 的群組 > 第一個群組
   const groups = items.filter((i) => i.isSection);
   const initialGroupKey =
@@ -268,12 +277,14 @@ export const SideMenu: React.FC<SideMenuProps> = ({
     <nav
       className={[
         'fas-sidemenu',
-        collapsed ? 'fas-sidemenu--collapsed' : '',
+        isNarrow ? 'fas-sidemenu--collapsed' : '',
+        isHidden ? 'fas-sidemenu--hidden' : '',
         className,
       ]
         .filter(Boolean)
         .join(' ')}
       style={style}
+      aria-hidden={isHidden || undefined}
       aria-label="Side navigation"
     >
       {/* ── Scrollable menu area ── */}
@@ -337,8 +348,8 @@ export const SideMenu: React.FC<SideMenuProps> = ({
         </div>
       )}
 
-      {/* ── Hover flyout (僅收折模式) ── */}
-      {collapsed &&
+      {/* ── Hover flyout (僅 narrow 收折模式) ── */}
+      {isNarrow &&
         flyout &&
         flyoutItem &&
         flyoutItem.children &&
