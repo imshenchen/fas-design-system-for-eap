@@ -1,4 +1,4 @@
-import{j as e}from"./jsx-runtime-Cf8x2fCZ.js";import{r as E}from"./index-BioFo8Zg.js";import{L as a}from"./LMScopeTile-BWCmcWwE.js";import"./index-yBjzXJbu.js";import"./Tooltip-DHUvMufU.js";import"./tokens-DAmOzuQn.js";const H={title:"LM/Components/LMScopeTile",component:a,tags:["autodocs"],parameters:{layout:"centered",docs:{description:{component:`LMScopeTile — 方形 tile 按鈕，用於選擇整條產線或特定機台。
+import{j as e}from"./jsx-runtime-Cf8x2fCZ.js";import{r as E}from"./index-BioFo8Zg.js";import{L as a}from"./LMScopeTile-BFX7F_mT.js";import"./index-yBjzXJbu.js";import"./tokens-BoTh6Ygv.js";const z={title:"LM/Components/LMScopeTile",component:a,tags:["autodocs"],parameters:{layout:"centered",docs:{description:{component:`LMScopeTile — 方形 tile 按鈕，用於選擇整條產線或特定機台。
 
 燈號規則（顏色 + 形狀皆帶語意，符合色盲可讀性）：
   - 綠色圓形 ●  正常運行中
@@ -104,4 +104,4 @@ import{j as e}from"./jsx-runtime-Cf8x2fCZ.js";import{r as E}from"./index-BioFo8Z
         {items.map(it => <LMScopeTile key={it.key} type={it.type} label={it.label} status={it.status} selected={selected === it.key} onClick={() => setSelected(it.key)} />)}
       </div>;
   }
-}`,...(I=(O=p.parameters)==null?void 0:O.docs)==null?void 0:I.source}}};const J=["Default","TypeLine","StatusLegend","SelectedComparison","DisabledStates","LongLabelTruncation","Grid"];export{r as Default,d as DisabledStates,p as Grid,m as LongLabelTruncation,c as SelectedComparison,o as StatusLegend,i as TypeLine,J as __namedExportsOrder,H as default};
+}`,...(I=(O=p.parameters)==null?void 0:O.docs)==null?void 0:I.source}}};const H=["Default","TypeLine","StatusLegend","SelectedComparison","DisabledStates","LongLabelTruncation","Grid"];export{r as Default,d as DisabledStates,p as Grid,m as LongLabelTruncation,c as SelectedComparison,o as StatusLegend,i as TypeLine,H as __namedExportsOrder,z as default};

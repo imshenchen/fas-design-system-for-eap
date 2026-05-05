@@ -1,4 +1,4 @@
-import{j as e}from"./jsx-runtime-Cf8x2fCZ.js";import{F as t}from"./FeatureTitle-BVXT0lcy.js";import{B as l}from"./Button-iDd4ESB6.js";import"./index-yBjzXJbu.js";import"./index-BioFo8Zg.js";import"./tokens-DAmOzuQn.js";const _={title:"Core/Data Display/FeatureTitle",component:t,tags:["autodocs"],parameters:{layout:"fullscreen",docs:{description:{component:`FeatureTitle — sticky page-title bar beneath the NavigationBar.
+import{j as e}from"./jsx-runtime-Cf8x2fCZ.js";import{F as t}from"./FeatureTitle-D2HSyMwR.js";import{B as l}from"./Button-iDd4ESB6.js";import"./index-yBjzXJbu.js";import"./index-BioFo8Zg.js";import"./tokens-BoTh6Ygv.js";const _={title:"Core/Data Display/FeatureTitle",component:t,tags:["autodocs"],parameters:{layout:"fullscreen",docs:{description:{component:`FeatureTitle — sticky page-title bar beneath the NavigationBar.
 
 Breadcrumb rule:
   The FIRST level must always be the currently selected item in the SideMenu
