@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
 import { LMAppShell } from './LMAppShell';
 import { LMFooter } from '../../components/LMFooter/LMFooter';
+import { LMQuadrantSelector } from '../../components/LMQuadrantSelector/LMQuadrantSelector';
+import type { LMQuadrantKey } from '../../components/LMQuadrantSelector/LMQuadrantSelector';
+import { LMMobileInstallButton } from '../../components/LMMobileInstallButton/LMMobileInstallButton';
 import type { LMSwitchPanelItem } from '../../components/LMSwitchPanel/LMSwitchPanel';
 import type { SideNavItem } from '../../../components/SideMenu/SideMenu';
 import { Card } from '../../../components/Card/Card';
@@ -56,9 +59,26 @@ type DemoProps = {
   footer?: React.ReactNode;
   /** 渲染長內容以驗證 footer 貼底時 content 內部捲動 */
   longContent?: boolean;
+  switchRightSlot?: React.ReactNode;
+  versionAction?: React.ReactNode;
 };
 
-const Demo: React.FC<DemoProps> = ({ defaultCollapsed, footer, longContent }) => {
+const PlaceholderQR: React.FC = () => (
+  <div
+    style={{
+      width:        160,
+      height:       160,
+      background:   `repeating-linear-gradient(45deg, var(--text-high), var(--text-high) 4px, var(--bg-surface) 4px, var(--bg-surface) 8px)`,
+      borderRadius: 4,
+    }}
+    role="img"
+    aria-label="QR Code 範例"
+  />
+);
+
+const Demo: React.FC<DemoProps> = ({
+  defaultCollapsed, footer, longContent, switchRightSlot, versionAction,
+}) => {
   const [activeKey, setActiveKey] = useState('realtime');
   const [scope,     setScope]     = useState('line-a');
 
@@ -74,6 +94,8 @@ const Demo: React.FC<DemoProps> = ({ defaultCollapsed, footer, longContent }) =>
       switchItems={switchItems}
       switchValue={scope}
       onSwitchChange={(key) => setScope(key)}
+      switchRightSlot={switchRightSlot}
+      versionAction={versionAction}
       footer={footer}
     >
       <Card variant="elevated">
@@ -96,7 +118,24 @@ const Demo: React.FC<DemoProps> = ({ defaultCollapsed, footer, longContent }) =>
   );
 };
 
-export const Default: Story = { render: () => <Demo /> };
+const QuadrantDemo: React.FC = () => {
+  const [zones, setZones] = useState<LMQuadrantKey[]>(['topLeft']);
+  return <LMQuadrantSelector value={zones} onChange={setZones} size={52} />;
+};
+
+export const Default: Story = {
+  render: () => (
+    <Demo
+      switchRightSlot={<QuadrantDemo />}
+      versionAction={<LMMobileInstallButton qrCode={<PlaceholderQR />} />}
+    />
+  ),
+};
+
+export const WithoutQuadrant: Story = {
+  name: 'Without quadrant — no rightSlot',
+  render: () => <Demo />,
+};
 
 export const SideMenuHidden: Story = {
   name: 'SideMenu hidden — full-width content',

@@ -49,6 +49,11 @@ export interface SideMenuProps {
   collapsedMode?: 'narrow' | 'hidden';
   /** 顯示在底部的版本號文字 */
   version?: string;
+  /**
+   * 版本號右側的 action slot —— 通常放置 icon button、安裝引導等。
+   * 收折狀態（narrow / hidden）下不顯示。
+   */
+  versionAction?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -237,6 +242,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   collapsed = false,
   collapsedMode = 'narrow',
   version,
+  versionAction,
   className,
   style,
 }) => {
@@ -336,15 +342,26 @@ export const SideMenu: React.FC<SideMenuProps> = ({
       {version && (
         <div className="fas-sidemenu__footer">
           <div className="fas-sidemenu__footer-divider" />
-          <button
-            className="fas-sidemenu__item fas-sidemenu__item--l1 fas-sidemenu__item--version"
-            title={collapsed ? version : undefined}
-          >
-            <span className="material-symbols-outlined fas-sidemenu__icon" aria-hidden>
-              deployed_code
-            </span>
-            {!collapsed && <span className="fas-sidemenu__label">{version}</span>}
-          </button>
+          <div className="fas-sidemenu__footer-row" style={{ display: 'flex', alignItems: 'center' }}>
+            <button
+              className="fas-sidemenu__item fas-sidemenu__item--l1 fas-sidemenu__item--version"
+              title={collapsed ? version : undefined}
+              style={{ flex: 1, minWidth: 0 }}
+            >
+              <span className="material-symbols-outlined fas-sidemenu__icon" aria-hidden>
+                deployed_code
+              </span>
+              {!collapsed && <span className="fas-sidemenu__label">{version}</span>}
+            </button>
+            {!collapsed && versionAction && (
+              <span
+                className="fas-sidemenu__version-action"
+                style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, paddingRight: 8 }}
+              >
+                {versionAction}
+              </span>
+            )}
+          </div>
         </div>
       )}
 

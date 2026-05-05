@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LMSwitchPanel } from './LMSwitchPanel';
 import type { LMSwitchPanelItem } from './LMSwitchPanel';
+import { LMQuadrantSelector } from '../LMQuadrantSelector/LMQuadrantSelector';
+import type { LMQuadrantKey } from '../LMQuadrantSelector/LMQuadrantSelector';
 
 /**
  * LMSwitchPanel — 內容區塊頂部的 scope 切換列。
@@ -36,7 +38,30 @@ const Frame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
+const QuadrantDemo: React.FC = () => {
+  const [zones, setZones] = useState<LMQuadrantKey[]>(['topLeft']);
+  return <LMQuadrantSelector value={zones} onChange={setZones} size={52} />;
+};
+
 export const Default: Story = {
+  render: () => {
+    const [scope, setScope] = useState('line-a');
+    return (
+      <Frame>
+        <LMSwitchPanel
+          items={SAMPLE_ITEMS}
+          value={scope}
+          onChange={setScope}
+          featureTitle="即時數據"
+          rightSlot={<QuadrantDemo />}
+        />
+      </Frame>
+    );
+  },
+};
+
+export const NoRightSlot: Story = {
+  name: 'No rightSlot — without quadrant',
   render: () => {
     const [scope, setScope] = useState('line-a');
     return (

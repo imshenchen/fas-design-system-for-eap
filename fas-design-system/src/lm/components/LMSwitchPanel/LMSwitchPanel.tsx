@@ -1,22 +1,19 @@
 /**
  * LMSwitchPanel — LM Tier
  *
- * 內容區塊頂部的 scope 切換列。
- *   ┌───────────────────────────────────────────────────────────┐
- *   │ [Current Title] │ [Tile1] [Tile2] [Tile3] ... [More ⋯ +N] │
- *   └───────────────────────────────────────────────────────────┘
+ *   ┌────────────────────────────────────────────────┐
+ *   │ [FeatureTitle] │ [Tile1] [Tile2] [Tile3] ... → │
+ *   └────────────────────────────────────────────────┘
  *
- * - 最左側：當前選擇項的「FeatureTitle 標題」（label + 狀態副標）
+ * - 與 NavBar / SideMenu 貼齊（無外框、無圓角、僅下方 divider）
+ * - 最左側：當前頁面（功能）名稱 FeatureTitle
  * - 中間 vertical divider
- * - 右側：水平排列 `LMScopeTile`；寬度不夠時自動收進 More 下拉選單
- *
- * 不內建 overflow:auto（會剪 LMScopeTile 的 hover tooltip）；改以 More 按鈕處理 overflow。
+ * - 右側：水平排列 `LMScopeTile`；過多時整列**水平捲動**
  */
-import React, { useState, useRef, useLayoutEffect } from 'react';
-import { Card } from '../../../components/Card/Card';
+import React from 'react';
 import { Divider } from '../../../components/Divider/Divider';
-import { Menu, MenuItem } from '../../../components/Menu/Menu';
 import { LMScopeTile } from '../LMScopeTile/LMScopeTile';
+import './LMSwitchPanel.css';
 import type {
   LMScopeTileStatus,
   LMScopeTileType,
@@ -43,23 +40,22 @@ export interface LMSwitchPanelProps {
   /** Tile 之間的水平間距，預設 12px */
   gap?: number | string;
   /**
-   * 最左側顯示的 FeatureTitle —— 當前頁面（功能）名稱。
-   * 通常傳入「左側 SideMenu 中目前選中的功能」名稱（如 "即時數據"）。
+   * 最左側 FeatureTitle —— 當前頁面（功能）名稱。
+   * 通常傳「左側 SideMenu 中目前選中的功能」名稱（如 "即時數據"）。
    * 未傳則不渲染 title 區段與 divider。
    */
   featureTitle?: React.ReactNode;
+  /**
+   * 最右側 slot —— 固定在 panel 最右、**不受中間 tile 捲動影響**。
+   * 通常傳 `<LMQuadrantSelector size={52} ... />` 等控制元件。
+   * 注意：傳入元件高度建議 ≤ 52px（panel tile 內容高），否則會撐高 panel。
+   */
+  rightSlot?: React.ReactNode;
   /** 自訂 className */
   className?: string;
 }
 
-const TILE_SIZE = 72;
-const STATUS_COLOR: Record<LMScopeTileStatus, string> = {
-  normal:  cssVars.statusSuccess,
-  warning: cssVars.statusWarning,
-  down:    cssVars.statusError,
-};
-
-// ─── FeatureTitle (left section) — current feature/page name ─────────────────
+// ─── FeatureTitle (left section) ─────────────────────────────────────────────
 const FeatureTitleSection: React.FC<{ title: React.ReactNode }> = ({ title }) => (
   <div
     className="lm-switch-panel__title"
@@ -89,102 +85,21 @@ const FeatureTitleSection: React.FC<{ title: React.ReactNode }> = ({ title }) =>
   </div>
 );
 
-// ─── More button (overflow trigger) ──────────────────────────────────────────
-const MoreButton = React.forwardRef<
-  HTMLButtonElement,
-  { count: number; selectedInOverflow: boolean; onClick: () => void }
->(({ count, selectedInOverflow, onClick }, ref) => (
-  <button
-    ref={ref}
-    type="button"
-    aria-label={`更多項目（${count}）`}
-    onClick={onClick}
-    className="lm-switch-panel__more"
-    style={{
-      width:           `${TILE_SIZE}px`,
-      height:          `${TILE_SIZE}px`,
-      minWidth:        `${TILE_SIZE}px`,
-      minHeight:       `${TILE_SIZE}px`,
-      flexShrink:      0,
-      padding:         '6px',
-      borderRadius:    '6px',
-      border:          selectedInOverflow
-        ? `2px solid ${cssVars.primary}`
-        : `1px dashed ${cssVars.divider}`,
-      background:      selectedInOverflow ? cssVars.compHover : cssVars.bgSurface,
-      color:           cssVars.textBody,
-      cursor:          'pointer',
-      display:         'flex',
-      flexDirection:   'column',
-      alignItems:      'center',
-      justifyContent:  'center',
-      gap:             '4px',
-      fontFamily:      '"Noto Sans TC", sans-serif',
-      transition:      'background 0.15s ease, border-color 0.15s ease',
-    }}
-  >
-    <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '22px', lineHeight: 1 }}>
-      more_horiz
-    </span>
-    <span style={{ fontSize: '11px', lineHeight: '14px', fontWeight: 500 }}>
-      更多 +{count}
-    </span>
-  </button>
-));
-MoreButton.displayName = 'MoreButton';
-
 // ─── Main component ──────────────────────────────────────────────────────────
 export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps>(
-  ({ items, value, onChange, gap = spacing[3], featureTitle, className }, ref) => {
-    const gapPx     = typeof gap === 'number' ? gap : parseInt(String(gap), 10) || 12;
-    const gapCss    = `${gapPx}px`;
-
-    const rowRef       = useRef<HTMLDivElement>(null);
-    const moreBtnRef   = useRef<HTMLButtonElement>(null);
-    const [visibleCount, setVisibleCount] = useState(items.length);
-    const [moreOpen,     setMoreOpen]     = useState(false);
-
-    useLayoutEffect(() => {
-      const row = rowRef.current;
-      if (!row) return;
-
-      const calc = () => {
-        const rowWidth = row.clientWidth;
-        if (rowWidth <= 0) return;
-
-        const allTilesWidth = items.length * TILE_SIZE + Math.max(0, items.length - 1) * gapPx;
-
-        if (allTilesWidth <= rowWidth) {
-          setVisibleCount(items.length);
-          return;
-        }
-
-        // Need More button: reserve TILE_SIZE + gap
-        const availableMinusMore = rowWidth - TILE_SIZE - gapPx;
-        const fittable = Math.max(
-          0,
-          Math.floor((availableMinusMore + gapPx) / (TILE_SIZE + gapPx)),
-        );
-        setVisibleCount(fittable);
-      };
-
-      calc();
-      const observer = new ResizeObserver(calc);
-      observer.observe(row);
-      return () => observer.disconnect();
-    }, [items.length, gapPx]);
-
-    const visibleItems  = items.slice(0, visibleCount);
-    const overflowItems = items.slice(visibleCount);
-    const hasOverflow   = overflowItems.length > 0;
-    const selectedInOverflow = hasOverflow && overflowItems.some((i) => i.key === value);
+  ({ items, value, onChange, gap = spacing[3], featureTitle, rightSlot, className }, ref) => {
+    const gapCss = typeof gap === 'number' ? `${gap}px` : gap;
 
     return (
-      <Card
-        variant="outlined"
+      <div
         className={['lm-switch-panel', className].filter(Boolean).join(' ')}
-        // 不可加 overflow:hidden —— 會剪掉 LMScopeTile 的 hover tooltip
-        style={{ padding: spacing[2] }}
+        style={{
+          // flush 樣式：與 NavBar / SideMenu 貼齊，無圓角、無外框；僅下方 divider
+          background:   cssVars.bgSurface,
+          borderBottom: `1px solid ${cssVars.divider}`,
+          padding:      `${spacing[2]} ${spacing[6]}`, // 8 / 24（匹配 core FeatureTitle）
+          boxSizing:    'border-box',
+        }}
       >
         <div
           ref={ref}
@@ -197,7 +112,7 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
             minWidth:   0,
           }}
         >
-          {/* Left — current feature (page) name from SideMenu activeKey */}
+          {/* Left — current feature (page) name */}
           {featureTitle && (
             <>
               <FeatureTitleSection title={featureTitle} />
@@ -205,21 +120,24 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
             </>
           )}
 
-          {/* Right — tile row */}
+          {/* Middle — tile row（過多時水平捲動）；
+              row 高度比 tile 高 4px，讓 tile 上下 border 有 2px 緩衝（避免 overflow 剪掉） */}
           <div
-            ref={rowRef}
             className="lm-switch-panel__tiles"
             style={{
-              display:    'flex',
-              alignItems: 'flex-start',
-              gap:        gapCss,
-              flex:       1,
-              minWidth:   0,
-              // 不可加 overflow —— overflow 會讓兩軸都 clip、剪掉 hover tooltip
-              // overflow 由 More 按鈕邏輯處理
+              display:        'flex',
+              alignItems:     'center',
+              gap:            gapCss,
+              flex:           1,
+              minWidth:       0,
+              height:         '56px',
+              minHeight:      '56px',
+              overflowX:      'auto',
+              overflowY:      'hidden',
+              scrollbarWidth: 'none',
             }}
           >
-            {visibleItems.map((item) => (
+            {items.map((item) => (
               <LMScopeTile
                 key={item.key}
                 type={item.type}
@@ -231,53 +149,27 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
                 onClick={() => onChange(item.key, item)}
               />
             ))}
-
-            {hasOverflow && (
-              <>
-                <MoreButton
-                  ref={moreBtnRef}
-                  count={overflowItems.length}
-                  selectedInOverflow={selectedInOverflow}
-                  onClick={() => setMoreOpen((o) => !o)}
-                />
-                <Menu
-                  anchorEl={moreBtnRef.current}
-                  open={moreOpen}
-                  onClose={() => setMoreOpen(false)}
-                >
-                  {overflowItems.map((item) => (
-                    <MenuItem
-                      key={item.key}
-                      selected={item.key === value}
-                      disabled={item.disabled}
-                      onClick={() => {
-                        onChange(item.key, item);
-                        setMoreOpen(false);
-                      }}
-                      icon={
-                        <span
-                          aria-hidden="true"
-                          style={{
-                            display:         'inline-block',
-                            width:           '10px',
-                            height:          '10px',
-                            borderRadius:    '50%',
-                            backgroundColor: item.disabled
-                              ? cssVars.compDisabledEl
-                              : STATUS_COLOR[item.status],
-                          }}
-                        />
-                      }
-                    >
-                      {item.label}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </>
-            )}
           </div>
+
+          {/* Right — fixed slot（外層 flex sibling，不受 tile scroll 影響） */}
+          {rightSlot && (
+            <>
+              <Divider orientation="vertical" />
+              <div
+                className="lm-switch-panel__right-slot"
+                style={{
+                  display:    'flex',
+                  alignItems: 'center',
+                  flexShrink: 0,
+                  minWidth:   0,
+                }}
+              >
+                {rightSlot}
+              </div>
+            </>
+          )}
         </div>
-      </Card>
+      </div>
     );
   },
 );

@@ -1,0 +1,15 @@
+/* LMSwitchPanel — 隱藏中間 tile 區的 scrollbar，避免撐高 panel */
+
+.lm-switch-panel__tiles {
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE/Edge legacy */
+  -ms-overflow-style: none;
+}
+
+.lm-switch-panel__tiles::-webkit-scrollbar {
+  /* Chrome / Safari */
+  display: none;
+  width:   0;
+  height:  0;
+}

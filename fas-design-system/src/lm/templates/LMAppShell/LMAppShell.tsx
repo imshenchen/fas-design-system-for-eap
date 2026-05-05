@@ -62,6 +62,11 @@ export interface LMAppShellProps {
   onMenuItemClick?: SideMenuProps['onItemClick'];
   /** SideMenu 底部顯示的版本字串 */
   version?: string;
+  /**
+   * 版本號右側 action slot —— 通常傳 `<LMMobileInstallButton ... />`
+   * 提供 QR Code 安裝引導。SideMenu 收折時自動隱藏。
+   */
+  versionAction?: React.ReactNode;
   /** 受控收折狀態；若未傳則由內部管理（搭配 NavBar 漢堡按鈕） */
   collapsed?: boolean;
   /** 非受控模式下的初始收折狀態，預設 false */
@@ -82,13 +87,18 @@ export interface LMAppShellProps {
    * 傳此 prop 可手動覆寫（e.g., 做 i18n、加自訂層級）。
    */
   featureTitle?: React.ReactNode;
+  /**
+   * SwitchPanel 最右側 slot —— 固定在 panel 最右、不受 tile scroll 影響。
+   * 通常傳 `<LMQuadrantSelector size={52} ... />`。
+   */
+  switchRightSlot?: React.ReactNode;
 
   // ── Main Content ─────────────────────────────────────────
   /** 主內容（功能畫面） */
   children?: React.ReactNode;
   /**
-   * LMSwitchPanel 外距（與 NavBar / SideMenu 之間的留白）。預設 16px。
-   * 同時套用於 panel 的 top / left / right。
+   * LMSwitchPanel 外距（與 NavBar / SideMenu 之間的留白）。預設 `0`
+   * （flush 樣式：panel 貼齊 NavBar / SideMenu，仿 core FeatureTitle）。
    */
   switchPadding?: number | string;
   /**
@@ -97,8 +107,8 @@ export interface LMAppShellProps {
    */
   contentPadding?: number | string;
   /**
-   * LMSwitchPanel 與 children content 之間的垂直間距。
-   * 預設等於 `switchPadding`（兩者垂直留白對稱）。
+   * LMSwitchPanel 與 children content 之間的垂直間距。預設 32px
+   * （對應 design system「32px Section: card vs. card / major page divisions」）。
    */
   switchGap?: number | string;
   /** 主內容區背景，預設沿用 css token `var(--bg-surface-dim)` */
@@ -133,6 +143,7 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
   activeKey,
   onMenuItemClick,
   version,
+  versionAction,
   collapsed,
   defaultCollapsed = false,
   onCollapsedChange,
@@ -141,11 +152,12 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
   switchValue,
   onSwitchChange,
   featureTitle,
+  switchRightSlot,
   // Content
   children,
-  switchPadding = 16,
+  switchPadding = 0,
   contentPadding = 32,
-  switchGap,
+  switchGap = 32,
   contentBackground,
   footer,
   className,
@@ -164,7 +176,7 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
   const toCss = (v: number | string) => (typeof v === 'number' ? `${v}px` : v);
   const switchPad   = toCss(switchPadding);
   const contentPad  = toCss(contentPadding);
-  const gap         = toCss(switchGap ?? switchPadding);
+  const gap         = toCss(switchGap);
 
   return (
     <div
@@ -205,6 +217,7 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
           collapsed={isCollapsed}
           collapsedMode="hidden"
           version={version}
+          versionAction={versionAction}
         />
 
         <div
@@ -239,6 +252,7 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
                 featureTitle ??
                 (activeKey ? findMenuLabel(menuItems, activeKey) : undefined)
               }
+              rightSlot={switchRightSlot}
             />
           </div>
 

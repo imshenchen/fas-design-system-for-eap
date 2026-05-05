@@ -55,16 +55,16 @@
 內容區塊頂部的 scope 切換列。
 
 ```
-┌────────────────────────────────────────────────────────┐
-│ [當前選擇 Title] │ [Tile1] [Tile2] [Tile3] [More ⋯ +N] │
-└────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│ [FeatureTitle] │ [Tile1] [Tile2] [Tile3] ... → │
+└──────────────────────────────────────────────────┘
 ```
 
 由左至右排列：
 1. **FeatureTitle** — 顯示**當前頁面（功能）名稱**，通常 = 左側 SideMenu 中目前選中的功能（如 "即時數據"）
 2. **垂直 Divider**
-3. **LMScopeTile 列**（72 × 72 方形 tile，含三色三形狀燈號）
-4. **More 按鈕**（自動）— 容器寬度不夠放下所有 tile 時，溢出項目收進 More 下拉選單
+3. **LMScopeTile 列**（兩行 chip，含 type icon 與狀態文字，皆隨 status 變色）
+4. Tile 過多時整列**水平捲動**（不再用 More 按鈕）
 
 ```tsx
 const items: LMSwitchPanelItem[] = [
@@ -83,6 +83,7 @@ const items: LMSwitchPanelItem[] = [
 | `onChange` | `(key, item) => void` | 點擊切換 callback |
 | `gap` | `number \| string` | tile 之間的水平間距，預設 12 |
 | `featureTitle` | `ReactNode` | 最左側 FeatureTitle —— 當前功能名稱（通常為 SideMenu activeKey 的 label）；未傳則不渲染 title 區段與 divider |
+| `rightSlot` | `ReactNode` | 最右側固定 slot（不受中間 tile scroll 影響）；通常傳 `<LMQuadrantSelector size={52} />` |
 
 `LMSwitchPanelItem`：
 
@@ -91,16 +92,15 @@ const items: LMSwitchPanelItem[] = [
 | `key` | `string` | 唯一識別 |
 | `label` | `string` | 產線 / 機台名稱 |
 | `type` | `'line' \| 'machine'` | LMScopeTile 類型（決定預設 icon） |
-| `status` | `'normal' \| 'warning' \| 'down'` | 三色三形狀燈號（同 LMScopeTile） |
+| `status` | `'normal' \| 'warning' \| 'down'` | 狀態（同 LMScopeTile，icon + 文字同色） |
 | `icon` | `ReactNode` | 自訂 icon，覆寫 `type` 預設 |
 | `disabled` | `boolean` | 禁用此項 |
 
-- 外層為 core `Card`（outlined）作為視覺容器，內部水平排列 `LMScopeTile`
-- 通常放在功能內容區塊頂部（FeatureTitle / LMSwitchPanel 區段、主資料卡片之上）
-- Tile 本身**不縮放、不換行**（鎖死 72 × 72 方形）
-- Card 內 padding 8px，整體高度 ≈ 88px
-- **Overflow 改用 More 按鈕**：以 ResizeObserver 動態量測，放不下時 tail-end 的 tiles 收進 More 下拉選單（同樣使用 `LMScopeTile` 的狀態燈號於 menu item icon 位）。**不使用 `overflow:auto`** —— 否則會剪掉 LMScopeTile 的 hover tooltip。
-- 若選取項落在 overflow，More 按鈕會以 primary 邊框 highlight；左側「當前選擇」仍正常顯示該項。
+- **Flush 樣式**：與 NavBar / SideMenu 貼齊（無外框、無圓角、僅下方 1px divider，仿 core `FeatureTitle`）
+- 通常放在 LMAppShell 內、緊貼 NavBar 下方
+- Tile 為兩行 chip（min-height 52px、寬度自適應 160~240px、不換行）
+- panel 內 padding 8px / 24px（匹配 core FeatureTitle），整體高度 ≈ 68px
+- **Overflow 用水平 scroll**：tile 過多時整列水平捲動（`overflow-x: auto`）
 - 所有狀態 token 與 LMScopeTile 一致
 
 ---
@@ -121,25 +121,87 @@ const items: LMSwitchPanelItem[] = [
 | Prop | Type | 說明 |
 |------|------|------|
 | `type` | `'line' \| 'machine'` | 預設 icon：line→`conveyor_belt`、machine→`precision_manufacturing` |
-| `label` | `string` | 產線 / 機台名稱（過長自動 ellipsis） |
-| `status` | `'normal' \| 'warning' \| 'down'` | 燈號狀態，**顏色 + 形狀**雙重編碼 |
-| `selected` | `boolean` | 選取中 → 2px primary 邊框 + 微底色 + icon 上色 + label 加粗 |
-| `disabled` | `boolean` | 禁用 → 燈號變灰、`not-allowed` 游標 |
+| `label` | `string` | 產線 / 機台名稱（過長自動 ellipsis；HTML `title` 顯示完整名稱） |
+| `status` | `'normal' \| 'warning' \| 'down'` | 狀態：icon 與狀態文字共同上色 |
+| `selected` | `boolean` | 選取中 → 2px primary 邊框 + 微底色 + label 加粗 |
+| `disabled` | `boolean` | 禁用 → icon / 文字變灰、`not-allowed` 游標 |
 | `onClick` | `() => void` | 點擊 callback |
 | `icon` | `ReactNode` | 自訂 icon，覆寫 `type` 預設 |
 
-**燈號規則**（顏色 + 形狀都帶語意，符合色盲可讀性）：
+**狀態色與文字**（icon 與狀態文字皆隨狀態變色）：
 
-| 形狀 | 顏色 | 語意 |
+| status | 顏色 | 文字 |
+|--------|------|------|
+| `normal`  | `--status-success`（綠） | 正常運行 |
+| `warning` | `--status-warning`（黃） | 警告 |
+| `down`    | `--status-error`（紅）   | 停機 |
+
+- 兩行 chip 樣式：min-height 52px、寬度自適應（min 160 / max 240）、圓角 6px、橫向 padding 12px
+- Layout：
+  - **Row 1**：名稱（`textHigh`，過長 ellipsis）
+  - **Row 2**：左側 type icon（18px，狀態色）／右側狀態文字（12px，狀態色）
+- 與 `LMSwitchPanel` 的差異：本元件是**單顆 chip tile**（適合 grid / picker），`LMSwitchPanel` 是包好的水平切換列（含 FeatureTitle + 捲動）
+
+---
+
+## LMQuadrantSelector
+田字四象限多選按鈕。4 個象限可獨立切換、中央圓形按鈕一鍵全選 / 全不選。適用於「選擇設備上 4 區塊的上料資料 / 感測點 / 拼板區域」等情境。
+
+```
+┌─────┬─────┐
+│ 左上 │ 右上 │
+├──┐━┌──┤    （正中央 = 全選 / 全不選）
+│ 左下 │ 右下 │
+└─────┴─────┘
+```
+
+```tsx
+const [zones, setZones] = useState<LMQuadrantKey[]>(['topLeft']);
+
+<LMQuadrantSelector
+  value={zones}
+  onChange={setZones}
+  labels={{ topLeft: '區 1', topRight: '區 2', bottomLeft: '區 3', bottomRight: '區 4' }}
+/>
+```
+
+| Prop | Type | 說明 |
 |------|------|------|
-| ● 圓形 | `--status-success`（綠） | `normal` 正常運行中 |
-| ▲ 三角 | `--status-warning`（黃） | `warning` 警告 |
-| ■ 方形 | `--status-error`（紅） | `down` 停機 |
+| `value` | `LMQuadrantKey[]` | 已選象限（受控）；`LMQuadrantKey = 'topLeft' \| 'topRight' \| 'bottomLeft' \| 'bottomRight'` |
+| `onChange` | `(next: LMQuadrantKey[]) => void` | 選取變動 callback |
+| `labels` | `Partial<Record<LMQuadrantKey, ReactNode>>` | 各象限自訂內容，預設為對角箭頭 icon（`north_west` / `north_east` / `south_west` / `south_east`）；可傳字串或 ReactNode 覆寫 |
+| `disabled` | `Partial<Record<LMQuadrantKey, boolean>>` | 禁用單一象限；全選按鈕只切換可用象限 |
+| `size` | `number` | 整體邊長（正方形），預設 120 |
+| `centerAriaLabel` | `string` | 中央按鈕 aria-label，預設 "全選" |
 
-- 尺寸固定 72 × 72 px、圓角 6px、padding 6px、icon 22px、label 11px
-- Hover 時透過 core `Tooltip` 顯示完整名稱（label 過長 ellipsis 時尤其有用）
-- 與 `LMSwitchPanel` 的差異：本元件是**單顆方形 tile**（適合 grid / picker），`LMSwitchPanel` 是橫向長條切換列（適合內容區頂部 scope 切換）
-- 兩者狀態 token 相同，可互換資料來源
+- 預設**全 icon**呈現（無文字），對角箭頭直觀指出每個象限位置；如需顯示文字（編號 / 名稱）請用 `labels` 覆寫
+- 中央按鈕在「全部選取」時用 primary 邊框 + filled bg 表示；icon 切換為 `select_all`
+- 任一象限選取會把該格背景換成 primary、icon 變白色（強對比）
+- Disabled 象限：灰底、`not-allowed`，不會被全選按鈕影響
+
+---
+
+## LMMobileInstallButton
+SideMenu 版本號右側的「安裝 Mobile 版本」trigger 按鈕。點擊後在按鈕上方浮出 popover，顯示 QR Code 供使用者掃描下載。
+
+```tsx
+<LMMobileInstallButton
+  qrCode={<img src="/qr/lm-mobile.png" alt="Install LM Mobile" width={160} height={160} />}
+  title="下載 LM Mobile"
+  description="使用手機相機掃描 QR Code 安裝 iOS / Android 版本"
+/>
+```
+
+| Prop | Type | 說明 |
+|------|------|------|
+| `qrCode` | `ReactNode` | **必填**；通常是 `<img>` 或 SVG（設計系統不負責產 QR） |
+| `title` | `ReactNode` | popover 標題，預設 "安裝 Mobile 版本" |
+| `description` | `ReactNode` | 補充說明，預設掃描提示 |
+| `ariaLabel` | `string` | trigger button aria-label |
+
+- Trigger 是 32×32 圖示按鈕（`smartphone` icon），整合進 SideMenu 版本列右側不佔太多寬度
+- Popover 240px 寬，固定 position（不受 SideMenu 邊界限制），點外面 / Esc 自動關閉
+- 通常透過 `LMAppShell` 的 `versionAction` prop 注入，不需要直接組到 SideMenu 上
 
 ---
 
@@ -177,9 +239,11 @@ LM 專案頁面最外層版面樣板。與 core `AppShell` 同一角色，但有
 | `switchValue` | `string` | — | **必填**；目前選取的 scope key |
 | `onSwitchChange` | `(key, item) => void` | — | **必填**；切換 scope callback |
 | `featureTitle` | `ReactNode` | 自動從 `menuItems` 找 `activeKey` 對應的 label | LMSwitchPanel 最左側顯示的功能名稱；可手動覆寫 |
-| `switchPadding` | `number \| string` | `16` | LMSwitchPanel 外距（與 NavBar / SideMenu 之間的留白；套用於 panel 上 / 左 / 右） |
+| `switchRightSlot` | `ReactNode` | — | LMSwitchPanel 最右側 slot（pass-through 到 LMSwitchPanel `rightSlot`）；建議用 `<LMQuadrantSelector size={52} />` 控制不撐高 panel |
+| `versionAction` | `ReactNode` | — | SideMenu 版本號右側 action slot（pass-through 到 core SideMenu）；通常傳 `<LMMobileInstallButton ... />`。SideMenu 收折時自動隱藏 |
+| `switchPadding` | `number \| string` | `0` | LMSwitchPanel 外距（與 NavBar / SideMenu 之間的留白）。預設 0 → flush 貼齊；可手動加大 |
 | `contentPadding` | `number \| string` | `32` | **真正功能 content 範圍**的 padding（圍繞 children；套用於左 / 右 / 下） |
-| `switchGap` | `number \| string` | `= switchPadding` | LMSwitchPanel 與 children 之間的垂直間距 |
+| `switchGap` | `number \| string` | `32` | LMSwitchPanel 與 children 之間的垂直間距。對應「32px Section: card vs. card / major page divisions」 |
 | `contentBackground` | `string` | `var(--bg-surface-dim)` | 主內容區背景 |
 | `footer` | `ReactNode` | — | 底部 footer slot（通常傳 `<LMFooter />`）；未傳則不渲染、不佔空間 |
 
