@@ -52,7 +52,6 @@ export const Default: Story = {
           items={SAMPLE_ITEMS}
           value={scope}
           onChange={setScope}
-          featureTitle="即時數據"
           rightSlot={<QuadrantDemo />}
         />
       </Frame>
@@ -70,7 +69,6 @@ export const NoRightSlot: Story = {
           items={SAMPLE_ITEMS}
           value={scope}
           onChange={setScope}
-          featureTitle="即時數據"
         />
       </Frame>
     );
@@ -92,7 +90,7 @@ export const ManyItemsOverflow: Story = {
     const [scope, setScope] = useState('line-a');
     return (
       <Frame>
-        <LMSwitchPanel items={items} value={scope} onChange={setScope} featureTitle="即時數據" />
+        <LMSwitchPanel items={items} value={scope} onChange={setScope} />
       </Frame>
     );
   },
@@ -112,24 +110,12 @@ export const NarrowContainer: Story = {
     return (
       <div style={{ padding: 32, background: 'var(--bg-surface-dim)', minHeight: '100vh' }}>
         <div style={{ width: 720, maxWidth: '100%' }}>
-          <LMSwitchPanel items={items} value={scope} onChange={setScope} featureTitle="即時數據" />
+          <LMSwitchPanel items={items} value={scope} onChange={setScope} />
         </div>
         <div style={{ marginTop: 24, color: 'var(--text-medium)' }}>
           （容器寬 720px，無法放下所有 8 顆 tile → tail-end 自動收進 More 按鈕）
         </div>
       </div>
-    );
-  },
-};
-
-export const NoFeatureTitle: Story = {
-  name: 'No featureTitle — title section omitted',
-  render: () => {
-    const [scope, setScope] = useState('line-a');
-    return (
-      <Frame>
-        <LMSwitchPanel items={SAMPLE_ITEMS} value={scope} onChange={setScope} />
-      </Frame>
     );
   },
 };

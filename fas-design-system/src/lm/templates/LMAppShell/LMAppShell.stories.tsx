@@ -8,12 +8,14 @@ import { LMMobileInstallButton } from '../../components/LMMobileInstallButton/LM
 import type { LMSwitchPanelItem } from '../../components/LMSwitchPanel/LMSwitchPanel';
 import type { SideNavItem } from '../../../components/SideMenu/SideMenu';
 import { Card } from '../../../components/Card/Card';
+import { Button } from '../../../components/Button/Button';
 
 /**
  * LMAppShell — LM 專案頁面最外層版面樣板。
  *
  * 與 core `AppShell` 同一角色，但有兩處差異：
- *   1. 無 FeatureTitle，改放 `LMSwitchPanel` 在主內容頂部，與 NavBar / SideMenu 之間有 padding（不貼齊）
+ *   1. Header 由上至下三層：NavBar → LMFeatureTitle → LMSwitchPanel
+ *      （core AppShell 只有 NavBar + FeatureTitle 兩層）
  *   2. SideMenu 收折時固定為 `'hidden'`（width 0 完全消失），不保留 narrow 形態
  */
 const meta: Meta<typeof LMAppShell> = {
@@ -47,12 +49,27 @@ const demoMenuItems: SideNavItem[] = [
   },
 ];
 
-const switchItems: LMSwitchPanelItem[] = [
-  { key: 'line-a',    label: '產線 A',          type: 'line',    status: 'normal'  },
+const LINE_OPTIONS = [
+  { value: 'line-a', label: '產線 A' },
+  { value: 'line-b', label: '產線 B' },
+  { value: 'line-c', label: '產線 C' },
+];
+
+/** 機台 tiles 與 line 無關，固定常駐 */
+const MACHINE_TILES: LMSwitchPanelItem[] = [
   { key: 'aoi-001',   label: 'AOI檢測機 001',   type: 'machine', status: 'warning' },
   { key: 'laser-002', label: 'LASER雷雕機 002', type: 'machine', status: 'down'    },
   { key: 'smt-003',   label: 'SMT貼片機 003',   type: 'machine', status: 'normal'  },
 ];
+
+/** 由當前 line 構造 switchItems：第一顆 tile 隨 line 變動 */
+const buildSwitchItems = (lineValue: string): LMSwitchPanelItem[] => {
+  const lineLabel = LINE_OPTIONS.find((l) => l.value === lineValue)?.label ?? lineValue;
+  return [
+    { key: lineValue, label: lineLabel, type: 'line', status: 'normal' },
+    ...MACHINE_TILES,
+  ];
+};
 
 type DemoProps = {
   defaultCollapsed?: boolean;
@@ -61,6 +78,7 @@ type DemoProps = {
   longContent?: boolean;
   switchRightSlot?: React.ReactNode;
   versionAction?: React.ReactNode;
+  actions?: React.ReactNode;
 };
 
 const PlaceholderQR: React.FC = () => (
@@ -77,10 +95,20 @@ const PlaceholderQR: React.FC = () => (
 );
 
 const Demo: React.FC<DemoProps> = ({
-  defaultCollapsed, footer, longContent, switchRightSlot, versionAction,
+  defaultCollapsed, footer, longContent, switchRightSlot, versionAction, actions,
 }) => {
   const [activeKey, setActiveKey] = useState('realtime');
-  const [scope,     setScope]     = useState('line-a');
+  const [line,      setLine]      = useState('line-a');
+  const [scope,     setScope]     = useState<string>('line-a');
+
+  const switchItems = buildSwitchItems(line);
+  // 若當前 scope 是舊 line key，line 切換時需同步把 scope 移到新 line tile
+  const effectiveScope = switchItems.some((t) => t.key === scope) ? scope : line;
+
+  const handleLineChange = (next: string) => {
+    setLine(next);
+    setScope(next);
+  };
 
   return (
     <LMAppShell
@@ -91,8 +119,16 @@ const Demo: React.FC<DemoProps> = ({
       onMenuItemClick={(key) => setActiveKey(key)}
       version="v1.0.0"
       defaultCollapsed={defaultCollapsed}
+      lineOptions={LINE_OPTIONS}
+      lineValue={line}
+      onLineChange={handleLineChange}
+      breadcrumb={[
+        { label: '產線監控', onClick: () => {} },
+        { label: '即時數據' },
+      ]}
+      actions={actions}
       switchItems={switchItems}
-      switchValue={scope}
+      switchValue={effectiveScope}
       onSwitchChange={(key) => setScope(key)}
       switchRightSlot={switchRightSlot}
       versionAction={versionAction}
@@ -101,7 +137,8 @@ const Demo: React.FC<DemoProps> = ({
       <Card variant="elevated">
         <h3 style={{ margin: '0 0 12px', color: 'var(--text-high)' }}>主內容區</h3>
         <p style={{ margin: 0, color: 'var(--text-medium)' }}>
-          當前 scope：<strong style={{ color: 'var(--primary)' }}>{scope}</strong>
+          當前產線：<strong style={{ color: 'var(--primary)' }}>{line}</strong>
+          ；當前 scope：<strong style={{ color: 'var(--primary)' }}>{effectiveScope}</strong>
           ；當前選單：<strong style={{ color: 'var(--primary)' }}>{activeKey}</strong>
         </p>
         {longContent && (
@@ -128,6 +165,21 @@ export const Default: Story = {
     <Demo
       switchRightSlot={<QuadrantDemo />}
       versionAction={<LMMobileInstallButton qrCode={<PlaceholderQR />} />}
+    />
+  ),
+};
+
+export const WithFeatureTitleActions: Story = {
+  name: 'With LMFeatureTitle actions (CTA)',
+  render: () => (
+    <Demo
+      switchRightSlot={<QuadrantDemo />}
+      actions={
+        <>
+          <Button variant="text" color="secondary" size="s">取消</Button>
+          <Button variant="contained" size="s">儲存</Button>
+        </>
+      }
     />
   ),
 };

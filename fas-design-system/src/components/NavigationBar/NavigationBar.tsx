@@ -22,6 +22,12 @@ export interface NavigationBarProps {
   userInitial?: string;
   /** 點擊 Avatar 的回呼 */
   onUserClick?: () => void;
+  /**
+   * 是否渲染內建的右側按鈕（help / settings / language / notifications / avatar）。
+   * 預設 `true`；傳 `false` 時 NavigationBar 只渲染 `actions` slot 內容，方便消費方
+   * （如 LMAppShell）完全自訂右側內容。
+   */
+  showDefaults?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -33,6 +39,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   actions,
   userInitial = 'K',
   onUserClick,
+  showDefaults = true,
   className,
   style,
 }) => (
@@ -62,37 +69,41 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
     {/* ── Right ── */}
     <div className="fas-navbar__right">
       {actions}
-      <IconButton
-        size="l"
-        tooltipPlacement="bottom"
-        aria-label="User guide"
-        icon={<span className="material-symbols-outlined">help</span>}
-      />
-      <IconButton
-        size="l"
-        tooltipPlacement="bottom"
-        aria-label="Settings"
-        icon={<span className="material-symbols-outlined">settings</span>}
-      />
-      <IconButton
-        size="l"
-        tooltipPlacement="bottom"
-        aria-label="Language"
-        icon={<span className="fas-navbar__lang">En</span>}
-      />
-      <IconButton
-        size="l"
-        tooltipPlacement="bottom"
-        aria-label="Notifications"
-        icon={<span className="material-symbols-outlined">notifications</span>}
-      />
-      <button
-        className="fas-navbar__avatar"
-        onClick={onUserClick}
-        aria-label={`User ${userInitial}`}
-      >
-        {userInitial}
-      </button>
+      {showDefaults && (
+        <>
+          <IconButton
+            size="l"
+            tooltipPlacement="bottom"
+            aria-label="User guide"
+            icon={<span className="material-symbols-outlined">help</span>}
+          />
+          <IconButton
+            size="l"
+            tooltipPlacement="bottom"
+            aria-label="Settings"
+            icon={<span className="material-symbols-outlined">settings</span>}
+          />
+          <IconButton
+            size="l"
+            tooltipPlacement="bottom"
+            aria-label="Language"
+            icon={<span className="fas-navbar__lang">En</span>}
+          />
+          <IconButton
+            size="l"
+            tooltipPlacement="bottom"
+            aria-label="Notifications"
+            icon={<span className="material-symbols-outlined">notifications</span>}
+          />
+          <button
+            className="fas-navbar__avatar"
+            onClick={onUserClick}
+            aria-label={`User ${userInitial}`}
+          >
+            {userInitial}
+          </button>
+        </>
+      )}
     </div>
   </header>
 );

@@ -30,3 +30,6 @@ export type {
 
 export { LMMobileInstallButton } from './LMMobileInstallButton/LMMobileInstallButton';
 export type { LMMobileInstallButtonProps } from './LMMobileInstallButton/LMMobileInstallButton';
+
+export { LMFeatureTitle } from './LMFeatureTitle/LMFeatureTitle';
+export type { LMFeatureTitleProps, LMFeatureTitleItem } from './LMFeatureTitle/LMFeatureTitle';

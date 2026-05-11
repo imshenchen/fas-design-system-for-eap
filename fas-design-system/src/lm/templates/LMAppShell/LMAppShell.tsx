@@ -2,8 +2,8 @@
  * LMAppShell — LM Tier (Template)
  *
  * 與 core `AppShell` 同一角色（頁面最外層），但有兩個 LM 專案差異：
- *   1. 無 FeatureTitle —— 改放 `LMSwitchPanel` 在主內容頂部，
- *      與 NavigationBar / SideMenu 之間保留 padding（不貼齊）
+ *   1. 由上而下三層 header：NavigationBar → LMFeatureTitle → LMSwitchPanel
+ *      （core AppShell 只有 NavBar + FeatureTitle 兩層；LM 多了 scope 切換列）
  *   2. SideMenu 收折時固定為 `'hidden'`（width 0 完全消失），
  *      不保留 narrow icon-only 形態
  *
@@ -11,34 +11,29 @@
  *   ┌──────────────────────────────────────────────────────┐
  *   │ NavigationBar                                        │  60px
  *   ├──────────┬───────────────────────────────────────────┤
- *   │ SideMenu │  ↕padding                                 │
- *   │ 280px /  │  ┌─────────────────────────────────────┐  │
- *   │ hidden   │  │ LMSwitchPanel                       │  │
- *   │          │  └─────────────────────────────────────┘  │
- *   │          │  ↕gap                                     │
- *   │          │  Main Content (${children})              │
+ *   │ SideMenu │ LMFeatureTitle (breadcrumb + actions)     │  48px
+ *   │ 280px /  ├───────────────────────────────────────────┤
+ *   │ hidden   │ LMSwitchPanel (scope tiles)              │  ~68px
+ *   │          ├───────────────────────────────────────────┤
+ *   │          │ Main Content (${children})  ← scrollable │  flex:1
+ *   │          ├───────────────────────────────────────────┤
+ *   │          │ footer slot (optional)                    │
  *   └──────────┴───────────────────────────────────────────┘
  */
 import React, { useState } from 'react';
 import { NavigationBar } from '../../../components/NavigationBar/NavigationBar';
 import { SideMenu } from '../../../components/SideMenu/SideMenu';
 import type { SideNavItem, SideMenuProps } from '../../../components/SideMenu/SideMenu';
+import { IconButton } from '../../../components/IconButton/IconButton';
+import { Select } from '../../../components/Select/Select';
+import type { SelectOption } from '../../../components/Select/Select';
+import { LMFeatureTitle } from '../../components/LMFeatureTitle/LMFeatureTitle';
+import type { LMFeatureTitleItem } from '../../components/LMFeatureTitle/LMFeatureTitle';
 import { LMSwitchPanel } from '../../components/LMSwitchPanel/LMSwitchPanel';
 import type {
   LMSwitchPanelItem,
   LMSwitchPanelProps,
 } from '../../components/LMSwitchPanel/LMSwitchPanel';
-
-/** 從 SideMenu 三層結構（群組 → 模組 → 功能）裡找到指定 key 的 label */
-function findMenuLabel(items: SideNavItem[] | undefined, key: string): string | undefined {
-  if (!items) return undefined;
-  for (const item of items) {
-    if (item.key === key) return item.label;
-    const found = findMenuLabel(item.children, key);
-    if (found) return found;
-  }
-  return undefined;
-}
 
 export interface LMAppShellProps {
   // ── NavigationBar ────────────────────────────────────────
@@ -50,8 +45,22 @@ export interface LMAppShellProps {
   userInitial?: string;
   /** 點擊 Avatar 的 callback */
   onUserClick?: () => void;
-  /** NavigationBar 右側 Avatar 左方的自訂操作區 */
+  /** NavigationBar 右側自訂操作區（顯示在內建語系切換按鈕左側） */
   navActions?: React.ReactNode;
+  /**
+   * NavBar 產線下拉選單的選項。傳入後 NavBar 右側會顯示 Select；
+   * 切換時呼叫 `onLineChange`。通常與下方 LMSwitchPanel 的「產線」tile 連動
+   * （由 page 自行管理：當 line 切換時更新 `switchItems`）。
+   */
+  lineOptions?: SelectOption[];
+  /** 目前選取的產線 value（受控） */
+  lineValue?: string;
+  /** 產線切換 callback */
+  onLineChange?: (value: string) => void;
+  /** 產線下拉選單的 placeholder，預設「選擇產線」 */
+  linePlaceholder?: string;
+  /** 點擊語系切換按鈕的 callback；未傳則 button 仍渲染但無動作（保留 hover tooltip） */
+  onLanguageClick?: () => void;
 
   // ── SideMenu ─────────────────────────────────────────────
   /** SideMenu 項目結構（群組／模組／功能三層） */
@@ -74,19 +83,19 @@ export interface LMAppShellProps {
   /** 收折狀態變更 callback（受控／非受控皆會觸發） */
   onCollapsedChange?: (next: boolean) => void;
 
-  // ── LMSwitchPanel（取代 FeatureTitle） ───────────────────
+  // ── LMFeatureTitle ───────────────────────────────────────
+  /** 麵包屑導航層級，最多 5 層；最後一項為當前頁面 */
+  breadcrumb: LMFeatureTitleItem[];
+  /** LMFeatureTitle 右側操作按鈕區（通常為 CTA 按鈕） */
+  actions?: React.ReactNode;
+
+  // ── LMSwitchPanel ────────────────────────────────────────
   /** Switch panel 項目 */
   switchItems: LMSwitchPanelItem[];
   /** 目前選取的 scope key（受控） */
   switchValue: string;
   /** 切換 scope 時的 callback */
   onSwitchChange: LMSwitchPanelProps['onChange'];
-  /**
-   * SwitchPanel 最左側的 FeatureTitle —— 當前功能名稱。
-   * 預設自動從 `menuItems` 中尋找 `activeKey` 對應的 label；
-   * 傳此 prop 可手動覆寫（e.g., 做 i18n、加自訂層級）。
-   */
-  featureTitle?: React.ReactNode;
   /**
    * SwitchPanel 最右側 slot —— 固定在 panel 最右、不受 tile scroll 影響。
    * 通常傳 `<LMQuadrantSelector size={52} ... />`。
@@ -135,9 +144,14 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
   // NavBar
   appName,
   logo,
-  userInitial,
+  userInitial = 'K',
   onUserClick,
   navActions,
+  lineOptions,
+  lineValue,
+  onLineChange,
+  linePlaceholder = '選擇產線',
+  onLanguageClick,
   // SideMenu
   menuItems,
   activeKey,
@@ -147,11 +161,13 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
   collapsed,
   defaultCollapsed = false,
   onCollapsedChange,
+  // FeatureTitle
+  breadcrumb,
+  actions,
   // Switch panel
   switchItems,
   switchValue,
   onSwitchChange,
-  featureTitle,
   switchRightSlot,
   // Content
   children,
@@ -194,10 +210,43 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
       <NavigationBar
         appName={appName}
         logo={logo}
-        userInitial={userInitial}
-        onUserClick={onUserClick}
-        actions={navActions}
+        showDefaults={false}
         onMenuToggle={handleToggle}
+        actions={
+          <div
+            className="lm-app-shell__nav-actions"
+            style={{ display: 'flex', alignItems: 'center', gap: 12 }}
+          >
+            {navActions}
+            {lineOptions && (
+              <div style={{ minWidth: 160 }}>
+                <Select
+                  options={lineOptions}
+                  value={lineValue}
+                  onChange={(v) => onLineChange?.(v as string)}
+                  size="s"
+                  placeholder={linePlaceholder}
+                  clearable={false}
+                />
+              </div>
+            )}
+            <IconButton
+              size="l"
+              tooltipPlacement="bottom"
+              aria-label="Language"
+              onClick={onLanguageClick}
+              icon={<span className="fas-navbar__lang">En</span>}
+            />
+            <button
+              type="button"
+              className="fas-navbar__avatar"
+              onClick={onUserClick}
+              aria-label={`User ${userInitial}`}
+            >
+              {userInitial}
+            </button>
+          </div>
+        }
       />
 
       <div
@@ -233,7 +282,15 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
             background:     contentBackground ?? 'var(--bg-surface-dim)',
           }}
         >
-          {/* Switch panel region — 窄外距，永遠貼頂 */}
+          {/* FeatureTitle region — 永遠貼頂 */}
+          <div
+            className="lm-app-shell__feature-title-region"
+            style={{ flexShrink: 0, minWidth: 0 }}
+          >
+            <LMFeatureTitle items={breadcrumb} actions={actions} topOffset={0} />
+          </div>
+
+          {/* Switch panel region — 窄外距，貼在 FeatureTitle 下方 */}
           <div
             className="lm-app-shell__switch-region"
             style={{
@@ -248,10 +305,6 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
               items={switchItems}
               value={switchValue}
               onChange={onSwitchChange}
-              featureTitle={
-                featureTitle ??
-                (activeKey ? findMenuLabel(menuItems, activeKey) : undefined)
-              }
               rightSlot={switchRightSlot}
             />
           </div>

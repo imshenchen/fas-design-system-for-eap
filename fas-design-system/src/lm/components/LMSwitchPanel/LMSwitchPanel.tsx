@@ -1,14 +1,15 @@
 /**
  * LMSwitchPanel — LM Tier
  *
- *   ┌────────────────────────────────────────────────┐
- *   │ [FeatureTitle] │ [Tile1] [Tile2] [Tile3] ... → │
- *   └────────────────────────────────────────────────┘
+ *   ┌────────────────────────────────────────────┐
+ *   │ [Tile1] [Tile2] [Tile3] ... → │ rightSlot │
+ *   └────────────────────────────────────────────┘
  *
  * - 與 NavBar / SideMenu 貼齊（無外框、無圓角、僅下方 divider）
- * - 最左側：當前頁面（功能）名稱 FeatureTitle
- * - 中間 vertical divider
- * - 右側：水平排列 `LMScopeTile`；過多時整列**水平捲動**
+ * - 水平排列 `LMScopeTile`；過多時整列**水平捲動**
+ * - 最右側固定 slot（不受 tile scroll 影響）
+ *
+ * 頁面標題（feature title）由上游的 `LMFeatureTitle` 負責；本元件不再內含 title 區段。
  */
 import React from 'react';
 import { Divider } from '../../../components/Divider/Divider';
@@ -40,12 +41,6 @@ export interface LMSwitchPanelProps {
   /** Tile 之間的水平間距，預設 12px */
   gap?: number | string;
   /**
-   * 最左側 FeatureTitle —— 當前頁面（功能）名稱。
-   * 通常傳「左側 SideMenu 中目前選中的功能」名稱（如 "即時數據"）。
-   * 未傳則不渲染 title 區段與 divider。
-   */
-  featureTitle?: React.ReactNode;
-  /**
    * 最右側 slot —— 固定在 panel 最右、**不受中間 tile 捲動影響**。
    * 通常傳 `<LMQuadrantSelector size={52} ... />` 等控制元件。
    * 注意：傳入元件高度建議 ≤ 52px（panel tile 內容高），否則會撐高 panel。
@@ -55,39 +50,9 @@ export interface LMSwitchPanelProps {
   className?: string;
 }
 
-// ─── FeatureTitle (left section) ─────────────────────────────────────────────
-const FeatureTitleSection: React.FC<{ title: React.ReactNode }> = ({ title }) => (
-  <div
-    className="lm-switch-panel__title"
-    style={{
-      display:       'flex',
-      alignItems:    'center',
-      paddingInline: spacing[3],
-      flexShrink:    0,
-      minWidth:      0,
-      maxWidth:      '240px',
-    }}
-  >
-    <span
-      style={{
-        fontSize:     '18px',
-        lineHeight:   '24px',
-        fontWeight:   500,
-        color:        cssVars.textHigh,
-        fontFamily:   '"Noto Sans TC", sans-serif',
-        whiteSpace:   'nowrap',
-        overflow:     'hidden',
-        textOverflow: 'ellipsis',
-      }}
-    >
-      {title}
-    </span>
-  </div>
-);
-
 // ─── Main component ──────────────────────────────────────────────────────────
 export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps>(
-  ({ items, value, onChange, gap = spacing[3], featureTitle, rightSlot, className }, ref) => {
+  ({ items, value, onChange, gap = spacing[3], rightSlot, className }, ref) => {
     const gapCss = typeof gap === 'number' ? `${gap}px` : gap;
 
     return (
@@ -112,15 +77,7 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
             minWidth:   0,
           }}
         >
-          {/* Left — current feature (page) name */}
-          {featureTitle && (
-            <>
-              <FeatureTitleSection title={featureTitle} />
-              <Divider orientation="vertical" />
-            </>
-          )}
-
-          {/* Middle — tile row（過多時水平捲動）；
+          {/* Tile row（過多時水平捲動）；
               row 高度比 tile 高 4px，讓 tile 上下 border 有 2px 緩衝（避免 overflow 剪掉） */}
           <div
             className="lm-switch-panel__tiles"
