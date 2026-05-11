@@ -35,6 +35,27 @@ import type {
   LMSwitchPanelProps,
 } from '../../components/LMSwitchPanel/LMSwitchPanel';
 
+/**
+ * 從 SideMenu 樹找出 `activeKey` 的祖先路徑（含 activeKey 自己）。
+ * 用於自動推導 breadcrumb：忽略 `isSection` 群組（純導覽容器，不是「頁面」）。
+ */
+function findMenuPath(
+  items: SideNavItem[] | undefined,
+  key: string,
+  path: SideNavItem[] = [],
+): SideNavItem[] | undefined {
+  if (!items) return undefined;
+  for (const item of items) {
+    const next = [...path, item];
+    if (item.key === key) return next;
+    if (item.children) {
+      const found = findMenuPath(item.children, key, next);
+      if (found) return found;
+    }
+  }
+  return undefined;
+}
+
 export interface LMAppShellProps {
   // ── NavigationBar ────────────────────────────────────────
   /** App 名稱，顯示於 Logo 右側 */
@@ -84,8 +105,13 @@ export interface LMAppShellProps {
   onCollapsedChange?: (next: boolean) => void;
 
   // ── LMFeatureTitle ───────────────────────────────────────
-  /** 麵包屑導航層級，最多 5 層；最後一項為當前頁面 */
-  breadcrumb: LMFeatureTitleItem[];
+  /**
+   * 麵包屑導航層級，最多 5 層；最後一項為當前頁面。
+   *
+   * 未傳時自動依 `menuItems` + `activeKey` 推導路徑（忽略 `isSection` 群組），
+   * 並隨 SideMenu 切換而更新。需要客製化（例如多加層級、跨樹節點）時可手動傳入覆寫。
+   */
+  breadcrumb?: LMFeatureTitleItem[];
   /** LMFeatureTitle 右側操作按鈕區（通常為 CTA 按鈕） */
   actions?: React.ReactNode;
 
@@ -287,7 +313,18 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
             className="lm-app-shell__feature-title-region"
             style={{ flexShrink: 0, minWidth: 0 }}
           >
-            <LMFeatureTitle items={breadcrumb} actions={actions} topOffset={0} />
+            <LMFeatureTitle
+              items={
+                breadcrumb ??
+                (activeKey
+                  ? (findMenuPath(menuItems, activeKey) ?? [])
+                      .filter((n) => !n.isSection)
+                      .map((node) => ({ label: node.label }))
+                  : [])
+              }
+              actions={actions}
+              topOffset={0}
+            />
           </div>
 
           {/* Switch panel region — 窄外距，貼在 FeatureTitle 下方 */}

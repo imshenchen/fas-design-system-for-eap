@@ -122,10 +122,6 @@ const Demo: React.FC<DemoProps> = ({
       lineOptions={LINE_OPTIONS}
       lineValue={line}
       onLineChange={handleLineChange}
-      breadcrumb={[
-        { label: '產線監控', onClick: () => {} },
-        { label: '即時數據' },
-      ]}
       actions={actions}
       switchItems={switchItems}
       switchValue={effectiveScope}

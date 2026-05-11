@@ -285,7 +285,7 @@ LM 專案頁面最外層版面樣板。與 core `AppShell` 同一角色，但有
 | `menuItems` | `SideNavItem[]` | — | **必填**；同 `AppShell` |
 | `activeKey` / `onMenuItemClick` / `version` | — | — | 同 `AppShell` |
 | `collapsed` / `defaultCollapsed` / `onCollapsedChange` | — | — | 同 `AppShell`（受控 / 非受控收折） |
-| `breadcrumb` | `LMFeatureTitleItem[]` | — | **必填**；LMFeatureTitle 麵包屑（最多 5 層；最後一項當前頁面） |
+| `breadcrumb` | `LMFeatureTitleItem[]` | 自動依 `menuItems` + `activeKey` 推導 | LMFeatureTitle 麵包屑（最多 5 層；最後一項當前頁面）。預設隨 SideMenu 選擇變動；傳入則完全覆寫 |
 | `actions` | `ReactNode` | — | LMFeatureTitle 右側 CTA 按鈕區 |
 | `switchItems` | `LMSwitchPanelItem[]` | — | **必填**；交給內建 `LMSwitchPanel` |
 | `switchValue` | `string` | — | **必填**；目前選取的 scope key |
