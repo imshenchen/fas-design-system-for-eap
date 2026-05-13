@@ -154,6 +154,21 @@ Use for **form sections with dynamically added / removed items** (e.g. deploymen
 
 _(使用準則待補)_
 
+### FileTransfer
+
+Use when the user must **pick a set of files from a multi-level folder structure** — e.g. attach files to a job, batch-process selected reports, choose source assets for an import. Left pane is a `FileBrowser`; the center column has 加入 / 移除 buttons; the right pane holds the committed selection.
+
+- **When _not_ to use**:
+  - Selection from a flat option list → use `Transfer` template (this template is specifically for hierarchical file/folder sources).
+  - Single pick without needing a visible "selected list" → use `FileBrowserDialog` instead.
+  - Fewer than ~20 known options → use `Select` with `multiple`.
+- Left-pane selection is **pending state** (held inside the template); the parent's `value` only updates when the user clicks 加入. This lets the user navigate folders without losing the in-progress selection in another folder.
+- 加入 auto-dedupes against `value` — already-added files are not re-added.
+- Right-pane removal is multi-select: row checkboxes + a 全選 header + the center 移除 button. Removed items are **not** automatically re-checked back in the left pane — the left pane can re-pick them anytime.
+- Center buttons follow the `Transfer` convention: `outlined / secondary / size=s` with `navigate_next` (加入) and `navigate_before` (移除).
+- The template caches file info (name, caption) for every file it has seen — even if a file becomes unavailable in the source later (e.g. user navigates away from a lazy-loaded folder), the right pane still renders correctly.
+- Below 720px the three columns auto-stack into a single column.
+
 ---
 
 ## Components
@@ -254,6 +269,23 @@ Three visual hierarchy levels: **Contained > Outlined > Text**
 
 - Use **Checkbox** for options that take effect on form submission (paired with Switch — see below).
 - Checkbox supports an **indeterminate** state for partial selection (e.g. select-all in a table).
+
+#### FileBrowser
+
+Use when the user must **pick file(s) from a multi-level folder hierarchy** — folders are for navigation, files are the selectable leaves. Single-level display: one folder's contents at a time, switched via the toolbar (home / back / breadcrumb).
+
+- **When _not_ to use**:
+  - Source is flat (no folders) → use a regular `List`, `DataTable`, or `Select multiple`.
+  - User needs a side-by-side "available / selected" workflow → use the `FileTransfer` template (left pane is a FileBrowser internally).
+  - User just uploads new files → use `Uploader`, not FileBrowser.
+- **Navigation is single-level only** — there is no inline tree expansion. Entering a subfolder pushes a new path; the list re-renders to the new folder's contents. This keeps the screen uncluttered for deep hierarchies.
+- **Single-click on a folder only focuses** — it does **not** enter. To enter, the user must double-click the row or click the trailing → button. This prevents accidental navigation when the user is browsing/skimming.
+- **Multi-select** on files via checkboxes. A 全選 header above the list toggles all selectable files **in the current folder only** — selection is scoped to what is currently visible, not the entire tree (the user would otherwise have no way to predict what 全選 covers).
+- **Disabled state**: a disabled file shows but cannot be checked; a disabled folder is greyed out but **can still be entered** — disabled is purely a selectability hint, not a navigation block.
+- **Lazy load** large directories with `loadChildren(folderId)`; the template shows a centered spinner while loading and an inline retry button on failure.
+- **Selected-row visual is background color only** — never an outline / border ring. The design system uses background highlight for selection across all list-style components; do not add focus rings to indicate selection.
+- **Keyboard**: ↑↓ move focus, → enter folder, ← / Backspace go back, Enter / Space (file: toggle checkbox; folder: enter).
+- For a one-shot file picker, use the **`FileBrowserDialog`** variant — it wraps `FileBrowser` in a `Dialog size="lg"` with confirm / cancel, surfaces `onConfirm(selectedFileIds)` only on confirm, and resets selection each time the dialog is reopened.
 
 #### IconButton
 
