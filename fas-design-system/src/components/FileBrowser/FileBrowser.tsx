@@ -351,7 +351,6 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                   !isFolder && 'fas-fb__row--file',
                   node.disabled && 'fas-fb__row--disabled',
                   checked && 'fas-fb__row--selected',
-                  isFocused && 'fas-fb__row--focused',
                 ]
                   .filter(Boolean)
                   .join(' ')}
