@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.13.1] - 2026-05-13
+
+### Changed
+- `FileTransfer` 右側改為 checkbox + 全選 + 中央「移除」按鈕（取代原本 per-row × 與「全部清除」），與 `Transfer` template 的雙向移動模式一致。
+
 ## [0.13.0] - 2026-05-13
 
 ### Added

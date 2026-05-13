@@ -15,7 +15,7 @@ import React from 'react';
 import { FileBrowser } from '../../components/FileBrowser/FileBrowser';
 import type { FileBrowserNode } from '../../components/FileBrowser/types';
 import { Button } from '../../components/Button/Button';
-import { IconButton } from '../../components/IconButton/IconButton';
+import { Checkbox } from '../../components/Checkbox/Checkbox';
 import { Icon } from '../../components/Icon/Icon';
 import './FileTransfer.css';
 
@@ -31,8 +31,8 @@ export interface FileTransferProps {
   height?: number | string;
   /** 中央加入按鈕文字，預設「加入」 */
   addLabel?: string;
-  /** 右側「全部清除」按鈕文字，預設「全部清除」 */
-  clearAllLabel?: string;
+  /** 中央移除按鈕文字，預設「移除」 */
+  removeLabel?: string;
   /** 右側空狀態文字，預設「尚未加入任何檔案」 */
   targetEmptyText?: string;
   /** 右側欄標題，預設「已選檔案」 */
@@ -73,7 +73,7 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
   loadChildren,
   height = 480,
   addLabel = '加入',
-  clearAllLabel = '全部清除',
+  removeLabel = '移除',
   targetEmptyText = '尚未加入任何檔案',
   targetTitle = '已選檔案',
   emptyText,
@@ -81,6 +81,8 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
 }) => {
   // FileBrowser 內部 selection state（pending — 還未加入右側）
   const [pending, setPending] = React.useState<string[]>([]);
+  // 右側選擇要被移除的 file ids
+  const [removeChecked, setRemoveChecked] = React.useState<string[]>([]);
 
   // File info 快取：id → {name, caption}
   // 任何時候只要從 source（傳入 nodes 或 FileBrowser 提供的）看到 file，就 cache 起來
@@ -133,11 +135,34 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
     setPending([]);
   };
 
-  const handleRemove = (id: string) => {
-    onChange(value.filter((v) => v !== id));
+  const handleRemove = () => {
+    if (removeChecked.length === 0) return;
+    const checkedSet = new Set(removeChecked);
+    onChange(value.filter((v) => !checkedSet.has(v)));
+    setRemoveChecked([]);
   };
 
-  const handleClearAll = () => onChange([]);
+  const toggleRemoveChecked = (id: string) => {
+    setRemoveChecked((prev) =>
+      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
+    );
+  };
+
+  // 右側「全選」狀態（範圍是當前 value）
+  const allRemoveChecked = value.length > 0 && removeChecked.length === value.length;
+  const someRemoveChecked = removeChecked.length > 0 && removeChecked.length < value.length;
+  const toggleRemoveCheckAll = () => {
+    if (allRemoveChecked) {
+      setRemoveChecked([]);
+    } else {
+      setRemoveChecked([...value]);
+    }
+  };
+
+  // 切換 value 後，把 removeChecked 中已經不存在 value 內的 id 清掉
+  React.useEffect(() => {
+    setRemoveChecked((prev) => prev.filter((id) => value.includes(id)));
+  }, [value]);
 
   // 把 value resolve 為 snapshots（snapshot 沒有就 fallback 用 id）
   const targetList: FileSnapshot[] = value.map((id) => {
@@ -170,7 +195,7 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
         />
       </div>
 
-      {/* Center: Add button (與 Transfer template 中央按鈕一致樣式) */}
+      {/* Center: Add / Remove buttons (與 Transfer template 中央按鈕一致樣式) */}
       <div className="fas-ft__center">
         <Button
           variant="outlined"
@@ -182,6 +207,16 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
         >
           {addLabel}
         </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          size="s"
+          disabled={removeChecked.length === 0}
+          onClick={handleRemove}
+          iconLeft={<Icon name="navigate_before" />}
+        >
+          {removeLabel}
+        </Button>
       </div>
 
       {/* Right: Target list */}
@@ -191,37 +226,69 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
             {targetTitle}
             <span className="fas-ft__right-count">({targetList.length})</span>
           </span>
-          {targetList.length > 0 && (
-            <Button variant="text" color="secondary" size="s" onClick={handleClearAll}>
-              {clearAllLabel}
-            </Button>
-          )}
         </div>
+
+        {targetList.length > 0 && (
+          <div
+            className="fas-ft__select-all"
+            onClick={(e) => {
+              if ((e.target as HTMLElement).closest('.fas-checkbox')) return;
+              toggleRemoveCheckAll();
+            }}
+          >
+            <span className="fas-ft__select-all-checkbox" onClick={(e) => e.stopPropagation()}>
+              <Checkbox
+                checked={allRemoveChecked}
+                indeterminate={someRemoveChecked}
+                onChange={toggleRemoveCheckAll}
+                size="m"
+              />
+            </span>
+            <span className="fas-ft__select-all-label">
+              全選 <span className="fas-ft__select-all-count">({removeChecked.length} / {targetList.length})</span>
+            </span>
+          </div>
+        )}
 
         <div className="fas-ft__right-list">
           {targetList.length === 0 ? (
             <div className="fas-ft__right-empty">{targetEmptyText}</div>
           ) : (
-            targetList.map((snap) => (
-              <div key={snap.id} className="fas-ft__target-row">
-                <span className="fas-ft__target-icon" aria-hidden>
-                  <span className="material-symbols-outlined">description</span>
-                </span>
-                <div className="fas-ft__target-text">
-                  <span className="fas-ft__target-name" title={snap.name}>{snap.name}</span>
-                  {snap.caption && (
-                    <span className="fas-ft__target-caption">{snap.caption}</span>
-                  )}
+            targetList.map((snap) => {
+              const isChecked = removeChecked.includes(snap.id);
+              return (
+                <div
+                  key={snap.id}
+                  className={[
+                    'fas-ft__target-row',
+                    isChecked && 'fas-ft__target-row--checked',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={() => toggleRemoveChecked(snap.id)}
+                >
+                  <span
+                    className="fas-ft__target-checkbox"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Checkbox
+                      checked={isChecked}
+                      onChange={() => toggleRemoveChecked(snap.id)}
+                      size="m"
+                    />
+                  </span>
+                  <span className="fas-ft__target-icon" aria-hidden>
+                    <span className="material-symbols-outlined">description</span>
+                  </span>
+                  <div className="fas-ft__target-text">
+                    <span className="fas-ft__target-name" title={snap.name}>{snap.name}</span>
+                    {snap.caption && (
+                      <span className="fas-ft__target-caption">{snap.caption}</span>
+                    )}
+                  </div>
                 </div>
-                <IconButton
-                  aria-label={`移除 ${snap.name}`}
-                  size="s"
-                  tooltip={false}
-                  onClick={() => handleRemove(snap.id)}
-                  icon={<span className="material-symbols-outlined" aria-hidden>close</span>}
-                />
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

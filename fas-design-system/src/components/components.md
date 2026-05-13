@@ -740,8 +740,8 @@ import { FileTransfer } from '@imshenchen/fas-design-system';
 | `onChange` | `(next: string[]) => void` | — | value 變動 callback |
 | `loadChildren` | `(id) => Promise<FileBrowserNode[]>` | — | lazy load 子節點 |
 | `height` | `number \| string` | `480` | 整體高度 |
-| `addLabel` | `string` | `'加入'` | 中央加入按鈕文字（會自動 append `(N)` 計數） |
-| `clearAllLabel` | `string` | `'全部清除'` | 右側全部清除按鈕文字 |
+| `addLabel` | `string` | `'加入'` | 中央加入按鈕文字 |
+| `removeLabel` | `string` | `'移除'` | 中央移除按鈕文字 |
 | `targetTitle` | `string` | `'已選檔案'` | 右側欄標題 |
 | `targetEmptyText` | `string` | `'尚未加入任何檔案'` | 右側空狀態文字 |
 | `emptyText` | `string` | — | FileBrowser 空資料夾文字（pass-through） |
@@ -749,8 +749,9 @@ import { FileTransfer } from '@imshenchen/fas-design-system';
 - 左側 FileBrowser 的選取是 pending state（在 FileTransfer 內部管理），點「加入」才會 commit 到 `value`
 - 加入時自動去重（已在 `value` 的 id 不會重複加入）；加入完成後左側選取自動清空
 - 右側 row 顯示 file `name` 與 `caption`；元件內部 cache 所有看過的 file info，即使 lazy load 後不再可見也能正確顯示
-- 右側單筆 `×` 移除不會把 file 加回左側（左側照常可重新勾選）；「全部清除」一次清空整個 `value`
-- < 720px 時自動堆疊為單欄；中央按鈕靠右
+- 右側支援 checkbox 多選 + 頂端「全選」（含 indeterminate）；點中央「移除」一次把勾選的 files 從 `value` 移除（搭配「全選」即可一次清空）
+- 中央按鈕沿用 Transfer template 風格：`Button variant="outlined" color="secondary" size="s"`，加入用 `navigate_next`、移除用 `navigate_before`
+- < 720px 時自動堆疊為單欄
 
 ---
 

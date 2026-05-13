@@ -19,13 +19,15 @@
   min-width: 0;
 }
 
-/* ─── Center: Add button column ───────────────────────────────────────── */
+/* ─── Center: Add / Remove button column ──────────────────────────────── */
 .fas-ft__center {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   padding: 0 4px;
+  gap: 8px;
 }
 
 /* ─── Right: Target list panel ────────────────────────────────────────── */
@@ -64,6 +66,41 @@
   font-size: 13px;
 }
 
+/* ─── Right: select-all row ───────────────────────────────────────────── */
+.fas-ft__select-all {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--divider);
+  color: var(--text-high);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.fas-ft__select-all:hover {
+  background: var(--comp-hover);
+}
+
+.fas-ft__select-all-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  margin-right: 4px;
+}
+
+.fas-ft__select-all-label {
+  margin-left: 4px;
+}
+
+.fas-ft__select-all-count {
+  color: var(--text-medium);
+  margin-left: 4px;
+}
+
 .fas-ft__right-list {
   flex: 1;
   overflow-y: auto;
@@ -89,10 +126,29 @@
   padding: 0 12px;
   color: var(--text-high);
   font-size: 14px;
+  cursor: pointer;
+  user-select: none;
 }
 
 .fas-ft__target-row:hover {
   background: var(--comp-hover);
+}
+
+.fas-ft__target-row--checked {
+  background: var(--table-selected);
+}
+
+.fas-ft__target-row--checked:hover {
+  background: var(--table-selected);
+}
+
+.fas-ft__target-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  margin-right: 4px;
+  flex-shrink: 0;
 }
 
 .fas-ft__target-icon {
@@ -133,11 +189,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-/* Override Google Fonts default 24px to match leading icon size */
-.fas-ft__target-row .fas-icon-btn .material-symbols-outlined {
-  font-size: 18px;
 }
 
 /* ─── Responsive: stack on narrow screens ─────────────────────────────── */
