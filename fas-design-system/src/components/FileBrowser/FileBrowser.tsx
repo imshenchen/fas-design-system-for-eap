@@ -258,7 +258,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         <IconButton
           aria-label="回根目錄"
           size="m"
-          tooltip
+          tooltip={false}
           onClick={goHome}
           disabled={path.length === 0}
           icon={<span className="material-symbols-outlined" aria-hidden>home</span>}
@@ -266,7 +266,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         <IconButton
           aria-label="回上一層"
           size="m"
-          tooltip
+          tooltip={false}
           onClick={goBack}
           disabled={path.length === 0}
           icon={<span className="material-symbols-outlined" aria-hidden>arrow_back</span>}
@@ -401,6 +401,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                     <IconButton
                       aria-label={`進入 ${node.name}`}
                       size="s"
+                      tooltip={false}
                       onClick={() => enterFolder(node)}
                       icon={<span className="material-symbols-outlined" aria-hidden>arrow_forward</span>}
                     />
