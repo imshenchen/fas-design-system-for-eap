@@ -177,6 +177,11 @@
   margin-left: 8px;
 }
 
+/* Match leading icon size (20px) so trailing → 對齊 leading folder icon */
+.fas-fb__trailing .fas-icon-btn .material-symbols-outlined {
+  font-size: 20px;
+}
+
 /* ─── Select all header row ───────────────────────────────────────────── */
 .fas-fb__select-all {
   display: flex;
