@@ -18,5 +18,8 @@ export type { SplitDetailViewProps } from './SplitDetailView/SplitDetailView';
 export { Transfer } from './Transfer/Transfer';
 export type { TransferProps, TransferOption } from './Transfer/Transfer';
 
+export { FileTransfer } from './FileTransfer/FileTransfer';
+export type { FileTransferProps } from './FileTransfer/FileTransfer';
+
 export { OverviewDetailTable } from './OverviewDetailTable/OverviewDetailTable';
 export type { OverviewDetailTableProps } from './OverviewDetailTable/OverviewDetailTable';

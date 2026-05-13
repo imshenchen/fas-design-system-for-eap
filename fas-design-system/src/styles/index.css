@@ -67,6 +67,7 @@
 @import '../templates/SplitDetailView/SplitDetailView.css';
 @import '../templates/Transfer/Transfer.css';
 @import '../templates/OverviewDetailTable/OverviewDetailTable.css';
+@import '../templates/FileTransfer/FileTransfer.css';
 
 /* 10. Global Base Reset */
 *,

@@ -712,6 +712,48 @@ import { RepeatableList, RepeatableItem, TextField } from '@imshenchen/fas-desig
 
 ---
 
+### FileTransfer
+左側 `FileBrowser` 勾選檔案 → 中間「加入 →」按鈕 → 右側已選清單。常見於「從多層資料夾中挑出一組檔案」的情境（如批次處理、附件上傳）。
+
+```tsx
+import { FileTransfer } from '@imshenchen/fas-design-system';
+
+<FileTransfer
+  nodes={tree}
+  value={picked}
+  onChange={setPicked}
+/>
+
+{/* 非同步 */}
+<FileTransfer
+  nodes={topLevel}
+  value={picked}
+  onChange={setPicked}
+  loadChildren={(folderId) => api.list(folderId)}
+/>
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `nodes` | `FileBrowserNode[]` | — | root 層節點（pass-through 給內部 FileBrowser） |
+| `value` | `string[]` | — | 已加入的 file id（受控；右側清單內容） |
+| `onChange` | `(next: string[]) => void` | — | value 變動 callback |
+| `loadChildren` | `(id) => Promise<FileBrowserNode[]>` | — | lazy load 子節點 |
+| `height` | `number \| string` | `480` | 整體高度 |
+| `addLabel` | `string` | `'加入'` | 中央加入按鈕文字（會自動 append `(N)` 計數） |
+| `clearAllLabel` | `string` | `'全部清除'` | 右側全部清除按鈕文字 |
+| `targetTitle` | `string` | `'已選檔案'` | 右側欄標題 |
+| `targetEmptyText` | `string` | `'尚未加入任何檔案'` | 右側空狀態文字 |
+| `emptyText` | `string` | — | FileBrowser 空資料夾文字（pass-through） |
+
+- 左側 FileBrowser 的選取是 pending state（在 FileTransfer 內部管理），點「加入」才會 commit 到 `value`
+- 加入時自動去重（已在 `value` 的 id 不會重複加入）；加入完成後左側選取自動清空
+- 右側 row 顯示 file `name` 與 `caption`；元件內部 cache 所有看過的 file info，即使 lazy load 後不再可見也能正確顯示
+- 右側單筆 `×` 移除不會把 file 加回左側（左側照常可重新勾選）；「全部清除」一次清空整個 `value`
+- < 720px 時自動堆疊為單欄；中央按鈕靠右
+
+---
+
 ### Transfer
 雙欄選擇器：左側「可選」、右側「已選」，使用者透過 checkbox + 中央按鈕在兩側搬移項目。常見於「註冊設備」、「成員授權」等「從候選池挑選一組值」的情境。
 

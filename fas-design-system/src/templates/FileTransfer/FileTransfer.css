@@ -1,0 +1,152 @@
+/* FileTransfer — FAS Design Kit (Template) */
+
+.fas-ft {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+/* ─── Left: FileBrowser slot ──────────────────────────────────────────── */
+.fas-ft__left {
+  min-width: 0;
+  display: flex;
+}
+
+.fas-ft__left .fas-fb {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Center: Add button column ───────────────────────────────────────── */
+.fas-ft__center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+/* ─── Right: Target list panel ────────────────────────────────────────── */
+.fas-ft__right {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.fas-ft__right-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 12px 0 16px;
+  border-bottom: 1px solid var(--divider);
+  flex-shrink: 0;
+}
+
+.fas-ft__right-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-high);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.fas-ft__right-count {
+  color: var(--text-medium);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.fas-ft__right-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 0;
+}
+
+.fas-ft__right-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 120px;
+  color: var(--text-medium);
+  font-size: 14px;
+}
+
+/* ─── Target row ──────────────────────────────────────────────────────── */
+.fas-ft__target-row {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 12px;
+  color: var(--text-high);
+  font-size: 14px;
+}
+
+.fas-ft__target-row:hover {
+  background: var(--comp-hover);
+}
+
+.fas-ft__target-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  color: var(--text-medium);
+}
+
+.fas-ft__target-icon .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.fas-ft__target-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  padding: 4px 0;
+}
+
+.fas-ft__target-name {
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fas-ft__target-caption {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Override Google Fonts default 24px to match leading icon size */
+.fas-ft__target-row .fas-icon-btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* ─── Responsive: stack on narrow screens ─────────────────────────────── */
+@media (max-width: 720px) {
+  .fas-ft {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .fas-ft__center {
+    justify-content: flex-end;
+  }
+}

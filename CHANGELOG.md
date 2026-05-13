@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.13.0] - 2026-05-13
+
+### Added
+- `FileTransfer` template — 左側 `FileBrowser` + 中央加入按鈕 + 右側已選清單，用於從多層資料夾中挑出一組檔案。支援去重、移除、全部清除、lazy load、響應式堆疊。
+
+### Fixed
+- `FileBrowser` 選取列拿掉藍色 outline（改為純背景色變化，符合設計系統慣例）。
+- `FileBrowser` 麵包屑 `>` 分隔符與文字基線對齊。
+- `FileBrowser` 列右側 → 按鈕大小對齊 leading folder icon（覆寫 Google Fonts 預設 24px）。
+- `FileBrowser` 內 IconButton 的 tooltip 改用 `aria-label`，避免被 `overflow:hidden` 容器切掉。
+
 ## [0.12.2] - 2026-05-13
 
 ### Added
