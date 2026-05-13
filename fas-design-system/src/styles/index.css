@@ -54,6 +54,7 @@
 @import '../components/DataTable/DataTable.css';
 @import '../components/DataTable/MasterDetailTable.css';
 @import '../components/Uploader/Uploader.css';
+@import '../components/FileBrowser/FileBrowser.css';
 
 /* 8. Component Styles — Layout / Navigation */
 @import '../components/NavigationBar/NavigationBar.css';

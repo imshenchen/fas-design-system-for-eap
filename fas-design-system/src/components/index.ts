@@ -138,3 +138,10 @@ export type { NavigationBarProps } from './NavigationBar/NavigationBar';
 // SideMenu
 export { SideMenu } from './SideMenu/SideMenu';
 export type { SideMenuProps, SideNavItem } from './SideMenu/SideMenu';
+
+// FileBrowser
+export { FileBrowser } from './FileBrowser/FileBrowser';
+export type { FileBrowserProps } from './FileBrowser/FileBrowser';
+export { FileBrowserDialog } from './FileBrowser/FileBrowserDialog';
+export type { FileBrowserDialogProps } from './FileBrowser/FileBrowserDialog';
+export type { FileBrowserNode } from './FileBrowser/types';

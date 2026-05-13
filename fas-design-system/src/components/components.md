@@ -409,6 +409,77 @@
 
 ---
 
+## FileBrowser
+樹狀檔案瀏覽器，使用者可瀏覽資料夾、進入子層、回上一層／回根目錄，並以 checkbox 多選檔案。
+
+```tsx
+<FileBrowser
+  nodes={tree}
+  value={picked}
+  onChange={setPicked}
+/>
+
+{/* 非同步：大型目錄 lazy load */}
+<FileBrowser
+  nodes={topLevel}
+  value={picked}
+  onChange={setPicked}
+  loadChildren={(folderId) => api.list(folderId)}
+/>
+
+{/* Dialog 變體：固定 size="lg"，內部維護 selection，onConfirm 才回呼 */}
+<FileBrowserDialog
+  open={open}
+  onClose={() => setOpen(false)}
+  onConfirm={(ids) => { save(ids); setOpen(false); }}
+  nodes={tree}
+  defaultValue={picked}
+/>
+```
+
+`FileBrowserNode`：
+
+| Prop | Type | 說明 |
+|------|------|------|
+| `id` | `string` | 唯一識別 |
+| `name` | `string` | 顯示名稱 |
+| `type` | `'folder' \| 'file'` | 節點類型 |
+| `children` | `FileBrowserNode[]` | 預載子節點（folder 用） |
+| `hasChildren` | `boolean` | folder 用；true 且無 children → 展開時觸發 `loadChildren` |
+| `disabled` | `boolean` | file 不可選；folder 仍可展開／進入 |
+| `icon` | `ReactNode` | 覆寫預設 icon（folder=folder/folder_open、file=description） |
+| `caption` | `string` | label 下方第二行小字（如大小、修改時間） |
+
+`FileBrowser` props：
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `nodes` | `FileBrowserNode[]` | — | root 層節點 |
+| `value` | `string[]` | — | 已選 file id（受控；多選） |
+| `onChange` | `(next: string[]) => void` | — | selection 變動 callback |
+| `loadChildren` | `(id) => Promise<FileBrowserNode[]>` | — | lazy load 子節點 |
+| `leadingLine` | `boolean` | `true` | 是否畫父子引導線（最多 5 層） |
+| `emptyText` | `string` | `'此資料夾為空'` | 空資料夾文字 |
+| `height` | `number \| string` | `400` | tree 滾動高度 |
+
+`FileBrowserDialog` props：
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `open` / `onClose` | — | — | Dialog 開關（onClose 不觸發 onConfirm） |
+| `onConfirm` | `(ids: string[]) => void` | — | 點「確認」回呼已選 file id 陣列 |
+| `title` | `string` | `'選擇檔案'` | Dialog 標題 |
+| `confirmLabel` / `cancelLabel` | `string` | `'確認'` / `'取消'` | 按鈕文字 |
+| `defaultValue` | `string[]` | `[]` | 每次 open `false → true` 時重置為此值 |
+| `nodes` / `loadChildren` / `leadingLine` / `emptyText` | — | — | pass-through 給內部 `FileBrowser` |
+
+- 固定 `Dialog size="lg"`、未選任何 file → 確認鈕 disabled
+- Toolbar：home（回根目錄）／back（回上一層）／breadcrumb（可點任一層回去）
+- 雙擊 folder = 進入（path 推一層）；單擊 folder = 展開／折疊
+- 鍵盤：↑↓ 移動 focus、← 折疊（已折疊則跳父層）、→ 展開（已展開則跳第一個子）、Enter 開啟（file 切換選取、folder 進入）、Space 切換（file 選取、folder 展開）、Backspace 回上一層
+
+---
+
 ## NavigationBar
 固定在頁面頂端的全寬導覽列（高度 60px，sticky，z-index 100）。
 

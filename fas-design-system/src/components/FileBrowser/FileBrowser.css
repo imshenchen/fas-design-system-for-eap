@@ -1,0 +1,284 @@
+/* FileBrowser — FAS Design Kit */
+
+.fas-fb {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ─── Toolbar ─────────────────────────────────────────────────────────── */
+.fas-fb__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 48px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--divider);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+
+.fas-fb__crumbs {
+  margin-left: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ─── Tree container ──────────────────────────────────────────────────── */
+.fas-fb__tree {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  outline: none;
+  padding: 4px 0;
+}
+
+.fas-fb__tree:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+
+/* ─── Empty ───────────────────────────────────────────────────────────── */
+.fas-fb__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 120px;
+  color: var(--text-medium);
+  font-size: 14px;
+}
+
+/* ─── Row ─────────────────────────────────────────────────────────────── */
+.fas-fb__row {
+  display: flex;
+  align-items: stretch;
+  min-height: 48px;
+  padding-right: 12px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  outline: none;
+  color: var(--text-high);
+  font-size: 14px;
+}
+
+.fas-fb__row:hover {
+  background: var(--comp-hover);
+}
+
+.fas-fb__row--selected {
+  background: var(--table-selected);
+}
+
+.fas-fb__row--selected:hover {
+  background: var(--table-selected);
+}
+
+.fas-fb__row--focused {
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+
+.fas-fb__row--disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.fas-fb__row--disabled:hover {
+  background: transparent;
+}
+
+/* ─── Indent + leading lines ──────────────────────────────────────────── */
+.fas-fb__indent {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.fas-fb__indent-cell {
+  position: relative;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+/* 祖先層的垂直引導線（仍有後續 sibling） */
+.fas-fb__indent-cell--line::after {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--divider);
+}
+
+/* 當前 row 的 branch（水平接 + 垂直線） */
+.fas-fb__indent-cell--branch::before {
+  /* 水平連接線：從中心到右邊緣 */
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  width: 13px;
+  height: 1px;
+  background: var(--divider);
+}
+
+.fas-fb__indent-cell--branch::after {
+  /* 垂直線：預設整段 */
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--divider);
+}
+
+.fas-fb__indent-cell--branch-last::after {
+  /* 最後一個 sibling：垂直線只到中點 */
+  bottom: auto;
+  height: 50%;
+}
+
+/* ─── Chevron ─────────────────────────────────────────────────────────── */
+.fas-fb__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.fas-fb__chevron-icon {
+  font-size: 18px;
+  color: var(--text-medium);
+  transition: transform 120ms ease;
+}
+
+/* ─── Checkbox slot ───────────────────────────────────────────────────── */
+.fas-fb__checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+/* ─── Leading icon ────────────────────────────────────────────────────── */
+.fas-fb__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  color: var(--text-medium);
+}
+
+.fas-fb__icon .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.fas-fb__row--folder .fas-fb__icon {
+  color: var(--primary);
+}
+
+.fas-fb__row--disabled .fas-fb__icon {
+  color: var(--text-disabled);
+}
+
+/* ─── Label + caption ─────────────────────────────────────────────────── */
+.fas-fb__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  padding: 4px 0;
+}
+
+.fas-fb__label {
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fas-fb__caption {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fas-fb__row--disabled .fas-fb__caption {
+  color: var(--text-disabled);
+}
+
+/* ─── Trailing ────────────────────────────────────────────────────────── */
+.fas-fb__trailing {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.fas-fb__row:hover .fas-fb__trailing,
+.fas-fb__row--focused .fas-fb__trailing,
+.fas-fb__row:focus-within .fas-fb__trailing {
+  opacity: 1;
+}
+
+/* Loading spinner always visible */
+.fas-fb__trailing .fas-spin {
+  opacity: 1 !important;
+}
+
+.fas-fb__row:has(.fas-spin) .fas-fb__trailing {
+  opacity: 1;
+}
+
+.fas-fb__enter,
+.fas-fb__retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-medium);
+}
+
+.fas-fb__enter:hover,
+.fas-fb__retry:hover {
+  background: var(--comp-hover-secondary);
+  color: var(--text-high);
+}
+
+.fas-fb__retry {
+  color: var(--text-medium);
+}
+
+.fas-fb__enter .material-symbols-outlined,
+.fas-fb__retry .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* ─── Dark mode adjustments ───────────────────────────────────────────── */
+[data-theme='dark'] .fas-fb {
+  border-color: var(--divider);
+}
