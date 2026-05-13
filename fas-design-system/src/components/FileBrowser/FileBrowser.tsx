@@ -7,6 +7,7 @@ import { Breadcrumbs } from '../Breadcrumbs/Breadcrumbs';
 import { IconButton } from '../IconButton/IconButton';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Spin } from '../Spin/Spin';
+import { Button } from '../Button/Button';
 import type { FileBrowserNode } from './types';
 import './FileBrowser.css';
 
@@ -140,6 +141,32 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
     [value, onChange],
   );
 
+  // ─── 全選 ────────────────────────────────────────────────────────────────
+  // 範圍：當前 path 末端 folder 內、非 disabled 的 files
+  const selectableFiles = React.useMemo(
+    () => (currentNodes ?? []).filter((n) => n.type === 'file' && !n.disabled),
+    [currentNodes],
+  );
+  const selectableCount = selectableFiles.length;
+  const selectedInCurrent = React.useMemo(
+    () => selectableFiles.filter((f) => value.includes(f.id)).length,
+    [selectableFiles, value],
+  );
+  const allChecked = selectableCount > 0 && selectedInCurrent === selectableCount;
+  const someChecked = selectedInCurrent > 0 && selectedInCurrent < selectableCount;
+
+  const toggleSelectAll = React.useCallback(() => {
+    if (selectableCount === 0) return;
+    const ids = selectableFiles.map((f) => f.id);
+    if (allChecked) {
+      onChange(value.filter((v) => !ids.includes(v)));
+    } else {
+      const set = new Set(value);
+      ids.forEach((id) => set.add(id));
+      onChange(Array.from(set));
+    }
+  }, [selectableCount, selectableFiles, allChecked, value, onChange]);
+
   // ─── 鍵盤導覽 ────────────────────────────────────────────────────────────
   const rows = currentNodes ?? [];
   const [focusedId, setFocusedId] = React.useState<string | null>(null);
@@ -265,20 +292,43 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         {!currentIsLoading && currentLoadError && (
           <div className="fas-fb__error">
             <span>{currentLoadError || '載入失敗'}</span>
-            <button
-              type="button"
-              className="fas-fb__retry"
+            <Button
+              variant="text"
+              color="secondary"
+              size="s"
               onClick={() => currentFolderId && triggerLoad(currentFolderId)}
-              aria-label="重新載入"
+              iconLeft={<span className="material-symbols-outlined" aria-hidden>refresh</span>}
             >
-              <span className="material-symbols-outlined" aria-hidden>refresh</span>
               重試
-            </button>
+            </Button>
           </div>
         )}
 
         {!currentIsLoading && !currentLoadError && rows.length === 0 && (
           <div className="fas-fb__empty">{emptyText}</div>
+        )}
+
+        {!currentIsLoading && !currentLoadError && selectableCount > 0 && (
+          <div
+            className="fas-fb__select-all"
+            onClick={(e) => {
+              // 整列可點，但避免重複觸發 checkbox
+              if ((e.target as HTMLElement).closest('.fas-checkbox')) return;
+              toggleSelectAll();
+            }}
+          >
+            <span className="fas-fb__checkbox" onClick={(e) => e.stopPropagation()}>
+              <Checkbox
+                checked={allChecked}
+                indeterminate={someChecked}
+                onChange={toggleSelectAll}
+                size="m"
+              />
+            </span>
+            <span className="fas-fb__select-all-label">
+              全選 <span className="fas-fb__select-all-count">({selectedInCurrent} / {selectableCount})</span>
+            </span>
+          </div>
         )}
 
         {!currentIsLoading && !currentLoadError &&
@@ -346,22 +396,14 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                 </div>
 
                 {/* Enter button (folder only) */}
-                <div className="fas-fb__trailing">
+                <div className="fas-fb__trailing" onClick={(e) => e.stopPropagation()}>
                   {isFolder && (
-                    <button
-                      type="button"
-                      className="fas-fb__enter"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        enterFolder(node);
-                      }}
+                    <IconButton
                       aria-label={`進入 ${node.name}`}
-                      title="進入資料夾"
-                    >
-                      <span className="material-symbols-outlined" aria-hidden>
-                        arrow_forward
-                      </span>
-                    </button>
+                      size="s"
+                      onClick={() => enterFolder(node)}
+                      icon={<span className="material-symbols-outlined" aria-hidden>arrow_forward</span>}
+                    />
                   )}
                 </div>
               </div>

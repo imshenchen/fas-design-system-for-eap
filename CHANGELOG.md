@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.12.2] - 2026-05-13
+
+### Added
+- `FileBrowser` 列表頂端新增「全選」列（含 `(N / total)` 計數、indeterminate 狀態），範圍為當前 folder 內的可選 files。
+
+### Changed
+- `FileBrowser` folder 列的 trailing 進入 → 改用 core `IconButton`。
+- `FileBrowser` 錯誤狀態的「重試」改用 core `Button`（text 變體）。
+
 ## [0.12.1] - 2026-05-13
 
 ### Changed

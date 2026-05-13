@@ -475,6 +475,7 @@
 - 固定 `Dialog size="lg"`、未選任何 file → 確認鈕 disabled
 - Toolbar：home（回根目錄）／back（回上一層）／breadcrumb（可點任一層回去）
 - **單層顯示**：一次只列當前資料夾的內容，不 inline 展開
+- **全選**：列表頂端有「全選」列（含 `(N / total)` 計數與 indeterminate 狀態），範圍為當前 folder 內非 disabled 的 files；切換 path 後計數自動更新；當前 folder 無可選 file 時隱藏
 - 進入下一層：點 folder 列右側 → 箭頭、或在 folder 上雙擊
 - 鍵盤：↑↓ 移動 focus、→ 進入 folder、← / Backspace 回上一層、Enter 開啟（file 切換選取、folder 進入）、Space 切換（file 選取、folder 進入）
 
