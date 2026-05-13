@@ -16,6 +16,7 @@ import { FileBrowser } from '../../components/FileBrowser/FileBrowser';
 import type { FileBrowserNode } from '../../components/FileBrowser/types';
 import { Button } from '../../components/Button/Button';
 import { IconButton } from '../../components/IconButton/IconButton';
+import { Icon } from '../../components/Icon/Icon';
 import './FileTransfer.css';
 
 export interface FileTransferProps {
@@ -150,7 +151,6 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
 
   // 計算「實際會新增的數量」（扣掉已在右側的）
   const addable = pending.filter((id) => !value.includes(id)).length;
-  const addBtnLabel = addable > 0 ? `${addLabel} (${addable})` : addLabel;
 
   const rootStyle: React.CSSProperties = {
     height: typeof height === 'number' ? `${height}px` : height,
@@ -170,17 +170,17 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
         />
       </div>
 
-      {/* Center: Add button */}
+      {/* Center: Add button (與 Transfer template 中央按鈕一致樣式) */}
       <div className="fas-ft__center">
         <Button
-          variant="contained"
-          color="primary"
-          size="m"
+          variant="outlined"
+          color="secondary"
+          size="s"
           disabled={addable === 0}
           onClick={handleAdd}
-          iconRight={<span className="material-symbols-outlined" aria-hidden>arrow_forward</span>}
+          iconRight={<Icon name="navigate_next" />}
         >
-          {addBtnLabel}
+          {addLabel}
         </Button>
       </div>
 
