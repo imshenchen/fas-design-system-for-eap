@@ -410,7 +410,7 @@
 ---
 
 ## FileBrowser
-樹狀檔案瀏覽器，使用者可瀏覽資料夾、進入子層、回上一層／回根目錄，並以 checkbox 多選檔案。
+單層資料夾瀏覽器：toolbar（home / back / breadcrumb）顯示當前路徑，下方列出當前層的子項，使用者可進入下一層或以 checkbox 多選檔案。
 
 ```tsx
 <FileBrowser
@@ -445,9 +445,9 @@
 | `name` | `string` | 顯示名稱 |
 | `type` | `'folder' \| 'file'` | 節點類型 |
 | `children` | `FileBrowserNode[]` | 預載子節點（folder 用） |
-| `hasChildren` | `boolean` | folder 用；true 且無 children → 展開時觸發 `loadChildren` |
-| `disabled` | `boolean` | file 不可選；folder 仍可展開／進入 |
-| `icon` | `ReactNode` | 覆寫預設 icon（folder=folder/folder_open、file=description） |
+| `hasChildren` | `boolean` | folder 用；true 且無 children → 進入時觸發 `loadChildren` |
+| `disabled` | `boolean` | file 不可選；folder 仍可進入 |
+| `icon` | `ReactNode` | 覆寫預設 icon（folder=folder、file=description） |
 | `caption` | `string` | label 下方第二行小字（如大小、修改時間） |
 
 `FileBrowser` props：
@@ -457,10 +457,9 @@
 | `nodes` | `FileBrowserNode[]` | — | root 層節點 |
 | `value` | `string[]` | — | 已選 file id（受控；多選） |
 | `onChange` | `(next: string[]) => void` | — | selection 變動 callback |
-| `loadChildren` | `(id) => Promise<FileBrowserNode[]>` | — | lazy load 子節點 |
-| `leadingLine` | `boolean` | `true` | 是否畫父子引導線（最多 5 層） |
+| `loadChildren` | `(id) => Promise<FileBrowserNode[]>` | — | lazy load 子節點，於進入該 folder 時呼叫 |
 | `emptyText` | `string` | `'此資料夾為空'` | 空資料夾文字 |
-| `height` | `number \| string` | `400` | tree 滾動高度 |
+| `height` | `number \| string` | `400` | 列表滾動高度 |
 
 `FileBrowserDialog` props：
 
@@ -471,12 +470,13 @@
 | `title` | `string` | `'選擇檔案'` | Dialog 標題 |
 | `confirmLabel` / `cancelLabel` | `string` | `'確認'` / `'取消'` | 按鈕文字 |
 | `defaultValue` | `string[]` | `[]` | 每次 open `false → true` 時重置為此值 |
-| `nodes` / `loadChildren` / `leadingLine` / `emptyText` | — | — | pass-through 給內部 `FileBrowser` |
+| `nodes` / `loadChildren` / `emptyText` | — | — | pass-through 給內部 `FileBrowser` |
 
 - 固定 `Dialog size="lg"`、未選任何 file → 確認鈕 disabled
 - Toolbar：home（回根目錄）／back（回上一層）／breadcrumb（可點任一層回去）
-- 雙擊 folder = 進入（path 推一層）；單擊 folder = 展開／折疊
-- 鍵盤：↑↓ 移動 focus、← 折疊（已折疊則跳父層）、→ 展開（已展開則跳第一個子）、Enter 開啟（file 切換選取、folder 進入）、Space 切換（file 選取、folder 展開）、Backspace 回上一層
+- **單層顯示**：一次只列當前資料夾的內容，不 inline 展開
+- 進入下一層：點 folder 列右側 → 箭頭、或在 folder 上雙擊
+- 鍵盤：↑↓ 移動 focus、→ 進入 folder、← / Backspace 回上一層、Enter 開啟（file 切換選取、folder 進入）、Space 切換（file 選取、folder 進入）
 
 ---
 

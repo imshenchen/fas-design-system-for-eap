@@ -1,18 +1,21 @@
 # FileBrowser — 設計規格
 
-## 目的
-提供一個 core tier 的樹狀檔案瀏覽元件，讓使用者瀏覽資料夾、進入子層、回上一層或回根目錄，並以 checkbox 多選檔案。另外提供 dialog 變體 `FileBrowserDialog`，用於在對話框中選檔。
+> **2026-05-13 update**：改為**單層顯示**——一次只列當前資料夾的內容，不 inline 展開。`leadingLine` prop 已移除。
 
-視覺參考 Figma `Navigation list` 的 Tree 樣式（含 leading line 引導線）。
+## 目的
+提供一個 core tier 的檔案瀏覽元件，讓使用者瀏覽資料夾、進入子層、回上一層或回根目錄，並以 checkbox 多選檔案。另外提供 dialog 變體 `FileBrowserDialog`，用於在對話框中選檔。
+
+視覺參考 Figma `Navigation list` 的 Tree 樣式（row 結構）。
 
 ## Tier 與命名
 - core（`src/components/FileBrowser/`）
 - Exports：`FileBrowser`、`FileBrowserDialog`、type `FileBrowserNode`
 
-## 導覽模式（hybrid）
+## 導覽模式（單層）
 頂部 toolbar：home（回根目錄）、back（回上一層）、breadcrumb（顯示當前 path，可點任一層回去）。
-下方 tree：從當前 path 起算的子樹，folder 可 expand/collapse；雙擊 folder 進入該層（path 推一層）。
-「回根目錄」= 將 current path 清空；「回上一層」= path 退一層；皆會重置 tree 顯示但保留已選 file ids。
+下方列表：當前 path 末端 folder 的直接子項（不 inline 展開）。
+進入下一層：點 folder 列右側 → 箭頭、或在 folder 上雙擊；單擊只 focus。
+「回根目錄」= 將 current path 清空；「回上一層」= path 退一層；皆會重置列表顯示但保留已選 file ids。
 
 ## 資料模型
 ```ts
@@ -35,9 +38,8 @@ type FileBrowserProps = {
   value: string[];                                       // 已選 file id（受控）
   onChange: (next: string[]) => void;
   loadChildren?: (folderId: string) => Promise<FileBrowserNode[]>;
-  leadingLine?: boolean;                                 // 預設 true
   emptyText?: string;                                    // 預設「此資料夾為空」
-  height?: number | string;                              // tree 滾動高度；預設 400
+  height?: number | string;                              // 列表滾動高度；預設 400
   className?: string;
 };
 ```
@@ -49,34 +51,34 @@ type FileBrowserProps = {
 - 不支援過濾（呼叫者自己過濾 nodes）
 
 ## Lazy load
-folder 展開時，若 `children` 未提供且 `hasChildren=true` 且 `loadChildren` 有傳：
-- 觸發 `loadChildren(id)`、顯示 inline `Spin`
+進入 folder 時，若 `children` 未提供且 `hasChildren=true` 且 `loadChildren` 有傳：
+- 觸發 `loadChildren(id)`、列表區顯示置中 `Spin`
 - 成功 → 將回傳 children 內存於元件 state，後續不重複呼叫（cache by id）
-- 失敗 → 顯示「載入失敗」+ retry icon button
+- 失敗 → 列表區顯示錯誤訊息 + 「重試」按鈕
 - 元件不主動 invalidate cache；呼叫者若需要重新 fetch，需 remount
 
 ## 視覺/Token
 | 元素 | 值 |
 |------|----|
 | Row height | 48px |
-| Indent step | 24px |
-| Leading line | 1px `var(--border-divider)`；最多 5 層 |
-| Row hover bg | `var(--bg-hover)` |
-| Row selected bg | `var(--bg-selected)` |
+| Row padding | 0 12px |
+| Row hover bg | `var(--comp-hover)` |
+| Row selected bg | `var(--table-selected)` |
 | Row text | `var(--text-high)` |
 | Disabled text/icon | `var(--text-disabled)` |
 | Caption | 12px、`var(--text-medium)` |
-| Folder icon | Material Symbols `folder` / `folder_open`（依展開狀態） |
-| File icon | Material Symbols `description` |
-| Toolbar | 高度 48px、下方 1px `var(--border-divider)`；左→右：home / back / breadcrumb |
+| Folder icon | Material Symbols `folder`、色 `var(--primary)` |
+| File icon | Material Symbols `description`、色 `var(--text-medium)` |
+| Toolbar | 高度 48px、下方 1px `var(--divider)`；左→右：home / back / breadcrumb |
 | Toolbar buttons | core `IconButton size="m"` |
 | Breadcrumb | core `Breadcrumbs` |
-| Empty state | 置中文字、`var(--text-medium)` |
+| Trailing → 箭頭 | Material Symbols `arrow_forward`，hover 顯示底色 |
+| Empty / loading / error | 置中、`var(--text-medium)` |
 | Loading | core `Spin` |
 
 ## A11y / 鍵盤
-- 樹：`role="tree"`、每列 `role="treeitem"`，附 `aria-expanded` / `aria-selected` / `aria-level` / `aria-disabled`
-- 鍵盤：↑↓ 移動 focus；← 折疊（已折疊則跳父層）；→ 展開（已展開則跳第一個子層）；Enter / Space 切換 checkbox（限 file 且非 disabled）；Backspace 回上一層
+- 列表：`role="tree"`、每列 `role="treeitem"`，附 `aria-selected` / `aria-level` / `aria-disabled`
+- 鍵盤：↑↓ 移動 focus；→ 進入 folder；← / Backspace 回上一層；Enter（folder 進入 / file 切換選取）；Space（folder 進入 / file 切換選取）
 
 ## `FileBrowserDialog` props
 ```ts
@@ -91,7 +93,6 @@ type FileBrowserDialogProps = {
   // pass-through to FileBrowser:
   nodes: FileBrowserNode[];
   loadChildren?: (folderId: string) => Promise<FileBrowserNode[]>;
-  leadingLine?: boolean;
   emptyText?: string;
 };
 ```

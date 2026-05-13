@@ -20,7 +20,6 @@ export interface FileBrowserDialogProps {
   // pass-through to FileBrowser:
   nodes: FileBrowserNode[];
   loadChildren?: (folderId: string) => Promise<FileBrowserNode[]>;
-  leadingLine?: boolean;
   emptyText?: string;
 }
 
@@ -34,7 +33,6 @@ export const FileBrowserDialog: React.FC<FileBrowserDialogProps> = ({
   defaultValue,
   nodes,
   loadChildren,
-  leadingLine,
   emptyText,
 }) => {
   const [selected, setSelected] = React.useState<string[]>(defaultValue ?? []);
@@ -80,7 +78,6 @@ export const FileBrowserDialog: React.FC<FileBrowserDialogProps> = ({
         value={selected}
         onChange={setSelected}
         loadChildren={loadChildren}
-        leadingLine={leadingLine}
         emptyText={emptyText}
         height={420}
       />

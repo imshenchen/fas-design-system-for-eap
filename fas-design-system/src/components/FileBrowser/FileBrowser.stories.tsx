@@ -88,22 +88,6 @@ export const Default: Story = {
   },
 };
 
-export const LeadingLineOff: Story = {
-  render: () => {
-    const [value, setValue] = React.useState<string[]>([]);
-    return (
-      <div style={{ maxWidth: 640 }}>
-        <FileBrowser
-          nodes={sampleNodes}
-          value={value}
-          onChange={setValue}
-          leadingLine={false}
-        />
-      </div>
-    );
-  },
-};
-
 export const WithDisabled: Story = {
   render: () => {
     const [value, setValue] = React.useState<string[]>([]);

@@ -16,10 +16,8 @@ export interface FileBrowserProps {
   /** 已選 file id（受控） */
   value: string[];
   onChange: (next: string[]) => void;
-  /** Lazy load folder 子節點；觸發於展開時，未提供子節點且 hasChildren=true 的 folder */
+  /** Lazy load folder 子節點；進入該 folder 時觸發，未提供子節點且 hasChildren=true 時 */
   loadChildren?: (folderId: string) => Promise<FileBrowserNode[]>;
-  /** 預設 true；關閉時不畫父子引導線 */
-  leadingLine?: boolean;
   /** 空資料夾文字，預設「此資料夾為空」 */
   emptyText?: string;
   /** tree 區可滾動高度；預設 400 */
@@ -33,45 +31,26 @@ interface FolderPathEntry {
 }
 
 const ROOT_LABEL = '根目錄';
-const MAX_LEADING_LINE_DEPTH = 5;
 
 export const FileBrowser: React.FC<FileBrowserProps> = ({
   nodes,
   value,
   onChange,
   loadChildren,
-  leadingLine = true,
   emptyText = '此資料夾為空',
   height = 400,
   className,
 }) => {
   // 當前 path（不含 root）；每進入一個 folder push 一筆
   const [path, setPath] = React.useState<FolderPathEntry[]>([]);
-  // folder 展開狀態（id set）；切換 path 時清空
-  const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
   // lazy load 快取
   const [loadedChildren, setLoadedChildren] = React.useState<Map<string, FileBrowserNode[]>>(new Map());
   const [loadingIds, setLoadingIds] = React.useState<Set<string>>(new Set());
   const [loadErrors, setLoadErrors] = React.useState<Map<string, string>>(new Map());
 
-  // 切換 path 時重置展開狀態（保留已選 file ids）
-  React.useEffect(() => {
-    setExpanded(new Set());
-  }, [path]);
-
-  // ─── helpers ─────────────────────────────────────────────────────────────
-  const getChildren = React.useCallback(
-    (node: FileBrowserNode): FileBrowserNode[] | undefined => {
-      if (node.children) return node.children;
-      return loadedChildren.get(node.id);
-    },
-    [loadedChildren],
-  );
-
-  // 根據當前 path 找出要顯示的 root-level nodes（path 末端 folder 的 children）
+  // 根據當前 path 找出要顯示的 nodes（path 末端 folder 的 children）
   const currentNodes = React.useMemo<FileBrowserNode[] | undefined>(() => {
     if (path.length === 0) return nodes;
-    // walk
     let scope: FileBrowserNode[] | undefined = nodes;
     for (const entry of path) {
       const found: FileBrowserNode | undefined = scope?.find((n) => n.id === entry.id);
@@ -80,6 +59,11 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
     }
     return scope;
   }, [nodes, path, loadedChildren]);
+
+  // 當前 path 末端 folder 的 id（用於顯示其 lazy load 狀態）
+  const currentFolderId = path.length > 0 ? path[path.length - 1].id : null;
+  const currentIsLoading = currentFolderId ? loadingIds.has(currentFolderId) : false;
+  const currentLoadError = currentFolderId ? loadErrors.get(currentFolderId) : undefined;
 
   const triggerLoad = React.useCallback(
     (folderId: string) => {
@@ -123,40 +107,10 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
     [loadChildren, loadingIds],
   );
 
-  const toggleExpand = React.useCallback(
-    (node: FileBrowserNode) => {
-      if (node.type !== 'folder') return;
-      const isExpanded = expanded.has(node.id);
-      if (isExpanded) {
-        setExpanded((prev) => {
-          const next = new Set(prev);
-          next.delete(node.id);
-          return next;
-        });
-        return;
-      }
-      // expand
-      setExpanded((prev) => {
-        const next = new Set(prev);
-        next.add(node.id);
-        return next;
-      });
-      // 觸發 lazy load
-      const needsLoad =
-        !node.children &&
-        !loadedChildren.has(node.id) &&
-        node.hasChildren &&
-        loadChildren;
-      if (needsLoad) triggerLoad(node.id);
-    },
-    [expanded, loadedChildren, loadChildren, triggerLoad],
-  );
-
   const enterFolder = React.useCallback(
     (node: FileBrowserNode) => {
       if (node.type !== 'folder') return;
       setPath((prev) => [...prev, { id: node.id, name: node.name }]);
-      // 若進入的 folder 需要 lazy load，預先觸發
       const needsLoad =
         !node.children &&
         !loadedChildren.has(node.id) &&
@@ -169,6 +123,9 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
 
   const goHome = React.useCallback(() => setPath([]), []);
   const goBack = React.useCallback(() => setPath((prev) => prev.slice(0, -1)), []);
+  const goToLevel = React.useCallback((level: number) => {
+    setPath((prev) => prev.slice(0, level + 1));
+  }, []);
 
   const toggleSelect = React.useCallback(
     (node: FileBrowserNode) => {
@@ -184,115 +141,65 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   );
 
   // ─── 鍵盤導覽 ────────────────────────────────────────────────────────────
-  // 用一個 flat list 表示目前展開後可見的所有 row（含層級），讓 ↑↓ focus 移動。
-  type Row = {
-    node: FileBrowserNode;
-    level: number;
-    /** 該層級下，本節點是否為最後一個 sibling（leading line 用） */
-    isLastSibling: boolean;
-    /** 各祖先層級是否為最後 sibling（用於 leading line 是否要畫到底） */
-    ancestorIsLast: boolean[];
-  };
-
-  const rows = React.useMemo<Row[]>(() => {
-    if (!currentNodes) return [];
-    const out: Row[] = [];
-    const walk = (list: FileBrowserNode[], level: number, ancestorIsLast: boolean[]) => {
-      list.forEach((n, idx) => {
-        const isLastSibling = idx === list.length - 1;
-        out.push({ node: n, level, isLastSibling, ancestorIsLast });
-        if (n.type === 'folder' && expanded.has(n.id)) {
-          const kids = getChildren(n);
-          if (kids && kids.length > 0) {
-            walk(kids, level + 1, [...ancestorIsLast, isLastSibling]);
-          }
-        }
-      });
-    };
-    walk(currentNodes, 0, []);
-    return out;
-  }, [currentNodes, expanded, getChildren]);
-
+  const rows = currentNodes ?? [];
   const [focusedId, setFocusedId] = React.useState<string | null>(null);
 
-  // 當 rows 變動且當前 focus 不存在時，focus 第一筆
+  // 切換 path 後、或 rows 變動且當前 focus 不存在時，focus 第一筆
   React.useEffect(() => {
     if (rows.length === 0) {
       setFocusedId(null);
       return;
     }
-    if (focusedId && rows.some((r) => r.node.id === focusedId)) return;
-    setFocusedId(rows[0].node.id);
+    if (focusedId && rows.some((r) => r.id === focusedId)) return;
+    setFocusedId(rows[0].id);
   }, [rows, focusedId]);
 
   const handleTreeKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (rows.length === 0) return;
-    const idx = rows.findIndex((r) => r.node.id === focusedId);
+    if (rows.length === 0) {
+      if (e.key === 'Backspace' && path.length > 0) {
+        e.preventDefault();
+        goBack();
+      }
+      return;
+    }
+    const idx = rows.findIndex((r) => r.id === focusedId);
     if (idx < 0) return;
-    const row = rows[idx];
-    const { node } = row;
+    const node = rows[idx];
 
     switch (e.key) {
       case 'ArrowDown': {
         e.preventDefault();
-        const next = rows[Math.min(idx + 1, rows.length - 1)];
-        setFocusedId(next.node.id);
+        setFocusedId(rows[Math.min(idx + 1, rows.length - 1)].id);
         break;
       }
       case 'ArrowUp': {
         e.preventDefault();
-        const next = rows[Math.max(idx - 1, 0)];
-        setFocusedId(next.node.id);
+        setFocusedId(rows[Math.max(idx - 1, 0)].id);
         break;
       }
       case 'ArrowRight': {
-        e.preventDefault();
-        if (node.type !== 'folder') return;
-        if (!expanded.has(node.id)) {
-          toggleExpand(node);
-        } else {
-          // 已展開 → focus 第一個子節點
-          const next = rows[idx + 1];
-          if (next && next.level > row.level) setFocusedId(next.node.id);
+        if (node.type === 'folder') {
+          e.preventDefault();
+          enterFolder(node);
         }
         break;
       }
-      case 'ArrowLeft': {
-        e.preventDefault();
-        if (node.type === 'folder' && expanded.has(node.id)) {
-          toggleExpand(node);
-          return;
-        }
-        // 已折疊或為 file → focus 父層
-        for (let i = idx - 1; i >= 0; i--) {
-          if (rows[i].level < row.level) {
-            setFocusedId(rows[i].node.id);
-            break;
-          }
+      case 'ArrowLeft':
+      case 'Backspace': {
+        if (path.length > 0) {
+          e.preventDefault();
+          goBack();
         }
         break;
       }
       case 'Enter':
       case ' ': {
+        e.preventDefault();
         if (node.type === 'file' && !node.disabled) {
-          e.preventDefault();
           toggleSelect(node);
         } else if (node.type === 'folder') {
-          // Enter on folder → 進入
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            enterFolder(node);
-          } else {
-            // Space on folder → 展開／折疊
-            e.preventDefault();
-            toggleExpand(node);
-          }
+          enterFolder(node);
         }
-        break;
-      }
-      case 'Backspace': {
-        e.preventDefault();
-        if (path.length > 0) goBack();
         break;
       }
     }
@@ -300,18 +207,17 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
 
   // ─── 麵包屑 ──────────────────────────────────────────────────────────────
   const crumbs = React.useMemo(() => {
-    const items = [
+    return [
       { label: ROOT_LABEL, onClick: path.length > 0 ? () => goHome() : undefined },
       ...path.map((p, i) => {
         const isLast = i === path.length - 1;
         return {
           label: p.name,
-          onClick: !isLast ? () => setPath((prev) => prev.slice(0, i + 1)) : undefined,
+          onClick: !isLast ? () => goToLevel(i) : undefined,
         };
       }),
     ];
-    return items;
-  }, [path, goHome]);
+  }, [path, goHome, goToLevel]);
 
   // ─── render ──────────────────────────────────────────────────────────────
   const treeStyle: React.CSSProperties = {
@@ -341,40 +247,52 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         <Breadcrumbs items={crumbs} className="fas-fb__crumbs" />
       </div>
 
-      {/* Tree */}
+      {/* List */}
       <div
-        className={['fas-fb__tree', leadingLine && 'fas-fb__tree--lines'].filter(Boolean).join(' ')}
+        className="fas-fb__tree"
         style={treeStyle}
         role="tree"
         tabIndex={0}
         onKeyDown={handleTreeKey}
         aria-label="檔案瀏覽器"
       >
-        {currentNodes && currentNodes.length === 0 ? (
+        {currentIsLoading && (
+          <div className="fas-fb__loading">
+            <Spin size="m" />
+          </div>
+        )}
+
+        {!currentIsLoading && currentLoadError && (
+          <div className="fas-fb__error">
+            <span>{currentLoadError || '載入失敗'}</span>
+            <button
+              type="button"
+              className="fas-fb__retry"
+              onClick={() => currentFolderId && triggerLoad(currentFolderId)}
+              aria-label="重新載入"
+            >
+              <span className="material-symbols-outlined" aria-hidden>refresh</span>
+              重試
+            </button>
+          </div>
+        )}
+
+        {!currentIsLoading && !currentLoadError && rows.length === 0 && (
           <div className="fas-fb__empty">{emptyText}</div>
-        ) : (
-          rows.map((row) => {
-            const { node, level, isLastSibling, ancestorIsLast } = row;
+        )}
+
+        {!currentIsLoading && !currentLoadError &&
+          rows.map((node) => {
             const isFolder = node.type === 'folder';
-            const isExpanded = isFolder && expanded.has(node.id);
-            const isLoading = loadingIds.has(node.id);
-            const loadError = loadErrors.get(node.id);
             const checked = node.type === 'file' && value.includes(node.id);
             const isFocused = focusedId === node.id;
-            const hasKids =
-              isFolder &&
-              ((node.children && node.children.length > 0) ||
-                (loadedChildren.get(node.id)?.length ?? 0) > 0 ||
-                node.hasChildren === true);
-            const showLeadingLine = leadingLine && level < MAX_LEADING_LINE_DEPTH;
 
             return (
               <div
                 key={node.id}
                 role="treeitem"
-                aria-level={level + 1}
+                aria-level={path.length + 1}
                 aria-selected={checked || undefined}
-                aria-expanded={isFolder ? isExpanded : undefined}
                 aria-disabled={node.disabled || undefined}
                 tabIndex={isFocused ? 0 : -1}
                 className={[
@@ -389,11 +307,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                   .join(' ')}
                 onClick={() => {
                   setFocusedId(node.id);
-                  if (isFolder) {
-                    toggleExpand(node);
-                  } else {
-                    toggleSelect(node);
-                  }
+                  if (!isFolder) toggleSelect(node);
                 }}
                 onDoubleClick={(e) => {
                   if (isFolder) {
@@ -402,51 +316,6 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                   }
                 }}
               >
-                {/* Indent + leading lines */}
-                <div className="fas-fb__indent" aria-hidden>
-                  {Array.from({ length: level }).map((_, i) => {
-                    if (!showLeadingLine) return <span key={i} className="fas-fb__indent-cell" />;
-                    const isAncestorLast = ancestorIsLast[i] ?? false;
-                    return (
-                      <span
-                        key={i}
-                        className={[
-                          'fas-fb__indent-cell',
-                          !isAncestorLast && 'fas-fb__indent-cell--line',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                      />
-                    );
-                  })}
-                  {level > 0 && showLeadingLine && (
-                    <span
-                      className={[
-                        'fas-fb__indent-cell',
-                        'fas-fb__indent-cell--branch',
-                        isLastSibling && 'fas-fb__indent-cell--branch-last',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                    />
-                  )}
-                  {level > 0 && !showLeadingLine && <span className="fas-fb__indent-cell" />}
-                </div>
-
-                {/* Chevron (folder only) */}
-                <span className="fas-fb__chevron" aria-hidden>
-                  {isFolder && hasKids && (
-                    <span
-                      className="material-symbols-outlined fas-fb__chevron-icon"
-                      style={{
-                        transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
-                      }}
-                    >
-                      chevron_right
-                    </span>
-                  )}
-                </span>
-
                 {/* Checkbox (file only) */}
                 <span className="fas-fb__checkbox" onClick={(e) => e.stopPropagation()}>
                   {node.type === 'file' && (
@@ -463,7 +332,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                 <span className="fas-fb__icon" aria-hidden>
                   {node.icon ?? (
                     <span className="material-symbols-outlined">
-                      {isFolder ? (isExpanded ? 'folder_open' : 'folder') : 'description'}
+                      {isFolder ? 'folder' : 'description'}
                     </span>
                   )}
                 </span>
@@ -476,24 +345,9 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                   )}
                 </div>
 
-                {/* Loading / error / enter button */}
+                {/* Enter button (folder only) */}
                 <div className="fas-fb__trailing">
-                  {isLoading && <Spin size="s" />}
-                  {!isLoading && loadError && (
-                    <button
-                      type="button"
-                      className="fas-fb__retry"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        triggerLoad(node.id);
-                      }}
-                      aria-label="重新載入"
-                      title={loadError}
-                    >
-                      <span className="material-symbols-outlined" aria-hidden>refresh</span>
-                    </button>
-                  )}
-                  {!isLoading && !loadError && isFolder && (
+                  {isFolder && (
                     <button
                       type="button"
                       className="fas-fb__enter"
@@ -512,8 +366,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                 </div>
               </div>
             );
-          })
-        )}
+          })}
       </div>
     </div>
   );
