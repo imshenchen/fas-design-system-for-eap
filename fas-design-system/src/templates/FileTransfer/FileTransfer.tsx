@@ -287,7 +287,12 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
 
         <div className="fas-ft__right-list">
           {targetList.length === 0 ? (
-            <div className="fas-ft__right-empty">{targetEmptyText}</div>
+            <div className="fas-ft__right-empty">
+              <div className="fas-ft__right-empty-illu" aria-hidden="true">
+                <Icon name="inbox" size={56} />
+              </div>
+              <div className="fas-ft__right-empty-text">{targetEmptyText}</div>
+            </div>
           ) : (
             targetList.map((snap) => {
               const isChecked = removeChecked.includes(snap.id);
