@@ -9,6 +9,7 @@ import { Checkbox } from '../Checkbox/Checkbox';
 import { Spin } from '../Spin/Spin';
 import { Button } from '../Button/Button';
 import type { FileBrowserNode } from './types';
+import { formatFileSize } from './types';
 import './FileBrowser.css';
 
 export interface FileBrowserProps {
@@ -408,13 +409,19 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                   )}
                 </span>
 
-                {/* Label + caption */}
-                <div className="fas-fb__text">
-                  <span className="fas-fb__label" title={node.name}>{node.name}</span>
-                  {node.caption && (
-                    <span className="fas-fb__caption">{node.caption}</span>
-                  )}
-                </div>
+                {/* Label + caption（檔案優先顯示 size，否則 fallback 到 caption） */}
+                {(() => {
+                  const sizeCap = !isFolder ? formatFileSize(node.size) : undefined;
+                  const captionText = sizeCap ?? node.caption;
+                  return (
+                    <div className="fas-fb__text">
+                      <span className="fas-fb__label" title={node.name}>{node.name}</span>
+                      {captionText && (
+                        <span className="fas-fb__caption" title={captionText}>{captionText}</span>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Enter button (folder only) */}
                 <div className="fas-fb__trailing" onClick={(e) => e.stopPropagation()}>

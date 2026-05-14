@@ -60,21 +60,23 @@ export interface FileTransferProps {
 interface FileSnapshot {
   id: string;
   name: string;
-  caption?: string;
+  /** 從 root 到 file 所在 folder 的名稱陣列（不含 file 本身）；空陣列代表 file 在 root */
+  path: string[];
 }
 
 /** 從同步 nodes tree 遞迴找 file 的 snapshot（lazy-loaded 子節點不包含在內） */
 function findFileInTree(
   nodes: FileBrowserNode[] | undefined,
   id: string,
+  parentPath: string[] = [],
 ): FileSnapshot | undefined {
   if (!nodes) return undefined;
   for (const n of nodes) {
     if (n.type === 'file' && n.id === id) {
-      return { id: n.id, name: n.name, caption: n.caption };
+      return { id: n.id, name: n.name, path: parentPath };
     }
     if (n.type === 'folder' && n.children) {
-      const found = findFileInTree(n.children, id);
+      const found = findFileInTree(n.children, id, [...parentPath, n.name]);
       if (found) return found;
     }
   }
@@ -102,41 +104,51 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
   // 右側選擇要被移除的 file ids
   const [removeChecked, setRemoveChecked] = React.useState<string[]>([]);
 
-  // File info 快取：id → {name, caption}
+  // File info 快取：id → {name, path}
   // 任何時候只要從 source（傳入 nodes 或 FileBrowser 提供的）看到 file，就 cache 起來
   const [snapshots, setSnapshots] = React.useState<Map<string, FileSnapshot>>(new Map());
+  // 為了 lazy-load 計算路徑，緩存「folderId → 從 root 到該 folder（含自身）的名稱路徑」
+  const folderPathRef = React.useRef<Map<string, string[]>>(new Map());
 
-  // 把同步 nodes tree 中的所有 file 一次性 cache（lazy load 後的子節點透過 onSeenFiles 補上）
-  // 為避免每次 render 都跑遞迴，用 nodes ref 比對
+  // 把同步 nodes tree 中的所有 file/folder 一次性走過，cache 路徑與檔案 snapshot
   React.useEffect(() => {
+    const folderPaths = folderPathRef.current;
     setSnapshots((prev) => {
       const next = new Map(prev);
-      const walk = (list: FileBrowserNode[]) => {
+      const walk = (list: FileBrowserNode[], parentPath: string[]) => {
         list.forEach((n) => {
           if (n.type === 'file') {
             if (!next.has(n.id)) {
-              next.set(n.id, { id: n.id, name: n.name, caption: n.caption });
+              next.set(n.id, { id: n.id, name: n.name, path: parentPath });
             }
-          } else if (n.children) {
-            walk(n.children);
+          } else {
+            const myPath = [...parentPath, n.name];
+            folderPaths.set(n.id, myPath);
+            if (n.children) walk(n.children, myPath);
           }
         });
       };
-      walk(nodes);
+      walk(nodes, []);
       return next;
     });
   }, [nodes]);
 
-  // 包一層 loadChildren，把載回來的 file 也快取進 snapshots
+  // 包一層 loadChildren，把載回來的 file 也快取進 snapshots（含路徑）
   const wrappedLoadChildren = React.useMemo(() => {
     if (!loadChildren) return undefined;
     return (folderId: string) =>
       loadChildren(folderId).then((kids) => {
+        const parentPath = folderPathRef.current.get(folderId) ?? [];
         setSnapshots((prev) => {
           const next = new Map(prev);
           kids.forEach((n) => {
-            if (n.type === 'file' && !next.has(n.id)) {
-              next.set(n.id, { id: n.id, name: n.name, caption: n.caption });
+            if (n.type === 'file') {
+              if (!next.has(n.id)) {
+                next.set(n.id, { id: n.id, name: n.name, path: parentPath });
+              }
+            } else {
+              const myPath = [...parentPath, n.name];
+              folderPathRef.current.set(n.id, myPath);
             }
           });
           return next;
@@ -196,8 +208,13 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
     // 同步 fallback（罕見，只有 value 帶了外部 id 又還沒被 cache 時）
     const fromTree = findFileInTree(nodes, id);
     if (fromTree) return fromTree;
-    return { id, name: id };
+    return { id, name: id, path: [] };
   });
+
+  // 右側 row 的 caption = 該檔案的原始路徑；空陣列 → 顯示 rootLabel
+  const rootLabel = fileBrowserLabels?.rootLabel ?? '根目錄';
+  const formatPath = (path: string[]): string =>
+    path.length === 0 ? rootLabel : [rootLabel, ...path].join(' / ');
 
   // 計算「實際會新增的數量」（扣掉已在右側的）
   const addable = pending.filter((id) => !value.includes(id)).length;
@@ -322,9 +339,14 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
                   </span>
                   <div className="fas-ft__target-text">
                     <span className="fas-ft__target-name" title={snap.name}>{snap.name}</span>
-                    {snap.caption && (
-                      <span className="fas-ft__target-caption">{snap.caption}</span>
-                    )}
+                    {(() => {
+                      const pathText = formatPath(snap.path);
+                      return (
+                        <span className="fas-ft__target-caption" title={pathText}>
+                          {pathText}
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
               );

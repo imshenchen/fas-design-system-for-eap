@@ -448,7 +448,8 @@
 | `hasChildren` | `boolean` | folder 用；true 且無 children → 進入時觸發 `loadChildren` |
 | `disabled` | `boolean` | file 不可選；folder 仍可進入 |
 | `icon` | `ReactNode` | 覆寫預設 icon（folder=folder、file=description） |
-| `caption` | `string` | label 下方第二行小字（如大小、修改時間） |
+| `size` | `number \| string` | **file 用**；number 視為 bytes 自動格式化（B/KB/MB/GB），string 直接顯示。提供時 row 小字優先顯示 size |
+| `caption` | `string` | label 下方第二行小字（如修改時間、描述）；若同時提供 `size`，size 優先 |
 
 `FileBrowser` props：
 
@@ -758,7 +759,7 @@ import { FileTransfer } from '@imshenchen/fas-design-system';
 
 - 左側 FileBrowser 的選取是 pending state（在 FileTransfer 內部管理），點「加入」才會 commit 到 `value`
 - 加入時自動去重（已在 `value` 的 id 不會重複加入）；加入完成後左側選取自動清空
-- 右側 row 顯示 file `name` 與 `caption`；元件內部 cache 所有看過的 file info，即使 lazy load 後不再可見也能正確顯示
+- 右側 row 顯示 file `name`，**小字固定顯示該檔案的原始路徑**（從 root 到所在 folder，以 ` / ` 串接，例如「根目錄 / 報告 / 2024」；root 層檔案則顯示 rootLabel）；元件內部 cache 所有看過的 file info（含路徑），即使 lazy load 後不再可見也能正確顯示。`name` 與路徑均使用 ellipsis 截斷，hover 會以 HTML title 顯示完整內容
 - 右側支援 checkbox 多選 + 頂端「全選」（含 indeterminate）；點中央「移除」一次把勾選的 files 從 `value` 移除（搭配「全選」即可一次清空）
 - 中央按鈕沿用 Transfer template 風格：`Button variant="outlined" color="secondary" size="s"`，加入用 `navigate_next`、移除用 `navigate_before`；最下方多一顆 `text` 樣式的 Reset 按鈕，一鍵清空整個 `value`
 - 所有顯示文字皆可透過 props 客製化（`addLabel` / `removeLabel` / `resetLabel` / `selectAllLabel` / `targetTitle` / `targetEmptyText`）；FileBrowser 內部的 i18n 字串透過 `fileBrowserLabels` 物件透傳

@@ -76,7 +76,8 @@ type DemoProps = {
   footer?: React.ReactNode;
   /** 渲染長內容以驗證 footer 貼底時 content 內部捲動 */
   longContent?: boolean;
-  switchRightSlot?: React.ReactNode;
+  /** 在 SwitchPanel 最右側顯示 LMQuadrantSelector */
+  withQuadrant?: boolean;
   versionAction?: React.ReactNode;
   actions?: React.ReactNode;
 };
@@ -95,11 +96,12 @@ const PlaceholderQR: React.FC = () => (
 );
 
 const Demo: React.FC<DemoProps> = ({
-  defaultCollapsed, footer, longContent, switchRightSlot, versionAction, actions,
+  defaultCollapsed, footer, longContent, withQuadrant, versionAction, actions,
 }) => {
   const [activeKey, setActiveKey] = useState('realtime');
   const [line,      setLine]      = useState('line-a');
   const [scope,     setScope]     = useState<string>('line-a');
+  const [zones,     setZones]     = useState<LMQuadrantKey[]>(['topLeft']);
 
   const switchItems = buildSwitchItems(line);
   // 若當前 scope 是舊 line key，line 切換時需同步把 scope 移到新 line tile
@@ -126,7 +128,9 @@ const Demo: React.FC<DemoProps> = ({
       switchItems={switchItems}
       switchValue={effectiveScope}
       onSwitchChange={(key) => setScope(key)}
-      switchRightSlot={switchRightSlot}
+      switchRightSlot={withQuadrant
+        ? <LMQuadrantSelector value={zones} onChange={setZones} size={52} />
+        : undefined}
       versionAction={versionAction}
       footer={footer}
     >
@@ -151,15 +155,10 @@ const Demo: React.FC<DemoProps> = ({
   );
 };
 
-const QuadrantDemo: React.FC = () => {
-  const [zones, setZones] = useState<LMQuadrantKey[]>(['topLeft']);
-  return <LMQuadrantSelector value={zones} onChange={setZones} size={52} />;
-};
-
 export const Default: Story = {
   render: () => (
     <Demo
-      switchRightSlot={<QuadrantDemo />}
+      withQuadrant
       versionAction={<LMMobileInstallButton qrCode={<PlaceholderQR />} />}
     />
   ),
@@ -169,7 +168,7 @@ export const WithFeatureTitleActions: Story = {
   name: 'With LMFeatureTitle actions (CTA)',
   render: () => (
     <Demo
-      switchRightSlot={<QuadrantDemo />}
+      withQuadrant
       actions={
         <>
           <Button variant="text" color="secondary" size="s">取消</Button>
@@ -219,6 +218,124 @@ export const WithFooterAndLongContent: Story = {
       }
     />
   ),
+};
+
+export const LocaleToggle: Story = {
+  name: 'Locale toggle — switchLocale 切換',
+  render: () => {
+    const COPY = {
+      zh: {
+        menu: [
+          {
+            key: 'lm',
+            label: 'LM 工具',
+            isSection: true,
+            children: [
+              {
+                key: 'monitor',
+                label: '產線監控',
+                icon: 'monitoring',
+                defaultOpen: true,
+                children: [
+                  { key: 'realtime', label: '即時數據' },
+                  { key: 'history',  label: '歷史趨勢' },
+                ],
+              },
+              { key: 'devices', label: '設備管理', icon: 'precision_manufacturing' },
+            ],
+          },
+        ] as SideNavItem[],
+        lines: [
+          { value: 'line-a', label: '產線 A' },
+          { value: 'line-b', label: '產線 B' },
+          { value: 'line-c', label: '產線 C' },
+        ],
+        linePlaceholder: '選擇產線',
+        contentTitle: '主內容區',
+        contentBody: '點 NavBar 右側內建的「En」語系按鈕切換語系，SideMenu、產線下拉、LMSwitchPanel 內 tile 都會同步切換。',
+      },
+      en: {
+        menu: [
+          {
+            key: 'lm',
+            label: 'LM Tools',
+            isSection: true,
+            children: [
+              {
+                key: 'monitor',
+                label: 'Line Monitoring',
+                icon: 'monitoring',
+                defaultOpen: true,
+                children: [
+                  { key: 'realtime', label: 'Realtime Data' },
+                  { key: 'history',  label: 'Historical Trends' },
+                ],
+              },
+              { key: 'devices', label: 'Device Management', icon: 'precision_manufacturing' },
+            ],
+          },
+        ] as SideNavItem[],
+        lines: [
+          { value: 'line-a', label: 'Line A' },
+          { value: 'line-b', label: 'Line B' },
+          { value: 'line-c', label: 'Line C' },
+        ],
+        linePlaceholder: 'Select line',
+        contentTitle: 'Main content',
+        contentBody: 'Click the built-in "En" language button in the NavBar (top-right). The SideMenu, line dropdown, and switch panel tiles all update in sync.',
+      },
+    } as const;
+
+    const LocaleDemo: React.FC = () => {
+      const [activeKey, setActiveKey] = useState('realtime');
+      const [line,      setLine]      = useState('line-a');
+      const [scope,     setScope]     = useState<string>('line-a');
+      const [locale,    setLocale]    = useState<'zh' | 'en'>('zh');
+
+      const t = COPY[locale];
+
+      const machineTiles: LMSwitchPanelItem[] = [
+        { key: 'yamaha-1', label: 'Yamaha YSM20R #01',    type: 'machine', status: 'normal'  },
+        { key: 'pana-2',   label: 'Panasonic NPM-W2 #02', type: 'machine', status: 'warning' },
+        { key: 'fuji-3',   label: 'Fuji NXT III #03',     type: 'machine', status: 'down'    },
+      ];
+      const lineLabel = t.lines.find((l) => l.value === line)?.label ?? line;
+      const switchItems: LMSwitchPanelItem[] = [
+        { key: line, label: lineLabel, type: 'line', status: 'normal' },
+        ...machineTiles,
+      ];
+      const effectiveScope = switchItems.some((it) => it.key === scope) ? scope : line;
+
+      return (
+        <LMAppShell
+          appName="LM Console"
+          userInitial="L"
+          menuItems={t.menu}
+          activeKey={activeKey}
+          onMenuItemClick={(key) => setActiveKey(key)}
+          version="v1.0.0"
+          lineOptions={t.lines}
+          lineValue={line}
+          onLineChange={(next) => { setLine(next); setScope(next); }}
+          linePlaceholder={t.linePlaceholder}
+          onLanguageClick={() => setLocale((v) => (v === 'zh' ? 'en' : 'zh'))}
+          switchItems={switchItems}
+          switchValue={effectiveScope}
+          onSwitchChange={(key) => setScope(key)}
+          switchLocale={locale}
+        >
+          <Card variant="elevated">
+            <h3 style={{ margin: '0 0 12px', color: 'var(--text-high)' }}>{t.contentTitle}</h3>
+            <p style={{ margin: 0, color: 'var(--text-medium)' }}>{t.contentBody}</p>
+            <p style={{ margin: '8px 0 0', color: 'var(--text-medium)' }}>
+              <code>locale = "{locale}"</code>
+            </p>
+          </Card>
+        </LMAppShell>
+      );
+    };
+    return <LocaleDemo />;
+  },
 };
 
 export const CustomFooter: Story = {

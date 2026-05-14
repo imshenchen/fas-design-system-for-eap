@@ -87,7 +87,7 @@ const items: LMSwitchPanelItem[] = [
 | `onChange` | `(key, item) => void` | — | 點擊切換 callback |
 | `gap` | `number \| string` | `12` | tile 之間的水平間距 |
 | `locale` | `'zh' \| 'en'` | `'zh'` | tile 內 type caption 與狀態文字語系（pass-through 至 LMScopeTile） |
-| `rightSlot` | `ReactNode` | — | 最右側固定 slot（不受中間 tile scroll 影響）；通常傳 `<LMQuadrantSelector size={52} />` |
+| `rightSlot` | `ReactNode` | — | 最右側固定 slot（不受中間 tile scroll 影響）；通常傳 `<LMQuadrantSelector size={52} />`。若直接是 `LMQuadrantSelector`，會自動帶上 `showRowSelectors`（caller 顯式傳的 prop 仍會勝出） |
 
 `LMSwitchPanelItem`：
 
@@ -158,14 +158,14 @@ const items: LMSwitchPanelItem[] = [
 ---
 
 ## LMQuadrantSelector
-田字四象限多選按鈕。4 個象限可獨立切換、中央圓形按鈕一鍵全選 / 全不選。適用於「選擇設備上 4 區塊的上料資料 / 感測點 / 拼板區域」等情境。
+田字四象限多選按鈕。4 個象限可獨立切換、中央圓形按鈕一鍵全選 / 全不選；可選開啟右側「全選上排 / 全選下排」按鈕欄。適用於「選擇設備上 4 區塊的上料資料 / 感測點 / 拼板區域」等情境。
 
 ```
-┌─────┬─────┐
-│ 左上 │ 右上 │
-├──┐━┌──┤    （正中央 = 全選 / 全不選）
-│ 左下 │ 右下 │
-└─────┴─────┘
+┌─────┬─────┐  ┌──────┐
+│ 左上 │ 右上 │  │ Top  │   ← showRowSelectors=true 時
+├──┐━┌──┤  ├──────┤    　 右側出現此欄
+│ 左下 │ 右下 │  │ Bot  │
+└─────┴─────┘  └──────┘
 ```
 
 ```tsx
@@ -176,21 +176,30 @@ const [zones, setZones] = useState<LMQuadrantKey[]>(['topLeft']);
   onChange={setZones}
   labels={{ topLeft: '區 1', topRight: '區 2', bottomLeft: '區 3', bottomRight: '區 4' }}
 />
+
+{/* 開啟「全選上排 / 全選下排」按鈕欄 */}
+<LMQuadrantSelector value={zones} onChange={setZones} showRowSelectors />
 ```
 
-| Prop | Type | 說明 |
-|------|------|------|
-| `value` | `LMQuadrantKey[]` | 已選象限（受控）；`LMQuadrantKey = 'topLeft' \| 'topRight' \| 'bottomLeft' \| 'bottomRight'` |
-| `onChange` | `(next: LMQuadrantKey[]) => void` | 選取變動 callback |
-| `labels` | `Partial<Record<LMQuadrantKey, ReactNode>>` | 各象限自訂內容，預設為對角箭頭 icon（`north_west` / `north_east` / `south_west` / `south_east`）；可傳字串或 ReactNode 覆寫 |
-| `disabled` | `Partial<Record<LMQuadrantKey, boolean>>` | 禁用單一象限；全選按鈕只切換可用象限 |
-| `size` | `number` | 整體邊長（正方形），預設 120 |
-| `centerAriaLabel` | `string` | 中央按鈕 aria-label，預設 "全選" |
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `value` | `LMQuadrantKey[]` | — | 已選象限（受控）；`LMQuadrantKey = 'topLeft' \| 'topRight' \| 'bottomLeft' \| 'bottomRight'` |
+| `onChange` | `(next: LMQuadrantKey[]) => void` | — | 選取變動 callback |
+| `labels` | `Partial<Record<LMQuadrantKey, ReactNode>>` | — | 各象限自訂內容，預設為對角箭頭 icon（`north_west` / `north_east` / `south_west` / `south_east`） |
+| `disabled` | `Partial<Record<LMQuadrantKey, boolean>>` | — | 禁用單一象限；全選 / 全選上排 / 全選下排按鈕只切換可用象限 |
+| `size` | `number` | `120` | 田字 grid 邊長（正方形）。row selector 欄寬度另由 `rowSelectorWidth` 控制 |
+| `centerAriaLabel` | `string` | `'全選'` | 中央按鈕 aria-label |
+| `showRowSelectors` | `boolean` | `false` | 在田字右側顯示「全選上排 / 全選下排」按鈕欄 |
+| `rowSelectorWidth` | `number` | `size * 0.4`（最小 36） | Row selector 欄寬度 |
+| `rowSelectorGap` | `number` | `4` | 田字 grid 與 row selector 欄之間的水平間距 |
+| `topRowAriaLabel` | `string` | `'全選上排'` | 上排按鈕 aria-label |
+| `bottomRowAriaLabel` | `string` | `'全選下排'` | 下排按鈕 aria-label |
 
 - 預設**全 icon**呈現（無文字），對角箭頭直觀指出每個象限位置；如需顯示文字（編號 / 名稱）請用 `labels` 覆寫
 - 中央按鈕在「全部選取」時用 primary 邊框 + filled bg 表示；icon 切換為 `select_all`
 - 任一象限選取會把該格背景換成 primary、icon 變白色（強對比）
-- Disabled 象限：灰底、`not-allowed`，不會被全選按鈕影響
+- Disabled 象限：灰底、`not-allowed`，不會被全選 / 全選上下排按鈕影響
+- Row selector 按鈕為 toggle：若該排可用象限全部已選 → 一鍵清掉；否則 → 一鍵補滿。Icon 是雙橫條，當前對應的那排為實心，另一排為描邊
 
 ---
 

@@ -138,6 +138,35 @@ export const SizeSmall: Story = {
   },
 };
 
+export const WithRowSelectors: Story = {
+  name: 'Row selectors — 全選上排 / 全選下排',
+  render: () => {
+    const [val, setVal] = useState<LMQuadrantKey[]>(['topLeft']);
+    return (
+      <Frame status={`已選：${val.length === 0 ? '無' : val.join(', ')}`}>
+        <LMQuadrantSelector value={val} onChange={setVal} showRowSelectors />
+      </Frame>
+    );
+  },
+};
+
+export const RowSelectorsWithDisabled: Story = {
+  name: 'Row selectors + disabled — 下排部分禁用',
+  render: () => {
+    const [val, setVal] = useState<LMQuadrantKey[]>([]);
+    return (
+      <Frame status="右下象限禁用 → 全選下排按鈕仍會選起 BL，但不會動到 BR">
+        <LMQuadrantSelector
+          value={val}
+          onChange={setVal}
+          showRowSelectors
+          disabled={{ bottomRight: true }}
+        />
+      </Frame>
+    );
+  },
+};
+
 export const InContext: Story = {
   name: 'In context — 上料資料 picker',
   render: () => {

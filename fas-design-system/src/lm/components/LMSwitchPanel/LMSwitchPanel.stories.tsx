@@ -38,21 +38,17 @@ const Frame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
-const QuadrantDemo: React.FC = () => {
-  const [zones, setZones] = useState<LMQuadrantKey[]>(['topLeft']);
-  return <LMQuadrantSelector value={zones} onChange={setZones} size={52} />;
-};
-
 export const Default: Story = {
   render: () => {
     const [scope, setScope] = useState('line-a');
+    const [zones, setZones] = useState<LMQuadrantKey[]>(['topLeft']);
     return (
       <Frame>
         <LMSwitchPanel
           items={SAMPLE_ITEMS}
           value={scope}
           onChange={setScope}
-          rightSlot={<QuadrantDemo />}
+          rightSlot={<LMQuadrantSelector value={zones} onChange={setZones} size={52} />}
         />
       </Frame>
     );

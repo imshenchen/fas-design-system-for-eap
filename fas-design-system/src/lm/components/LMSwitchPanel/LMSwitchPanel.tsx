@@ -14,6 +14,7 @@
 import React from 'react';
 import { Divider } from '../../../components/Divider/Divider';
 import { LMScopeTile } from '../LMScopeTile/LMScopeTile';
+import { LMQuadrantSelector } from '../LMQuadrantSelector/LMQuadrantSelector';
 import './LMSwitchPanel.css';
 import type {
   LMScopeTileLocale,
@@ -110,7 +111,9 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
             ))}
           </div>
 
-          {/* Right — fixed slot（外層 flex sibling，不受 tile scroll 影響） */}
+          {/* Right — fixed slot（外層 flex sibling，不受 tile scroll 影響）
+              若 rightSlot 直接是 <LMQuadrantSelector>，預設啟用 showRowSelectors
+              （caller 顯式傳入的值會勝出）。 */}
           {rightSlot && (
             <>
               <Divider orientation="vertical" />
@@ -123,7 +126,9 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
                   minWidth:   0,
                 }}
               >
-                {rightSlot}
+                {React.isValidElement(rightSlot) && rightSlot.type === LMQuadrantSelector
+                  ? React.cloneElement(rightSlot, { showRowSelectors: true, ...rightSlot.props })
+                  : rightSlot}
               </div>
             </>
           )}

@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.15.0] - 2026-05-14
+
+### Added
+- `LMScopeTile` 新增 `locale: 'zh' | 'en'` 屬性（預設 `'zh'`）：
+  - type caption — `產線 / Line`、`設備 / Machine`
+  - status text — `正常運行 / Running`、`警告 / Warning`、`停機 / Down`
+- `LMSwitchPanel` / `LMAppShell` 透傳 `locale` / `switchLocale`，可由上層一次切換所有 tile 的語系。
+- `LMQuadrantSelector` 新增 `showRowSelectors` 屬性 — 在田字右側顯示「全選上排 / 全選下排」按鈕欄；可選 `rowSelectorWidth` / `rowSelectorGap` / `topRowAriaLabel` / `bottomRowAriaLabel`。
+- `FileBrowserNode` 新增 `size?: number | string` 屬性 — `number` 視為 bytes 自動格式化（B/KB/MB/GB），`string` 直接顯示；提供時優先取代 `caption`。
+
+### Changed
+- `LMScopeTile` 視覺重新設計：
+  - 移除類型 icon（conveyor_belt / precision_manufacturing），改顯示灰色 caption 文字。
+  - **狀態燈號**改為三色三形狀：綠色圓形（正常運行）／黃色三角（警告）／紅色方形（停機），同時透過顏色 + 形狀傳達語意（符合色盲可讀性）。
+- `LMSwitchPanel` 偵測 `rightSlot` 是 `LMQuadrantSelector` 時，自動啟用 `showRowSelectors`（caller 顯式傳入仍勝出）。
+- `FileBrowser` 檔案 row 的小字優先顯示 `size`（自動格式化）；name 與 caption 皆有 `title` 屬性，hover 時 tooltip 顯示完整內容。
+- `FileTransfer` 右側 row 的小字改為顯示**該檔案的原始路徑**（例：`根目錄 / 報告 / 2024`；root 層檔案顯示 rootLabel）；元件內部會在初始 walk 與 lazy-load 時記錄每個 folder 的完整路徑。
+
+### Removed
+- **Breaking**：`LMScopeTile` 不再支援 `icon` 屬性（類型 icon 已改為文字 caption）。
+- **Breaking**：`LMSwitchPanelItem` 移除 `icon` 屬性（同上）。
+
 ## [0.14.0] - 2026-05-14
 
 ### Added
