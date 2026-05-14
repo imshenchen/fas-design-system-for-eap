@@ -55,11 +55,11 @@ const LINE_OPTIONS = [
   { value: 'line-c', label: '產線 C' },
 ];
 
-/** 機台 tiles 與 line 無關，固定常駐 */
+/** 機台 tiles 與 line 無關，固定常駐（多為 SMT 貼片機） */
 const MACHINE_TILES: LMSwitchPanelItem[] = [
-  { key: 'aoi-001',   label: 'AOI檢測機 001',   type: 'machine', status: 'warning' },
-  { key: 'laser-002', label: 'LASER雷雕機 002', type: 'machine', status: 'down'    },
-  { key: 'smt-003',   label: 'SMT貼片機 003',   type: 'machine', status: 'normal'  },
+  { key: 'yamaha-1', label: 'Yamaha YSM20R #01',    type: 'machine', status: 'normal'  },
+  { key: 'pana-2',   label: 'Panasonic NPM-W2 #02', type: 'machine', status: 'warning' },
+  { key: 'fuji-3',   label: 'Fuji NXT III #03',     type: 'machine', status: 'down'    },
 ];
 
 /** 由當前 line 構造 switchItems：第一顆 tile 隨 line 變動 */

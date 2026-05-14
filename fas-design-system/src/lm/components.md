@@ -61,7 +61,7 @@
 ```
 
 由左至右排列：
-1. **LMScopeTile 列**（兩行 chip，含 type icon 與狀態文字，皆隨 status 變色）；過多時整列**水平捲動**
+1. **LMScopeTile 列**（兩行 chip，含類型 caption + 燈號形狀 + 狀態文字）；過多時整列**水平捲動**
 2. **垂直 Divider**（僅在有 `rightSlot` 時出現）
 3. **rightSlot**（固定 slot，不受 tile scroll 影響）
 
@@ -69,21 +69,25 @@
 
 ```tsx
 const items: LMSwitchPanelItem[] = [
-  { key: 'line-a',    label: '產線 A',          type: 'line',    status: 'normal'  },
-  { key: 'aoi-001',   label: 'AOI檢測機 001',   type: 'machine', status: 'warning' },
-  { key: 'laser-002', label: 'LASER雷雕機 002', type: 'machine', status: 'down'    },
+  { key: 'line-a',   label: '產線 A',               type: 'line',    status: 'normal'  },
+  { key: 'yamaha-1', label: 'Yamaha YSM20R #01',    type: 'machine', status: 'warning' },
+  { key: 'pana-2',   label: 'Panasonic NPM-W2 #02', type: 'machine', status: 'down'    },
 ];
 
 <LMSwitchPanel items={items} value={scope} onChange={setScope} />
+
+{/* 英文版 */}
+<LMSwitchPanel items={items} value={scope} onChange={setScope} locale="en" />
 ```
 
-| Prop | Type | 說明 |
-|------|------|------|
-| `items` | `LMSwitchPanelItem[]` | 由左至右排列的切換項 |
-| `value` | `string` | 目前選取的 `key`（受控） |
-| `onChange` | `(key, item) => void` | 點擊切換 callback |
-| `gap` | `number \| string` | tile 之間的水平間距，預設 12 |
-| `rightSlot` | `ReactNode` | 最右側固定 slot（不受中間 tile scroll 影響）；通常傳 `<LMQuadrantSelector size={52} />` |
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `items` | `LMSwitchPanelItem[]` | — | 由左至右排列的切換項 |
+| `value` | `string` | — | 目前選取的 `key`（受控） |
+| `onChange` | `(key, item) => void` | — | 點擊切換 callback |
+| `gap` | `number \| string` | `12` | tile 之間的水平間距 |
+| `locale` | `'zh' \| 'en'` | `'zh'` | tile 內 type caption 與狀態文字語系（pass-through 至 LMScopeTile） |
+| `rightSlot` | `ReactNode` | — | 最右側固定 slot（不受中間 tile scroll 影響）；通常傳 `<LMQuadrantSelector size={52} />` |
 
 `LMSwitchPanelItem`：
 
@@ -91,9 +95,8 @@ const items: LMSwitchPanelItem[] = [
 |------|------|------|
 | `key` | `string` | 唯一識別 |
 | `label` | `string` | 產線 / 機台名稱 |
-| `type` | `'line' \| 'machine'` | LMScopeTile 類型（決定預設 icon） |
-| `status` | `'normal' \| 'warning' \| 'down'` | 狀態（同 LMScopeTile，icon + 文字同色） |
-| `icon` | `ReactNode` | 自訂 icon，覆寫 `type` 預設 |
+| `type` | `'line' \| 'machine'` | LMScopeTile 類型（決定 caption 文字） |
+| `status` | `'normal' \| 'warning' \| 'down'` | 狀態（決定燈號形狀 + 顏色） |
 | `disabled` | `boolean` | 禁用此項 |
 
 - **Flush 樣式**：與 NavBar / SideMenu 貼齊（無外框、無圓角、僅下方 1px divider，仿 core `FeatureTitle`）
@@ -106,40 +109,50 @@ const items: LMSwitchPanelItem[] = [
 ---
 
 ## LMScopeTile
-方形 tile 按鈕，用於選擇整條產線或特定機台。內含三色三形狀的狀態燈號、產線/機台 icon、名稱；可被選取。常用於 grid layout 的 picker、Dialog 內的設備清單、儀表板等情境。
+方形 tile 按鈕，用於選擇整條產線或特定機台（多為 SMT 貼片機）。內含三色三形狀的狀態燈號、類型 caption（產線 / 設備）、名稱；可被選取。常用於 grid layout 的 picker、Dialog 內的設備清單、儀表板等情境。
 
 ```tsx
 <LMScopeTile
   type="machine"
-  label="AOI檢測機 001"
+  label="Yamaha YSM20R #01"
   status="normal"
-  selected={picked === 'aoi-001'}
-  onClick={() => setPicked('aoi-001')}
+  selected={picked === 'yamaha-1'}
+  onClick={() => setPicked('yamaha-1')}
 />
+
+{/* 英文版 */}
+<LMScopeTile type="machine" label="Yamaha YSM20R #01" status="normal" locale="en" />
 ```
 
-| Prop | Type | 說明 |
-|------|------|------|
-| `type` | `'line' \| 'machine'` | 預設 icon：line→`conveyor_belt`、machine→`precision_manufacturing` |
-| `label` | `string` | 產線 / 機台名稱（過長自動 ellipsis；HTML `title` 顯示完整名稱） |
-| `status` | `'normal' \| 'warning' \| 'down'` | 狀態：icon 與狀態文字共同上色 |
-| `selected` | `boolean` | 選取中 → 2px primary 邊框 + 微底色 + label 加粗 |
-| `disabled` | `boolean` | 禁用 → icon / 文字變灰、`not-allowed` 游標 |
-| `onClick` | `() => void` | 點擊 callback |
-| `icon` | `ReactNode` | 自訂 icon，覆寫 `type` 預設 |
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `type` | `'line' \| 'machine'` | — | 類型 caption：line→產線/Line、machine→設備/Machine |
+| `label` | `string` | — | 產線 / 機台名稱（過長自動 ellipsis；HTML `title` 顯示完整名稱） |
+| `status` | `'normal' \| 'warning' \| 'down'` | — | 狀態：決定燈號形狀 + 顏色 |
+| `locale` | `'zh' \| 'en'` | `'zh'` | type caption 與狀態文字的語系 |
+| `selected` | `boolean` | — | 選取中 → 2px primary 邊框 + 微底色 + label 加粗 |
+| `disabled` | `boolean` | — | 禁用 → 燈號 / 文字變灰、`not-allowed` 游標 |
+| `onClick` | `() => void` | — | 點擊 callback |
 
-**狀態色與文字**（icon 與狀態文字皆隨狀態變色）：
+**燈號形狀 / 顏色 / 文字**（顏色 + 形狀同時帶語意，符合色盲可讀性）：
 
-| status | 顏色 | 文字 |
-|--------|------|------|
-| `normal`  | `--status-success`（綠） | 正常運行 |
-| `warning` | `--status-warning`（黃） | 警告 |
-| `down`    | `--status-error`（紅）   | 停機 |
+| status | 形狀 | 顏色 | zh | en |
+|--------|------|------|----|----|
+| `normal`  | ● 圓形 | `--status-success`（綠） | 正常運行 | Running |
+| `warning` | ▲ 三角 | `--status-warning`（黃） | 警告     | Warning |
+| `down`    | ■ 方形 | `--status-error`（紅）   | 停機     | Down    |
+
+**Type caption（左下角小字，皆為 `--text-medium` 灰）**：
+
+| type | zh | en |
+|------|----|----|
+| `line`    | 產線 | Line    |
+| `machine` | 設備 | Machine |
 
 - 兩行 chip 樣式：min-height 52px、寬度自適應（min 160 / max 240）、圓角 6px、橫向 padding 12px
 - Layout：
   - **Row 1**：名稱（`textHigh`，過長 ellipsis）
-  - **Row 2**：左側 type icon（18px，狀態色）／右側狀態文字（12px，狀態色）
+  - **Row 2**：左側 type caption（12px，gray）／右側燈號形狀（10px，狀態色）+ 狀態文字（12px，gray）
 - 與 `LMSwitchPanel` 的差異：本元件是**單顆 chip tile**（適合 grid / picker），`LMSwitchPanel` 是包好的水平切換列（含 FeatureTitle + 捲動）
 
 ---
@@ -291,6 +304,7 @@ LM 專案頁面最外層版面樣板。與 core `AppShell` 同一角色，但有
 | `switchValue` | `string` | — | **必填**；目前選取的 scope key |
 | `onSwitchChange` | `(key, item) => void` | — | **必填**；切換 scope callback |
 | `switchRightSlot` | `ReactNode` | — | LMSwitchPanel 最右側 slot（pass-through 到 LMSwitchPanel `rightSlot`）；建議用 `<LMQuadrantSelector size={52} />` 控制不撐高 panel |
+| `switchLocale` | `'zh' \| 'en'` | `'zh'` | LMSwitchPanel 內 tile 的 type caption / 狀態文字語系（pass-through 到 LMSwitchPanel `locale`） |
 | `versionAction` | `ReactNode` | — | SideMenu 版本號右側 action slot（pass-through 到 core SideMenu）；通常傳 `<LMMobileInstallButton ... />`。SideMenu 收折時自動隱藏 |
 | `switchPadding` | `number \| string` | `0` | LMSwitchPanel 外距（與 NavBar / SideMenu 之間的留白）。預設 0 → flush 貼齊；可手動加大 |
 | `contentPadding` | `number \| string` | `32` | **真正功能 content 範圍**的 padding（圍繞 children；套用於左 / 右 / 下） |

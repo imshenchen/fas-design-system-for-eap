@@ -8,8 +8,8 @@ import type { LMQuadrantKey } from '../LMQuadrantSelector/LMQuadrantSelector';
 /**
  * LMSwitchPanel — 內容區塊頂部的 scope 切換列。
  *
- * - 由左至右排列 `LMScopeTile`（128 × 128 方形），點選切換 scope
- * - 每顆 tile：三色三形狀燈號 + 產線/機台 icon + 名稱
+ * - 由左至右排列 `LMScopeTile`，點選切換 scope
+ * - 每顆 tile：三色三形狀燈號 + 類型 caption（產線 / 設備）+ 名稱
  * - 同時只有一顆被選取
  */
 const meta: Meta<typeof LMSwitchPanel> = {
@@ -23,10 +23,10 @@ export default meta;
 type Story = StoryObj<typeof LMSwitchPanel>;
 
 const SAMPLE_ITEMS: LMSwitchPanelItem[] = [
-  { key: 'line-a',    label: '產線 A',          type: 'line',    status: 'normal'  },
-  { key: 'aoi-001',   label: 'AOI檢測機 001',   type: 'machine', status: 'warning' },
-  { key: 'laser-002', label: 'LASER雷雕機 002', type: 'machine', status: 'down'    },
-  { key: 'smt-003',   label: 'SMT貼片機 003',   type: 'machine', status: 'normal'  },
+  { key: 'line-a',   label: '產線 A',               type: 'line',    status: 'normal'  },
+  { key: 'yamaha-1', label: 'Yamaha YSM20R #01',    type: 'machine', status: 'normal'  },
+  { key: 'pana-2',   label: 'Panasonic NPM-W2 #02', type: 'machine', status: 'warning' },
+  { key: 'fuji-3',   label: 'Fuji NXT III #03',     type: 'machine', status: 'down'    },
 ];
 
 const Frame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -80,12 +80,12 @@ export const ManyItemsOverflow: Story = {
   render: () => {
     const items: LMSwitchPanelItem[] = [
       ...SAMPLE_ITEMS,
-      { key: 'aoi-002',   label: 'AOI檢測機 002', type: 'machine', status: 'normal'  },
-      { key: 'aoi-003',   label: 'AOI檢測機 003', type: 'machine', status: 'warning' },
-      { key: 'oven-001',  label: '回焊爐 001',    type: 'machine', status: 'normal'  },
-      { key: 'pcb-tester', label: 'PCB 測試機',    type: 'machine', status: 'down'    },
-      { key: 'smt-005',   label: 'SMT貼片機 005', type: 'machine', status: 'normal'  },
-      { key: 'oven-002',  label: '回焊爐 002',    type: 'machine', status: 'down'    },
+      { key: 'asm-4',     label: 'ASM SIPLACE SX2 #04', type: 'machine', status: 'normal'  },
+      { key: 'juki-5',    label: 'Juki RX-7R #05',      type: 'machine', status: 'warning' },
+      { key: 'hanwha-6',  label: 'Hanwha SM482 #06',    type: 'machine', status: 'normal'  },
+      { key: 'yamaha-7',  label: 'Yamaha YS12 #07',     type: 'machine', status: 'down'    },
+      { key: 'pana-8',    label: 'Panasonic NPM-D3 #08', type: 'machine', status: 'normal'  },
+      { key: 'fuji-9',    label: 'Fuji AIMEX III #09',  type: 'machine', status: 'down'    },
     ];
     const [scope, setScope] = useState('line-a');
     return (
@@ -101,10 +101,10 @@ export const NarrowContainer: Story = {
   render: () => {
     const items: LMSwitchPanelItem[] = [
       ...SAMPLE_ITEMS,
-      { key: 'aoi-002',   label: 'AOI檢測機 002', type: 'machine', status: 'normal'  },
-      { key: 'aoi-003',   label: 'AOI檢測機 003', type: 'machine', status: 'warning' },
-      { key: 'oven-001',  label: '回焊爐 001',    type: 'machine', status: 'normal'  },
-      { key: 'pcb-tester', label: 'PCB 測試機',    type: 'machine', status: 'down'    },
+      { key: 'asm-4',    label: 'ASM SIPLACE SX2 #04', type: 'machine', status: 'normal'  },
+      { key: 'juki-5',   label: 'Juki RX-7R #05',      type: 'machine', status: 'warning' },
+      { key: 'hanwha-6', label: 'Hanwha SM482 #06',    type: 'machine', status: 'normal'  },
+      { key: 'yamaha-7', label: 'Yamaha YS12 #07',     type: 'machine', status: 'down'    },
     ];
     const [scope, setScope] = useState('line-a');
     return (
@@ -139,9 +139,9 @@ export const AllStatuses: Story = {
   name: 'Status legend',
   render: () => {
     const items: LMSwitchPanelItem[] = [
-      { key: 'a', label: '正常運行中', type: 'machine', status: 'normal'  },
-      { key: 'b', label: '警告',       type: 'machine', status: 'warning' },
-      { key: 'c', label: '停機',       type: 'machine', status: 'down'    },
+      { key: 'a', label: 'Yamaha YSM20R #01',    type: 'machine', status: 'normal'  },
+      { key: 'b', label: 'Panasonic NPM-W2 #02', type: 'machine', status: 'warning' },
+      { key: 'c', label: 'Fuji NXT III #03',     type: 'machine', status: 'down'    },
     ];
     const [scope, setScope] = useState('a');
     return (
@@ -156,15 +156,33 @@ export const MixedLineAndMachine: Story = {
   name: 'Mixed — line + machine',
   render: () => {
     const items: LMSwitchPanelItem[] = [
-      { key: 'line-a',    label: '產線 A',         type: 'line',    status: 'normal'  },
-      { key: 'line-b',    label: '產線 B',         type: 'line',    status: 'warning' },
-      { key: 'aoi-001',   label: 'AOI檢測機 001',  type: 'machine', status: 'normal'  },
-      { key: 'laser-002', label: 'LASER雷雕機 002', type: 'machine', status: 'down'    },
+      { key: 'line-a',   label: '產線 A',               type: 'line',    status: 'normal'  },
+      { key: 'line-b',   label: '產線 B',               type: 'line',    status: 'warning' },
+      { key: 'yamaha-1', label: 'Yamaha YSM20R #01',    type: 'machine', status: 'normal'  },
+      { key: 'pana-2',   label: 'Panasonic NPM-W2 #02', type: 'machine', status: 'down'    },
     ];
     const [scope, setScope] = useState('line-a');
     return (
       <Frame>
         <LMSwitchPanel items={items} value={scope} onChange={setScope} />
+      </Frame>
+    );
+  },
+};
+
+export const LocaleEn: Story = {
+  name: 'Locale — English',
+  render: () => {
+    const items: LMSwitchPanelItem[] = [
+      { key: 'line-a',   label: 'Line A',               type: 'line',    status: 'normal'  },
+      { key: 'yamaha-1', label: 'Yamaha YSM20R #01',    type: 'machine', status: 'normal'  },
+      { key: 'pana-2',   label: 'Panasonic NPM-W2 #02', type: 'machine', status: 'warning' },
+      { key: 'fuji-3',   label: 'Fuji NXT III #03',     type: 'machine', status: 'down'    },
+    ];
+    const [scope, setScope] = useState('line-a');
+    return (
+      <Frame>
+        <LMSwitchPanel items={items} value={scope} onChange={setScope} locale="en" />
       </Frame>
     );
   },
