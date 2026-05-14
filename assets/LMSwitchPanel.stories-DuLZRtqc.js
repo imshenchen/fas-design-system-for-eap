@@ -1,4 +1,4 @@
-import{j as e}from"./jsx-runtime-Cf8x2fCZ.js";import{r as s}from"./index-BioFo8Zg.js";import{L as o}from"./LMSwitchPanel-DRYD00zH.js";import{L as D}from"./LMQuadrantSelector-DgenfdiQ.js";import"./index-yBjzXJbu.js";import"./Divider-PGiQvWAm.js";import"./LMScopeTile-CchEKmIS.js";import"./tokens-BoTh6Ygv.js";const G={title:"LM/Components/LMSwitchPanel",component:o,tags:["autodocs"],parameters:{layout:"fullscreen",docs:{description:{component:`LMSwitchPanel — 內容區塊頂部的 scope 切換列。
+import{j as e}from"./jsx-runtime-Cf8x2fCZ.js";import{r as s}from"./index-BioFo8Zg.js";import{L as o}from"./LMSwitchPanel-RhJoagOh.js";import{L as D}from"./LMQuadrantSelector-DgenfdiQ.js";import"./index-yBjzXJbu.js";import"./Divider-PGiQvWAm.js";import"./LMScopeTile-CchEKmIS.js";import"./tokens-BoTh6Ygv.js";const G={title:"LM/Components/LMSwitchPanel",component:o,tags:["autodocs"],parameters:{layout:"fullscreen",docs:{description:{component:`LMSwitchPanel — 內容區塊頂部的 scope 切換列。
 
 - 由左至右排列 \`LMScopeTile\`，點選切換 scope
 - 每顆 tile：三色三形狀燈號 + 類型 caption（產線 / 設備）+ 名稱
