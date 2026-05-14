@@ -20,7 +20,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        # Drop the lockfile to dodge the rollup optional-deps npm bug on Linux
+        # (https://github.com/npm/cli/issues/4828). Mirrors deploy-storybook.yml.
+        run: rm -f package-lock.json && npm install
 
       - name: Build package
         run: npm run build --workspace=fas-design-system
