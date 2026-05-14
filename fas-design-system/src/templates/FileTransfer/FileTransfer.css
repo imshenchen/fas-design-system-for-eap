@@ -63,13 +63,13 @@
   color: var(--text-high);
   display: inline-flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 4px;
 }
 
 .fas-ft__right-count {
   color: var(--text-medium);
   font-weight: 400;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 /* ─── Right: select-all row ───────────────────────────────────────────── */
@@ -197,8 +197,8 @@
   white-space: nowrap;
 }
 
-/* ─── Responsive: stack on narrow screens ─────────────────────────────── */
-@media (max-width: 720px) {
+/* ─── Responsive: stack on narrow screens (XS breakpoint) ─────────────── */
+@media (max-width: 768px) {
   .fas-ft {
     grid-template-columns: 1fr;
     gap: 8px;
