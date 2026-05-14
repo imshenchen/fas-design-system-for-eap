@@ -19,15 +19,21 @@
   min-width: 0;
 }
 
-/* ─── Center: Add / Remove button column ──────────────────────────────── */
+/* ─── Center: Add / Remove / Reset button column ──────────────────────── */
 .fas-ft__center {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   flex-shrink: 0;
   padding: 0 4px;
   gap: 8px;
+}
+
+/* All center buttons share the same width (匹配 Transfer template 樣式) */
+.fas-ft__center .fas-btn {
+  min-width: 96px;
+  justify-content: center;
 }
 
 /* ─── Right: Target list panel ────────────────────────────────────────── */
