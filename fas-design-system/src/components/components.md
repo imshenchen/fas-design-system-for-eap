@@ -460,6 +460,13 @@
 | `loadChildren` | `(id) => Promise<FileBrowserNode[]>` | — | lazy load 子節點，於進入該 folder 時呼叫 |
 | `emptyText` | `string` | `'此資料夾為空'` | 空資料夾文字 |
 | `height` | `number \| string` | `400` | 列表滾動高度 |
+| `rootLabel` | `string` | `'根目錄'` | 麵包屑根層 label |
+| `homeAriaLabel` / `backAriaLabel` | `string` | `'回根目錄'` / `'回上一層'` | toolbar icon button aria-label |
+| `treeAriaLabel` | `string` | `'檔案瀏覽器'` | 列表整體 aria-label |
+| `selectAllLabel` | `string` | `'全選'` | 全選列文字 |
+| `enterAriaLabel` | `(name) => string` | `name => '進入 \${name}'` | 列尾 → 按鈕 aria-label 樣板 |
+| `loadFailedText` | `string` | `'載入失敗'` | lazy load 預設失敗訊息 |
+| `retryLabel` | `string` | `'重試'` | lazy load 失敗時的重試按鈕文字 |
 
 `FileBrowserDialog` props：
 
@@ -742,6 +749,9 @@ import { FileTransfer } from '@imshenchen/fas-design-system';
 | `height` | `number \| string` | `480` | 整體高度 |
 | `addLabel` | `string` | `'加入'` | 中央加入按鈕文字 |
 | `removeLabel` | `string` | `'移除'` | 中央移除按鈕文字 |
+| `resetLabel` | `string` | `'Reset'` | 中央 Reset 按鈕文字（清空整個 `value` 與內部 pending／removeChecked） |
+| `selectAllLabel` | `string` | `'全選'` | 右側全選列文字 |
+| `fileBrowserLabels` | `object` | — | 透傳給內部 `FileBrowser` 的 i18n labels（`rootLabel` / `homeAriaLabel` / `backAriaLabel` / `treeAriaLabel` / `selectAllLabel` / `enterAriaLabel` / `loadFailedText` / `retryLabel`） |
 | `targetTitle` | `string` | `'已選檔案'` | 右側欄標題 |
 | `targetEmptyText` | `string` | `'尚未加入任何檔案'` | 右側空狀態文字 |
 | `emptyText` | `string` | — | FileBrowser 空資料夾文字（pass-through） |
@@ -750,7 +760,8 @@ import { FileTransfer } from '@imshenchen/fas-design-system';
 - 加入時自動去重（已在 `value` 的 id 不會重複加入）；加入完成後左側選取自動清空
 - 右側 row 顯示 file `name` 與 `caption`；元件內部 cache 所有看過的 file info，即使 lazy load 後不再可見也能正確顯示
 - 右側支援 checkbox 多選 + 頂端「全選」（含 indeterminate）；點中央「移除」一次把勾選的 files 從 `value` 移除（搭配「全選」即可一次清空）
-- 中央按鈕沿用 Transfer template 風格：`Button variant="outlined" color="secondary" size="s"`，加入用 `navigate_next`、移除用 `navigate_before`
+- 中央按鈕沿用 Transfer template 風格：`Button variant="outlined" color="secondary" size="s"`，加入用 `navigate_next`、移除用 `navigate_before`；最下方多一顆 `text` 樣式的 Reset 按鈕，一鍵清空整個 `value`
+- 所有顯示文字皆可透過 props 客製化（`addLabel` / `removeLabel` / `resetLabel` / `selectAllLabel` / `targetTitle` / `targetEmptyText`）；FileBrowser 內部的 i18n 字串透過 `fileBrowserLabels` 物件透傳
 - < 720px 時自動堆疊為單欄
 
 ---

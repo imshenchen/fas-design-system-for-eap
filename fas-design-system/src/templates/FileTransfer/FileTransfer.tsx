@@ -33,12 +33,27 @@ export interface FileTransferProps {
   addLabel?: string;
   /** 中央移除按鈕文字，預設「移除」 */
   removeLabel?: string;
+  /** 中央 Reset 按鈕文字，預設「Reset」 */
+  resetLabel?: string;
+  /** 右側「全選」label，預設「全選」 */
+  selectAllLabel?: string;
   /** 右側空狀態文字，預設「尚未加入任何檔案」 */
   targetEmptyText?: string;
   /** 右側欄標題，預設「已選檔案」 */
   targetTitle?: string;
   /** FileBrowser 空資料夾文字（pass-through） */
   emptyText?: string;
+  /** FileBrowser i18n labels（pass-through） */
+  fileBrowserLabels?: {
+    rootLabel?: string;
+    homeAriaLabel?: string;
+    backAriaLabel?: string;
+    treeAriaLabel?: string;
+    selectAllLabel?: string;
+    enterAriaLabel?: (name: string) => string;
+    loadFailedText?: string;
+    retryLabel?: string;
+  };
   className?: string;
 }
 
@@ -74,9 +89,12 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
   height = 480,
   addLabel = '加入',
   removeLabel = '移除',
+  resetLabel = 'Reset',
+  selectAllLabel = '全選',
   targetEmptyText = '尚未加入任何檔案',
   targetTitle = '已選檔案',
   emptyText,
+  fileBrowserLabels,
   className,
 }) => {
   // FileBrowser 內部 selection state（pending — 還未加入右側）
@@ -148,6 +166,13 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
     );
   };
 
+  const handleReset = () => {
+    if (value.length === 0 && pending.length === 0 && removeChecked.length === 0) return;
+    onChange([]);
+    setPending([]);
+    setRemoveChecked([]);
+  };
+
   // 右側「全選」狀態（範圍是當前 value）
   const allRemoveChecked = value.length > 0 && removeChecked.length === value.length;
   const someRemoveChecked = removeChecked.length > 0 && removeChecked.length < value.length;
@@ -192,6 +217,7 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
           loadChildren={wrappedLoadChildren}
           emptyText={emptyText}
           height="100%"
+          {...fileBrowserLabels}
         />
       </div>
 
@@ -216,6 +242,15 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
           iconLeft={<Icon name="navigate_before" />}
         >
           {removeLabel}
+        </Button>
+        <Button
+          variant="text"
+          color="secondary"
+          size="s"
+          disabled={value.length === 0 && pending.length === 0 && removeChecked.length === 0}
+          onClick={handleReset}
+        >
+          {resetLabel}
         </Button>
       </div>
 
@@ -245,7 +280,7 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
               />
             </span>
             <span className="fas-ft__select-all-label">
-              全選 <span className="fas-ft__select-all-count">({removeChecked.length} / {targetList.length})</span>
+              {selectAllLabel} <span className="fas-ft__select-all-count">({removeChecked.length} / {targetList.length})</span>
             </span>
           </div>
         )}

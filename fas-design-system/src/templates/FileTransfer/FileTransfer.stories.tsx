@@ -100,6 +100,38 @@ const remoteData: Record<string, FileBrowserNode[]> = {
   ],
 };
 
+export const English: Story = {
+  render: () => {
+    const [value, setValue] = React.useState<string[]>([]);
+    return (
+      <div style={{ maxWidth: 1080 }}>
+        <FileTransfer
+          nodes={sampleNodes}
+          value={value}
+          onChange={setValue}
+          addLabel="Add"
+          removeLabel="Remove"
+          resetLabel="Reset"
+          selectAllLabel="Select all"
+          targetTitle="Selected files"
+          targetEmptyText="No files added yet"
+          emptyText="This folder is empty"
+          fileBrowserLabels={{
+            rootLabel: 'Root',
+            homeAriaLabel: 'Go to root',
+            backAriaLabel: 'Go back',
+            treeAriaLabel: 'File browser',
+            selectAllLabel: 'Select all',
+            enterAriaLabel: (name) => `Open ${name}`,
+            loadFailedText: 'Failed to load',
+            retryLabel: 'Retry',
+          }}
+        />
+      </div>
+    );
+  },
+};
+
 export const AsyncLoad: Story = {
   render: () => {
     const [value, setValue] = React.useState<string[]>([]);

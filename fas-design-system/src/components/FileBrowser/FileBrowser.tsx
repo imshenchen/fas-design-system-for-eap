@@ -23,6 +23,22 @@ export interface FileBrowserProps {
   emptyText?: string;
   /** tree 區可滾動高度；預設 400 */
   height?: number | string;
+  /** 麵包屑根目錄文字，預設「根目錄」 */
+  rootLabel?: string;
+  /** 「回根目錄」按鈕 aria-label / tooltip 文字 */
+  homeAriaLabel?: string;
+  /** 「回上一層」按鈕 aria-label / tooltip 文字 */
+  backAriaLabel?: string;
+  /** Tree 區整體 aria-label */
+  treeAriaLabel?: string;
+  /** 「全選」label，預設「全選」 */
+  selectAllLabel?: string;
+  /** 列尾 → 按鈕的 aria-label 樣板，會接 folder 名稱；預設「進入 ${name}」 */
+  enterAriaLabel?: (folderName: string) => string;
+  /** 載入失敗預設訊息（loadChildren reject 沒帶 message 時用），預設「載入失敗」 */
+  loadFailedText?: string;
+  /** 「重試」按鈕文字 */
+  retryLabel?: string;
   className?: string;
 }
 
@@ -31,8 +47,6 @@ interface FolderPathEntry {
   name: string;
 }
 
-const ROOT_LABEL = '根目錄';
-
 export const FileBrowser: React.FC<FileBrowserProps> = ({
   nodes,
   value,
@@ -40,6 +54,14 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   loadChildren,
   emptyText = '此資料夾為空',
   height = 400,
+  rootLabel = '根目錄',
+  homeAriaLabel = '回根目錄',
+  backAriaLabel = '回上一層',
+  treeAriaLabel = '檔案瀏覽器',
+  selectAllLabel = '全選',
+  enterAriaLabel = (name) => `進入 ${name}`,
+  loadFailedText = '載入失敗',
+  retryLabel = '重試',
   className,
 }) => {
   // 當前 path（不含 root）；每進入一個 folder push 一筆
@@ -90,7 +112,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
           });
         })
         .catch((err: unknown) => {
-          const msg = err instanceof Error ? err.message : '載入失敗';
+          const msg = err instanceof Error ? err.message : loadFailedText;
           setLoadErrors((prev) => {
             const next = new Map(prev);
             next.set(folderId, msg);
@@ -105,7 +127,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
           });
         });
     },
-    [loadChildren, loadingIds],
+    [loadChildren, loadingIds, loadFailedText],
   );
 
   const enterFolder = React.useCallback(
@@ -235,7 +257,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   // ─── 麵包屑 ──────────────────────────────────────────────────────────────
   const crumbs = React.useMemo(() => {
     return [
-      { label: ROOT_LABEL, onClick: path.length > 0 ? () => goHome() : undefined },
+      { label: rootLabel, onClick: path.length > 0 ? () => goHome() : undefined },
       ...path.map((p, i) => {
         const isLast = i === path.length - 1;
         return {
@@ -244,7 +266,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         };
       }),
     ];
-  }, [path, goHome, goToLevel]);
+  }, [path, goHome, goToLevel, rootLabel]);
 
   // ─── render ──────────────────────────────────────────────────────────────
   const treeStyle: React.CSSProperties = {
@@ -256,7 +278,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
       {/* Toolbar */}
       <div className="fas-fb__toolbar">
         <IconButton
-          aria-label="回根目錄"
+          aria-label={homeAriaLabel}
           size="m"
           tooltip={false}
           onClick={goHome}
@@ -264,7 +286,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
           icon={<span className="material-symbols-outlined" aria-hidden>home</span>}
         />
         <IconButton
-          aria-label="回上一層"
+          aria-label={backAriaLabel}
           size="m"
           tooltip={false}
           onClick={goBack}
@@ -281,7 +303,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         role="tree"
         tabIndex={0}
         onKeyDown={handleTreeKey}
-        aria-label="檔案瀏覽器"
+        aria-label={treeAriaLabel}
       >
         {currentIsLoading && (
           <div className="fas-fb__loading">
@@ -291,7 +313,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
 
         {!currentIsLoading && currentLoadError && (
           <div className="fas-fb__error">
-            <span>{currentLoadError || '載入失敗'}</span>
+            <span>{currentLoadError || loadFailedText}</span>
             <Button
               variant="text"
               color="secondary"
@@ -299,7 +321,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
               onClick={() => currentFolderId && triggerLoad(currentFolderId)}
               iconLeft={<span className="material-symbols-outlined" aria-hidden>refresh</span>}
             >
-              重試
+              {retryLabel}
             </Button>
           </div>
         )}
@@ -326,7 +348,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
               />
             </span>
             <span className="fas-fb__select-all-label">
-              全選 <span className="fas-fb__select-all-count">({selectedInCurrent} / {selectableCount})</span>
+              {selectAllLabel} <span className="fas-fb__select-all-count">({selectedInCurrent} / {selectableCount})</span>
             </span>
           </div>
         )}
@@ -398,7 +420,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                 <div className="fas-fb__trailing" onClick={(e) => e.stopPropagation()}>
                   {isFolder && (
                     <IconButton
-                      aria-label={`進入 ${node.name}`}
+                      aria-label={enterAriaLabel(node.name)}
                       size="s"
                       tooltip={false}
                       onClick={() => enterFolder(node)}

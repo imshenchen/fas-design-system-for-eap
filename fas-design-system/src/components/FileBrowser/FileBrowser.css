@@ -132,10 +132,6 @@
   font-size: 20px;
 }
 
-.fas-fb__row--folder .fas-fb__icon {
-  color: var(--primary);
-}
-
 .fas-fb__row--disabled .fas-fb__icon {
   color: var(--text-disabled);
 }

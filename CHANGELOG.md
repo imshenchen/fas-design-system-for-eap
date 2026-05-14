@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.14.0] - 2026-05-14
+
+### Added
+- `FileTransfer` 中央新增 **Reset** 按鈕（`text secondary size=s`），一鍵清空整個 `value` 與內部 pending／removeChecked。
+- `FileBrowser` 與 `FileTransfer` 所有顯示字串皆可透過 props 客製化（i18n / English 翻譯需求）。`FileTransfer` 提供 `fileBrowserLabels` 物件透傳到內部 FileBrowser。
+
+### Changed
+- `FileBrowser` folder icon 顏色從 `var(--primary)` 改為 `var(--text-medium)`，與 file icon 同色（避免顏色暗示「資料夾較重要」）。
+
 ## [0.13.1] - 2026-05-13
 
 ### Changed
