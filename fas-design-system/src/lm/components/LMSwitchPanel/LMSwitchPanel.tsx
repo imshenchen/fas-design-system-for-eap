@@ -58,6 +58,25 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
   ({ items, value, onChange, gap = spacing[3], locale = 'zh', rightSlot, className }, ref) => {
     const gapCss = typeof gap === 'number' ? `${gap}px` : gap;
 
+    // Scope highlight：選 line 時，自動把該 line 之後到下一條 line（或結尾）之間的所有
+    // machine tile 也視覺標記為 selected；選 machine 時只標自己。
+    const scopeKeys = React.useMemo<Set<string>>(() => {
+      const set = new Set<string>();
+      if (!value) return set;
+      const idx = items.findIndex((it) => it.key === value);
+      if (idx < 0) return set;
+      const head = items[idx];
+      set.add(head.key);
+      if (head.type === 'line') {
+        for (let i = idx + 1; i < items.length; i += 1) {
+          const it = items[i];
+          if (it.type === 'line') break;
+          set.add(it.key);
+        }
+      }
+      return set;
+    }, [items, value]);
+
     return (
       <div
         className={['lm-switch-panel', className].filter(Boolean).join(' ')}
@@ -105,7 +124,7 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
                 status={item.status}
                 locale={locale}
                 disabled={item.disabled}
-                selected={item.key === value}
+                selected={scopeKeys.has(item.key)}
                 onClick={() => onChange(item.key, item)}
               />
             ))}

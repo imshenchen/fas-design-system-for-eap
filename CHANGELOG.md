@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.16.0] - 2026-05-14
+
+### Changed
+- `LMSwitchPanel` — 點選 line tile 時，從該 line 到下一條 line（或結尾）之間的所有 machine tile 也會視覺標記為 selected（scope highlight）。`value` 仍為單一字串、`onChange` 仍回傳被點到的單一 tile，API 沒變動，consumer 不需管理多選 state。
+
 ## [0.15.0] - 2026-05-14
 
 ### Added

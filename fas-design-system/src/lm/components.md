@@ -99,6 +99,7 @@ const items: LMSwitchPanelItem[] = [
 | `status` | `'normal' \| 'warning' \| 'down'` | 狀態（決定燈號形狀 + 顏色） |
 | `disabled` | `boolean` | 禁用此項 |
 
+- **Scope highlight**：`value` 是 line tile 的 key 時，從該 line 到下一條 line（或結尾）之間的所有 machine tile 一起被視覺標記為 selected；`value` 是 machine 時只標 machine 自己。`onChange` 仍只回傳被點擊的單一 tile，consumer 不需要管理多選 state
 - **Flush 樣式**：與 NavBar / SideMenu 貼齊（無外框、無圓角、僅下方 1px divider，仿 core `FeatureTitle`）
 - 通常放在 LMAppShell 內、緊貼 NavBar 下方
 - Tile 為兩行 chip（min-height 52px、寬度自適應 160~240px、不換行）
