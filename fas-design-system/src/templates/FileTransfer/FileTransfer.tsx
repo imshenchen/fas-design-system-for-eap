@@ -245,7 +245,7 @@ export const FileTransfer: React.FC<FileTransferProps> = ({
         </Button>
         <Button
           variant="text"
-          color="secondary"
+          color="error"
           size="s"
           disabled={value.length === 0 && pending.length === 0 && removeChecked.length === 0}
           onClick={handleReset}
