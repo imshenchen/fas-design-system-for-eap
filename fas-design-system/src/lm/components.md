@@ -61,7 +61,7 @@
 ```
 
 由左至右排列：
-1. **LMScopeTile 列**（兩行 chip，含 type icon 與狀態文字，皆隨 status 變色）；過多時整列**水平捲動**
+1. **LMScopeTile 列**（兩行 chip，含類型 caption + 燈號形狀 + 狀態文字）；過多時整列**水平捲動**
 2. **垂直 Divider**（僅在有 `rightSlot` 時出現）
 3. **rightSlot**（固定 slot，不受 tile scroll 影響）
 
@@ -69,21 +69,25 @@
 
 ```tsx
 const items: LMSwitchPanelItem[] = [
-  { key: 'line-a',    label: '產線 A',          type: 'line',    status: 'normal'  },
-  { key: 'aoi-001',   label: 'AOI檢測機 001',   type: 'machine', status: 'warning' },
-  { key: 'laser-002', label: 'LASER雷雕機 002', type: 'machine', status: 'down'    },
+  { key: 'line-a',   label: '產線 A',               type: 'line',    status: 'normal'  },
+  { key: 'yamaha-1', label: 'Yamaha YSM20R #01',    type: 'machine', status: 'warning' },
+  { key: 'pana-2',   label: 'Panasonic NPM-W2 #02', type: 'machine', status: 'down'    },
 ];
 
 <LMSwitchPanel items={items} value={scope} onChange={setScope} />
+
+{/* 英文版 */}
+<LMSwitchPanel items={items} value={scope} onChange={setScope} locale="en" />
 ```
 
-| Prop | Type | 說明 |
-|------|------|------|
-| `items` | `LMSwitchPanelItem[]` | 由左至右排列的切換項 |
-| `value` | `string` | 目前選取的 `key`（受控） |
-| `onChange` | `(key, item) => void` | 點擊切換 callback |
-| `gap` | `number \| string` | tile 之間的水平間距，預設 12 |
-| `rightSlot` | `ReactNode` | 最右側固定 slot（不受中間 tile scroll 影響）；通常傳 `<LMQuadrantSelector size={52} />` |
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `items` | `LMSwitchPanelItem[]` | — | 由左至右排列的切換項 |
+| `value` | `string` | — | 目前選取的 `key`（受控） |
+| `onChange` | `(key, item) => void` | — | 點擊切換 callback |
+| `gap` | `number \| string` | `12` | tile 之間的水平間距 |
+| `locale` | `'zh' \| 'en'` | `'zh'` | tile 內 type caption 與狀態文字語系（pass-through 至 LMScopeTile） |
+| `rightSlot` | `ReactNode` | — | 最右側固定 slot（不受中間 tile scroll 影響）；通常傳 `<LMQuadrantSelector size={52} />`。若直接是 `LMQuadrantSelector`，會自動帶上 `showRowSelectors`（caller 顯式傳的 prop 仍會勝出） |
 
 `LMSwitchPanelItem`：
 
@@ -91,9 +95,8 @@ const items: LMSwitchPanelItem[] = [
 |------|------|------|
 | `key` | `string` | 唯一識別 |
 | `label` | `string` | 產線 / 機台名稱 |
-| `type` | `'line' \| 'machine'` | LMScopeTile 類型（決定預設 icon） |
-| `status` | `'normal' \| 'warning' \| 'down'` | 狀態（同 LMScopeTile，icon + 文字同色） |
-| `icon` | `ReactNode` | 自訂 icon，覆寫 `type` 預設 |
+| `type` | `'line' \| 'machine'` | LMScopeTile 類型（決定 caption 文字） |
+| `status` | `'normal' \| 'warning' \| 'down'` | 狀態（決定燈號形狀 + 顏色） |
 | `disabled` | `boolean` | 禁用此項 |
 
 - **Flush 樣式**：與 NavBar / SideMenu 貼齊（無外框、無圓角、僅下方 1px divider，仿 core `FeatureTitle`）
@@ -106,53 +109,63 @@ const items: LMSwitchPanelItem[] = [
 ---
 
 ## LMScopeTile
-方形 tile 按鈕，用於選擇整條產線或特定機台。內含三色三形狀的狀態燈號、產線/機台 icon、名稱；可被選取。常用於 grid layout 的 picker、Dialog 內的設備清單、儀表板等情境。
+方形 tile 按鈕，用於選擇整條產線或特定機台（多為 SMT 貼片機）。內含三色三形狀的狀態燈號、類型 caption（產線 / 設備）、名稱；可被選取。常用於 grid layout 的 picker、Dialog 內的設備清單、儀表板等情境。
 
 ```tsx
 <LMScopeTile
   type="machine"
-  label="AOI檢測機 001"
+  label="Yamaha YSM20R #01"
   status="normal"
-  selected={picked === 'aoi-001'}
-  onClick={() => setPicked('aoi-001')}
+  selected={picked === 'yamaha-1'}
+  onClick={() => setPicked('yamaha-1')}
 />
+
+{/* 英文版 */}
+<LMScopeTile type="machine" label="Yamaha YSM20R #01" status="normal" locale="en" />
 ```
 
-| Prop | Type | 說明 |
-|------|------|------|
-| `type` | `'line' \| 'machine'` | 預設 icon：line→`conveyor_belt`、machine→`precision_manufacturing` |
-| `label` | `string` | 產線 / 機台名稱（過長自動 ellipsis；HTML `title` 顯示完整名稱） |
-| `status` | `'normal' \| 'warning' \| 'down'` | 狀態：icon 與狀態文字共同上色 |
-| `selected` | `boolean` | 選取中 → 2px primary 邊框 + 微底色 + label 加粗 |
-| `disabled` | `boolean` | 禁用 → icon / 文字變灰、`not-allowed` 游標 |
-| `onClick` | `() => void` | 點擊 callback |
-| `icon` | `ReactNode` | 自訂 icon，覆寫 `type` 預設 |
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `type` | `'line' \| 'machine'` | — | 類型 caption：line→產線/Line、machine→設備/Machine |
+| `label` | `string` | — | 產線 / 機台名稱（過長自動 ellipsis；HTML `title` 顯示完整名稱） |
+| `status` | `'normal' \| 'warning' \| 'down'` | — | 狀態：決定燈號形狀 + 顏色 |
+| `locale` | `'zh' \| 'en'` | `'zh'` | type caption 與狀態文字的語系 |
+| `selected` | `boolean` | — | 選取中 → 2px primary 邊框 + 微底色 + label 加粗 |
+| `disabled` | `boolean` | — | 禁用 → 燈號 / 文字變灰、`not-allowed` 游標 |
+| `onClick` | `() => void` | — | 點擊 callback |
 
-**狀態色與文字**（icon 與狀態文字皆隨狀態變色）：
+**燈號形狀 / 顏色 / 文字**（顏色 + 形狀同時帶語意，符合色盲可讀性）：
 
-| status | 顏色 | 文字 |
-|--------|------|------|
-| `normal`  | `--status-success`（綠） | 正常運行 |
-| `warning` | `--status-warning`（黃） | 警告 |
-| `down`    | `--status-error`（紅）   | 停機 |
+| status | 形狀 | 顏色 | zh | en |
+|--------|------|------|----|----|
+| `normal`  | ● 圓形 | `--status-success`（綠） | 正常運行 | Running |
+| `warning` | ▲ 三角 | `--status-warning`（黃） | 警告     | Warning |
+| `down`    | ■ 方形 | `--status-error`（紅）   | 停機     | Down    |
+
+**Type caption（左下角小字，皆為 `--text-medium` 灰）**：
+
+| type | zh | en |
+|------|----|----|
+| `line`    | 產線 | Line    |
+| `machine` | 設備 | Machine |
 
 - 兩行 chip 樣式：min-height 52px、寬度自適應（min 160 / max 240）、圓角 6px、橫向 padding 12px
 - Layout：
   - **Row 1**：名稱（`textHigh`，過長 ellipsis）
-  - **Row 2**：左側 type icon（18px，狀態色）／右側狀態文字（12px，狀態色）
+  - **Row 2**：左側 type caption（12px，gray）／右側燈號形狀（10px，狀態色）+ 狀態文字（12px，gray）
 - 與 `LMSwitchPanel` 的差異：本元件是**單顆 chip tile**（適合 grid / picker），`LMSwitchPanel` 是包好的水平切換列（含 FeatureTitle + 捲動）
 
 ---
 
 ## LMQuadrantSelector
-田字四象限多選按鈕。4 個象限可獨立切換、中央圓形按鈕一鍵全選 / 全不選。適用於「選擇設備上 4 區塊的上料資料 / 感測點 / 拼板區域」等情境。
+田字四象限多選按鈕。4 個象限可獨立切換、中央圓形按鈕一鍵全選 / 全不選；可選開啟右側「全選上排 / 全選下排」按鈕欄。適用於「選擇設備上 4 區塊的上料資料 / 感測點 / 拼板區域」等情境。
 
 ```
-┌─────┬─────┐
-│ 左上 │ 右上 │
-├──┐━┌──┤    （正中央 = 全選 / 全不選）
-│ 左下 │ 右下 │
-└─────┴─────┘
+┌─────┬─────┐  ┌──────┐
+│ 左上 │ 右上 │  │ Top  │   ← showRowSelectors=true 時
+├──┐━┌──┤  ├──────┤    　 右側出現此欄
+│ 左下 │ 右下 │  │ Bot  │
+└─────┴─────┘  └──────┘
 ```
 
 ```tsx
@@ -163,21 +176,30 @@ const [zones, setZones] = useState<LMQuadrantKey[]>(['topLeft']);
   onChange={setZones}
   labels={{ topLeft: '區 1', topRight: '區 2', bottomLeft: '區 3', bottomRight: '區 4' }}
 />
+
+{/* 開啟「全選上排 / 全選下排」按鈕欄 */}
+<LMQuadrantSelector value={zones} onChange={setZones} showRowSelectors />
 ```
 
-| Prop | Type | 說明 |
-|------|------|------|
-| `value` | `LMQuadrantKey[]` | 已選象限（受控）；`LMQuadrantKey = 'topLeft' \| 'topRight' \| 'bottomLeft' \| 'bottomRight'` |
-| `onChange` | `(next: LMQuadrantKey[]) => void` | 選取變動 callback |
-| `labels` | `Partial<Record<LMQuadrantKey, ReactNode>>` | 各象限自訂內容，預設為對角箭頭 icon（`north_west` / `north_east` / `south_west` / `south_east`）；可傳字串或 ReactNode 覆寫 |
-| `disabled` | `Partial<Record<LMQuadrantKey, boolean>>` | 禁用單一象限；全選按鈕只切換可用象限 |
-| `size` | `number` | 整體邊長（正方形），預設 120 |
-| `centerAriaLabel` | `string` | 中央按鈕 aria-label，預設 "全選" |
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `value` | `LMQuadrantKey[]` | — | 已選象限（受控）；`LMQuadrantKey = 'topLeft' \| 'topRight' \| 'bottomLeft' \| 'bottomRight'` |
+| `onChange` | `(next: LMQuadrantKey[]) => void` | — | 選取變動 callback |
+| `labels` | `Partial<Record<LMQuadrantKey, ReactNode>>` | — | 各象限自訂內容，預設為對角箭頭 icon（`north_west` / `north_east` / `south_west` / `south_east`） |
+| `disabled` | `Partial<Record<LMQuadrantKey, boolean>>` | — | 禁用單一象限；全選 / 全選上排 / 全選下排按鈕只切換可用象限 |
+| `size` | `number` | `120` | 田字 grid 邊長（正方形）。row selector 欄寬度另由 `rowSelectorWidth` 控制 |
+| `centerAriaLabel` | `string` | `'全選'` | 中央按鈕 aria-label |
+| `showRowSelectors` | `boolean` | `false` | 在田字右側顯示「全選上排 / 全選下排」按鈕欄 |
+| `rowSelectorWidth` | `number` | `size * 0.4`（最小 36） | Row selector 欄寬度 |
+| `rowSelectorGap` | `number` | `4` | 田字 grid 與 row selector 欄之間的水平間距 |
+| `topRowAriaLabel` | `string` | `'全選上排'` | 上排按鈕 aria-label |
+| `bottomRowAriaLabel` | `string` | `'全選下排'` | 下排按鈕 aria-label |
 
 - 預設**全 icon**呈現（無文字），對角箭頭直觀指出每個象限位置；如需顯示文字（編號 / 名稱）請用 `labels` 覆寫
 - 中央按鈕在「全部選取」時用 primary 邊框 + filled bg 表示；icon 切換為 `select_all`
 - 任一象限選取會把該格背景換成 primary、icon 變白色（強對比）
-- Disabled 象限：灰底、`not-allowed`，不會被全選按鈕影響
+- Disabled 象限：灰底、`not-allowed`，不會被全選 / 全選上下排按鈕影響
+- Row selector 按鈕為 toggle：若該排可用象限全部已選 → 一鍵清掉；否則 → 一鍵補滿。Icon 是雙橫條，當前對應的那排為實心，另一排為描邊
 
 ---
 
@@ -291,6 +313,7 @@ LM 專案頁面最外層版面樣板。與 core `AppShell` 同一角色，但有
 | `switchValue` | `string` | — | **必填**；目前選取的 scope key |
 | `onSwitchChange` | `(key, item) => void` | — | **必填**；切換 scope callback |
 | `switchRightSlot` | `ReactNode` | — | LMSwitchPanel 最右側 slot（pass-through 到 LMSwitchPanel `rightSlot`）；建議用 `<LMQuadrantSelector size={52} />` 控制不撐高 panel |
+| `switchLocale` | `'zh' \| 'en'` | `'zh'` | LMSwitchPanel 內 tile 的 type caption / 狀態文字語系（pass-through 到 LMSwitchPanel `locale`） |
 | `versionAction` | `ReactNode` | — | SideMenu 版本號右側 action slot（pass-through 到 core SideMenu）；通常傳 `<LMMobileInstallButton ... />`。SideMenu 收折時自動隱藏 |
 | `switchPadding` | `number \| string` | `0` | LMSwitchPanel 外距（與 NavBar / SideMenu 之間的留白）。預設 0 → flush 貼齊；可手動加大 |
 | `contentPadding` | `number \| string` | `32` | **真正功能 content 範圍**的 padding（圍繞 children；套用於左 / 右 / 下） |

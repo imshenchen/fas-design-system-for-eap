@@ -14,8 +14,10 @@
 import React from 'react';
 import { Divider } from '../../../components/Divider/Divider';
 import { LMScopeTile } from '../LMScopeTile/LMScopeTile';
+import { LMQuadrantSelector } from '../LMQuadrantSelector/LMQuadrantSelector';
 import './LMSwitchPanel.css';
 import type {
+  LMScopeTileLocale,
   LMScopeTileStatus,
   LMScopeTileType,
 } from '../LMScopeTile/LMScopeTile';
@@ -28,7 +30,6 @@ export interface LMSwitchPanelItem {
   label: string;
   type: LMScopeTileType;
   status: LMSwitchPanelStatus;
-  icon?: React.ReactNode;
   disabled?: boolean;
 }
 
@@ -40,6 +41,8 @@ export interface LMSwitchPanelProps {
   onChange: (key: string, item: LMSwitchPanelItem) => void;
   /** Tile 之間的水平間距，預設 12px */
   gap?: number | string;
+  /** Tile 內 type caption / 狀態文字的語系，預設 `zh` */
+  locale?: LMScopeTileLocale;
   /**
    * 最右側 slot —— 固定在 panel 最右、**不受中間 tile 捲動影響**。
    * 通常傳 `<LMQuadrantSelector size={52} ... />` 等控制元件。
@@ -52,7 +55,7 @@ export interface LMSwitchPanelProps {
 
 // ─── Main component ──────────────────────────────────────────────────────────
 export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps>(
-  ({ items, value, onChange, gap = spacing[3], rightSlot, className }, ref) => {
+  ({ items, value, onChange, gap = spacing[3], locale = 'zh', rightSlot, className }, ref) => {
     const gapCss = typeof gap === 'number' ? `${gap}px` : gap;
 
     return (
@@ -100,7 +103,7 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
                 type={item.type}
                 label={item.label}
                 status={item.status}
-                icon={item.icon}
+                locale={locale}
                 disabled={item.disabled}
                 selected={item.key === value}
                 onClick={() => onChange(item.key, item)}
@@ -108,7 +111,9 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
             ))}
           </div>
 
-          {/* Right — fixed slot（外層 flex sibling，不受 tile scroll 影響） */}
+          {/* Right — fixed slot（外層 flex sibling，不受 tile scroll 影響）
+              若 rightSlot 直接是 <LMQuadrantSelector>，預設啟用 showRowSelectors
+              （caller 顯式傳入的值會勝出）。 */}
           {rightSlot && (
             <>
               <Divider orientation="vertical" />
@@ -121,7 +126,9 @@ export const LMSwitchPanel = React.forwardRef<HTMLDivElement, LMSwitchPanelProps
                   minWidth:   0,
                 }}
               >
-                {rightSlot}
+                {React.isValidElement(rightSlot) && rightSlot.type === LMQuadrantSelector
+                  ? React.cloneElement(rightSlot, { showRowSelectors: true, ...rightSlot.props })
+                  : rightSlot}
               </div>
             </>
           )}

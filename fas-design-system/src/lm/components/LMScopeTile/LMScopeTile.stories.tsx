@@ -4,12 +4,12 @@ import { LMScopeTile } from './LMScopeTile';
 import type { LMScopeTileStatus, LMScopeTileType } from './LMScopeTile';
 
 /**
- * LMScopeTile — 方形 tile 按鈕，用於選擇整條產線或特定機台。
+ * LMScopeTile — 方形 tile 按鈕，用於選擇整條產線或特定機台（多為 SMT 貼片機）。
  *
  * 燈號規則（顏色 + 形狀皆帶語意，符合色盲可讀性）：
- *   - 綠色圓形 ●  正常運行中
- *   - 黃色三角 ▲  警告
- *   - 紅色方形 ■  停機
+ *   - 綠色圓形 ●  正常運行 / Running
+ *   - 黃色三角 ▲  警告     / Warning
+ *   - 紅色方形 ■  停機     / Down
  */
 const meta: Meta<typeof LMScopeTile> = {
   title: 'LM/Components/LMScopeTile',
@@ -29,29 +29,29 @@ const Frame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
 export const Default: Story = {
   render: () => {
-    const [selected, setSelected] = useState('aoi-001');
+    const [selected, setSelected] = useState('yamaha-01');
     return (
       <Frame>
         <LMScopeTile
           type="machine"
-          label="AOI檢測機 001"
+          label="Yamaha YSM20R #01"
           status="normal"
-          selected={selected === 'aoi-001'}
-          onClick={() => setSelected('aoi-001')}
+          selected={selected === 'yamaha-01'}
+          onClick={() => setSelected('yamaha-01')}
         />
         <LMScopeTile
           type="machine"
-          label="LASER雷雕機 002"
+          label="Panasonic NPM-W2 #02"
           status="warning"
-          selected={selected === 'laser-002'}
-          onClick={() => setSelected('laser-002')}
+          selected={selected === 'pana-02'}
+          onClick={() => setSelected('pana-02')}
         />
         <LMScopeTile
           type="machine"
-          label="SMT貼片機 003"
+          label="Fuji NXT III #03"
           status="down"
-          selected={selected === 'smt-003'}
-          onClick={() => setSelected('smt-003')}
+          selected={selected === 'fuji-03'}
+          onClick={() => setSelected('fuji-03')}
         />
       </Frame>
     );
@@ -73,9 +73,21 @@ export const StatusLegend: Story = {
   name: 'Status — 三色三形狀',
   render: () => (
     <Frame>
-      <LMScopeTile type="machine" label="正常運行中" status="normal" />
-      <LMScopeTile type="machine" label="警告"       status="warning" />
-      <LMScopeTile type="machine" label="停機"       status="down" />
+      <LMScopeTile type="machine" label="Yamaha YSM20R #01" status="normal" />
+      <LMScopeTile type="machine" label="Panasonic NPM-W2 #02" status="warning" />
+      <LMScopeTile type="machine" label="Fuji NXT III #03" status="down" />
+    </Frame>
+  ),
+};
+
+export const LocaleEn: Story = {
+  name: 'Locale — English',
+  render: () => (
+    <Frame>
+      <LMScopeTile type="line"    label="Line A"              status="normal"  locale="en" />
+      <LMScopeTile type="machine" label="Yamaha YSM20R #01"   status="normal"  locale="en" />
+      <LMScopeTile type="machine" label="Panasonic NPM-W2 #02" status="warning" locale="en" />
+      <LMScopeTile type="machine" label="Fuji NXT III #03"    status="down"    locale="en" />
     </Frame>
   ),
 };
@@ -84,8 +96,8 @@ export const SelectedComparison: Story = {
   name: 'Selected vs unselected',
   render: () => (
     <Frame>
-      <LMScopeTile type="machine" label="未選取" status="normal" />
-      <LMScopeTile type="machine" label="選取中" status="normal" selected />
+      <LMScopeTile type="machine" label="Yamaha YSM20R #01" status="normal" />
+      <LMScopeTile type="machine" label="Yamaha YSM20R #02" status="normal" selected />
     </Frame>
   ),
 };
@@ -93,9 +105,9 @@ export const SelectedComparison: Story = {
 export const DisabledStates: Story = {
   render: () => (
     <Frame>
-      <LMScopeTile type="machine" label="Disabled normal"  status="normal"  disabled />
-      <LMScopeTile type="machine" label="Disabled warning" status="warning" disabled />
-      <LMScopeTile type="machine" label="Disabled down"    status="down"    disabled />
+      <LMScopeTile type="machine" label="Yamaha YSM20R #01"   status="normal"  disabled />
+      <LMScopeTile type="machine" label="Panasonic NPM-W2 #02" status="warning" disabled />
+      <LMScopeTile type="machine" label="Fuji NXT III #03"    status="down"    disabled />
     </Frame>
   ),
 };
@@ -104,8 +116,8 @@ export const LongLabelTruncation: Story = {
   name: 'Long label — ellipsis',
   render: () => (
     <Frame>
-      <LMScopeTile type="machine" label="AOI高解析度檢測機 #001-Production" status="normal" />
-      <LMScopeTile type="line"    label="第一電子三廠SMT產線 A-12"           status="warning" selected />
+      <LMScopeTile type="machine" label="ASM SIPLACE SX2 高速貼片機 #001-Production" status="normal" />
+      <LMScopeTile type="line"    label="第一電子三廠 SMT 產線 A-12"                   status="warning" selected />
     </Frame>
   ),
 };
@@ -114,14 +126,14 @@ export const Grid: Story = {
   name: 'Grid layout — 多 tile 並排',
   render: () => {
     const items: { key: string; type: LMScopeTileType; label: string; status: LMScopeTileStatus }[] = [
-      { key: 'line-a',    type: 'line',    label: '產線 A',          status: 'normal'  },
-      { key: 'line-b',    type: 'line',    label: '產線 B',          status: 'warning' },
-      { key: 'aoi-001',   type: 'machine', label: 'AOI檢測機 001',   status: 'normal'  },
-      { key: 'aoi-002',   type: 'machine', label: 'AOI檢測機 002',   status: 'warning' },
-      { key: 'laser-002', type: 'machine', label: 'LASER雷雕機 002', status: 'down'    },
-      { key: 'smt-003',   type: 'machine', label: 'SMT貼片機 003',   status: 'normal'  },
-      { key: 'oven-001',  type: 'machine', label: '回焊爐 001',      status: 'normal'  },
-      { key: 'pcb-test',  type: 'machine', label: 'PCB 測試機',       status: 'down'    },
+      { key: 'line-a',   type: 'line',    label: '產線 A',                 status: 'normal'  },
+      { key: 'line-b',   type: 'line',    label: '產線 B',                 status: 'warning' },
+      { key: 'yamaha-1', type: 'machine', label: 'Yamaha YSM20R #01',      status: 'normal'  },
+      { key: 'pana-2',   type: 'machine', label: 'Panasonic NPM-W2 #02',   status: 'warning' },
+      { key: 'fuji-3',   type: 'machine', label: 'Fuji NXT III #03',       status: 'down'    },
+      { key: 'asm-4',    type: 'machine', label: 'ASM SIPLACE SX2 #04',    status: 'normal'  },
+      { key: 'juki-5',   type: 'machine', label: 'Juki RX-7R #05',         status: 'normal'  },
+      { key: 'hanwha-6', type: 'machine', label: 'Hanwha SM482 #06',       status: 'down'    },
     ];
     const [selected, setSelected] = useState('line-a');
     return (

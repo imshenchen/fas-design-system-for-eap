@@ -127,6 +127,8 @@ export interface LMAppShellProps {
    * 通常傳 `<LMQuadrantSelector size={52} ... />`。
    */
   switchRightSlot?: React.ReactNode;
+  /** Switch panel 內 tile 的 type caption / 狀態文字語系，預設 `zh` */
+  switchLocale?: LMSwitchPanelProps['locale'];
 
   // ── Main Content ─────────────────────────────────────────
   /** 主內容（功能畫面） */
@@ -195,6 +197,7 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
   switchValue,
   onSwitchChange,
   switchRightSlot,
+  switchLocale,
   // Content
   children,
   switchPadding = 0,
@@ -342,6 +345,7 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
               items={switchItems}
               value={switchValue}
               onChange={onSwitchChange}
+              locale={switchLocale}
               rightSlot={switchRightSlot}
             />
           </div>

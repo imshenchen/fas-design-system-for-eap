@@ -24,9 +24,9 @@ const sampleNodes: FileBrowserNode[] = [
         name: '2024',
         type: 'folder',
         children: [
-          { id: 'reports/2024/q1.pdf', name: 'Q1 季報.pdf', type: 'file', caption: '2024/03/31 · 2.1 MB' },
-          { id: 'reports/2024/q2.pdf', name: 'Q2 季報.pdf', type: 'file', caption: '2024/06/30 · 2.4 MB' },
-          { id: 'reports/2024/q3.pdf', name: 'Q3 季報.pdf', type: 'file', caption: '2024/09/30 · 2.6 MB' },
+          { id: 'reports/2024/q1.pdf', name: 'Q1 季報.pdf', type: 'file', size: 2_200_000 },
+          { id: 'reports/2024/q2.pdf', name: 'Q2 季報.pdf', type: 'file', size: 2_516_000 },
+          { id: 'reports/2024/q3.pdf', name: 'Q3 季報.pdf', type: 'file', size: 2_726_000 },
         ],
       },
       {
@@ -34,7 +34,7 @@ const sampleNodes: FileBrowserNode[] = [
         name: '2023',
         type: 'folder',
         children: [
-          { id: 'reports/2023/annual.pdf', name: '年度總結.pdf', type: 'file', caption: '2023/12/31 · 5.8 MB' },
+          { id: 'reports/2023/annual.pdf', name: '年度總結.pdf', type: 'file', size: 6_082_000 },
           { id: 'reports/2023/legacy.pdf', name: 'Legacy 文件.pdf', type: 'file', disabled: true, caption: '已封存' },
         ],
       },
@@ -45,11 +45,11 @@ const sampleNodes: FileBrowserNode[] = [
     name: '資料集',
     type: 'folder',
     children: [
-      { id: 'datasets/aoi.csv', name: 'AOI 檢測資料.csv', type: 'file', caption: '12.3 MB' },
-      { id: 'datasets/laser.csv', name: '雷射雕刻紀錄.csv', type: 'file', caption: '8.7 MB' },
+      { id: 'datasets/aoi.csv', name: 'AOI 檢測資料.csv', type: 'file', size: 12_894_000 },
+      { id: 'datasets/laser.csv', name: '雷射雕刻紀錄.csv', type: 'file', size: 9_122_000 },
     ],
   },
-  { id: 'readme.md', name: 'README.md', type: 'file', caption: '專案說明' },
+  { id: 'readme.md', name: 'README.md', type: 'file', size: 4_318 },
 ];
 
 export const Default: Story = {
@@ -91,8 +91,8 @@ const remoteData: Record<string, FileBrowserNode[]> = {
     { id: 'remote/projects/readme.md', name: 'projects-readme.md', type: 'file' },
   ],
   'remote/logs': [
-    { id: 'remote/logs/2024-05-12.log', name: '2024-05-12.log', type: 'file', caption: '1.2 MB' },
-    { id: 'remote/logs/2024-05-13.log', name: '2024-05-13.log', type: 'file', caption: '900 KB' },
+    { id: 'remote/logs/2024-05-12.log', name: '2024-05-12.log', type: 'file', size: 1_258_000 },
+    { id: 'remote/logs/2024-05-13.log', name: '2024-05-13.log', type: 'file', size: 921_600 },
   ],
   'remote/projects/alpha': [
     { id: 'remote/projects/alpha/spec.md', name: 'spec.md', type: 'file' },
