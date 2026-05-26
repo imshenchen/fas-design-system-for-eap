@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.17.0] - 2026-05-26
+
+### Added
+- `Stepper` 新增 `labelPosition?: 'bottom' | 'right'` 屬性（預設 `'bottom'`，向後相容）。`'right'` 模式下圓圈與 label 並排，連接線從 label 後延伸到下個圓圈，整列水平流動，適合 header / toolbar 等橫向擺放。匯出新型別 `StepLabelPosition`。
+- `LMAppShell` 新增 `stepper?: ReactNode` 屬性 — 在 `LMFeatureTitle` 與 `LMSwitchPanel` 之間獨佔一列；未傳則該列不渲染、不佔空間。配套新增 `stepperPadding?: number | string`（預設 `24`，與 FeatureTitle 對齊）。Stepper 元件本身會填滿該列寬度，左右各保留 padding 留白。
+  - **慣例**：當頁面有 stepper 時，「上一步 / 下一步」放在 `footer`（搭配 `LMFooter`），而非 `LMFeatureTitle` 的 `actions`。
+
 ## [0.16.0] - 2026-05-14
 
 ### Changed

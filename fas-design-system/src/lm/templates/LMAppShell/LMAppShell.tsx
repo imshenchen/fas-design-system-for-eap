@@ -13,7 +13,9 @@
  *   ├──────────┬───────────────────────────────────────────┤
  *   │ SideMenu │ LMFeatureTitle (breadcrumb + actions)     │  48px
  *   │ 280px /  ├───────────────────────────────────────────┤
- *   │ hidden   │ LMSwitchPanel (scope tiles)              │  ~68px
+ *   │ hidden   │ Stepper (optional; via `stepper` prop)    │  ~64px
+ *   │          ├───────────────────────────────────────────┤
+ *   │          │ LMSwitchPanel (scope tiles)              │  ~68px
  *   │          ├───────────────────────────────────────────┤
  *   │          │ Main Content (${children})  ← scrollable │  flex:1
  *   │          ├───────────────────────────────────────────┤
@@ -115,6 +117,16 @@ export interface LMAppShellProps {
   /** LMFeatureTitle 右側操作按鈕區（通常為 CTA 按鈕） */
   actions?: React.ReactNode;
 
+  // ── Stepper（選用，介於 FeatureTitle 與 SwitchPanel 之間） ─
+  /**
+   * Stepper slot —— 顯示在 LMFeatureTitle 與 LMSwitchPanel 之間獨佔一列。
+   * 通常傳 `<Stepper activeStep={n}><Step ... /></Stepper>`。
+   * 未傳則該列不渲染、不佔空間。
+   */
+  stepper?: React.ReactNode;
+  /** Stepper row 的水平 padding，預設 24px（與 LMFeatureTitle 對齊） */
+  stepperPadding?: number | string;
+
   // ── LMSwitchPanel ────────────────────────────────────────
   /** Switch panel 項目 */
   switchItems: LMSwitchPanelItem[];
@@ -192,6 +204,9 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
   // FeatureTitle
   breadcrumb,
   actions,
+  // Stepper
+  stepper,
+  stepperPadding = 24,
   // Switch panel
   switchItems,
   switchValue,
@@ -222,6 +237,7 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
   const switchPad   = toCss(switchPadding);
   const contentPad  = toCss(contentPadding);
   const gap         = toCss(switchGap);
+  const stepperPad  = toCss(stepperPadding);
 
   return (
     <div
@@ -329,6 +345,26 @@ export const LMAppShell: React.FC<LMAppShellProps> = ({
               topOffset={0}
             />
           </div>
+
+          {/* Stepper region — 介於 FeatureTitle 與 SwitchPanel 之間，獨佔一列 */}
+          {stepper && (
+            <div
+              className="lm-app-shell__stepper-region"
+              style={{
+                flexShrink:    0,
+                minWidth:      0,
+                background:    'var(--bg-surface)',
+                borderBottom:  '1px solid var(--divider)',
+                paddingTop:    '12px',
+                paddingBottom: '12px',
+                paddingLeft:   stepperPad,
+                paddingRight:  stepperPad,
+                boxSizing:     'border-box',
+              }}
+            >
+              {stepper}
+            </div>
+          )}
 
           {/* Switch panel region — 窄外距，貼在 FeatureTitle 下方 */}
           <div

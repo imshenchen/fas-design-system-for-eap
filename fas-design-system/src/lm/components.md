@@ -310,6 +310,8 @@ LM 專案頁面最外層版面樣板。與 core `AppShell` 同一角色，但有
 | `collapsed` / `defaultCollapsed` / `onCollapsedChange` | — | — | 同 `AppShell`（受控 / 非受控收折） |
 | `breadcrumb` | `LMFeatureTitleItem[]` | 自動依 `menuItems` + `activeKey` 推導 | LMFeatureTitle 麵包屑（最多 5 層；最後一項當前頁面）。預設隨 SideMenu 選擇變動；傳入則完全覆寫 |
 | `actions` | `ReactNode` | — | LMFeatureTitle 右側 CTA 按鈕區 |
+| `stepper` | `ReactNode` | — | **介於 LMFeatureTitle 與 LMSwitchPanel 之間獨佔一列**；通常傳 `<Stepper activeStep={n} labelPosition="right">...</Stepper>`，元件本身會填滿該列寬度、左右各保留 `stepperPadding` 留白。未傳則該列不渲染、不佔空間。**慣例**：有 stepper 時，「上一步 / 下一步」放在 `footer`（搭配 `LMFooter`）而非 FeatureTitle 的 `actions` |
+| `stepperPadding` | `number \| string` | `24` | Stepper row 的水平 padding（與 LMFeatureTitle 對齊） |
 | `switchItems` | `LMSwitchPanelItem[]` | — | **必填**；交給內建 `LMSwitchPanel` |
 | `switchValue` | `string` | — | **必填**；目前選取的 scope key |
 | `onSwitchChange` | `(key, item) => void` | — | **必填**；切換 scope callback |
@@ -332,6 +334,8 @@ LM 專案頁面最外層版面樣板。與 core `AppShell` 同一角色，但有
 │ NavigationBar                            60px    │
 ├──────────┬───────────────────────────────────────┤
 │          │  LMFeatureTitle (breadcrumb + actions) │ 48px ← 永遠貼頂
+│          ├───────────────────────────────────────┤
+│          │  stepper-region（optional）            │ ~64px ← 有傳 stepper 才出現
 │          ├───────────────────────────────────────┤
 │ SideMenu │  switch-region（padding switchPadding）│  ← 永遠貼頂
 │  280 /   │  ┌─────────────────────────────┐      │
