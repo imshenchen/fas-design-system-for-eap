@@ -9,6 +9,7 @@ const meta: Meta<typeof Stepper> = {
   tags: ['autodocs'],
   argTypes: {
     orientation: { control: 'select', options: ['horizontal', 'vertical'] },
+    labelPosition: { control: 'select', options: ['bottom', 'right'] },
     activeStep: { control: { type: 'range', min: 0, max: 3 } },
   },
 };
@@ -22,6 +23,27 @@ export const Horizontal: Story = {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         <Stepper activeStep={active}>
+          <Step label="Select template" />
+          <Step label="Configure settings" />
+          <Step label="Review & submit" />
+          <Step label="Done" />
+        </Stepper>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button size="s" variant="outlined" onClick={() => setActive((p) => Math.max(0, p - 1))}>Back</Button>
+          <Button size="s" variant="contained" onClick={() => setActive((p) => Math.min(4, p + 1))}>Next</Button>
+        </div>
+      </div>
+    );
+  },
+};
+
+export const HorizontalLabelRight: Story = {
+  name: 'Horizontal — labelPosition="right"',
+  render: () => {
+    const [active, setActive] = useState(1);
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <Stepper activeStep={active} labelPosition="right">
           <Step label="Select template" />
           <Step label="Configure settings" />
           <Step label="Review & submit" />

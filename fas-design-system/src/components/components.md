@@ -202,12 +202,26 @@
 步驟流程指示器。`activeStep` 從 0 開始。
 
 ```tsx
-<Stepper activeStep={1} orientation="horizontal">
+{/* 預設：horizontal，label 在圓圈下方 */}
+<Stepper activeStep={1}>
+  <Step label="選擇範本" />
+  <Step label="設定參數" />
+  <Step label="確認送出" />
+</Stepper>
+
+{/* labelPosition="right"：圓圈與 label 並排，連接線從 label 後延伸到下個圓圈 */}
+<Stepper activeStep={1} labelPosition="right">
   <Step label="選擇範本" />
   <Step label="設定參數" />
   <Step label="確認送出" />
 </Stepper>
 ```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `activeStep` | `number` | — | 當前 step index（從 0 開始） |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | 步驟流動方向 |
+| `labelPosition` | `'bottom' \| 'right'` | `'bottom'` | `horizontal` 下生效：`bottom` = 圓圈上方／label 下方並連接線穿過圓圈；`right` = 圓圈+label 並排、連接線從 label 後延伸到下個圓圈（適合 header / toolbar 等橫向擺放） |
 
 ---
 

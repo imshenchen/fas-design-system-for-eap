@@ -9,6 +9,7 @@ import type { LMSwitchPanelItem } from '../../components/LMSwitchPanel/LMSwitchP
 import type { SideNavItem } from '../../../components/SideMenu/SideMenu';
 import { Card } from '../../../components/Card/Card';
 import { Button } from '../../../components/Button/Button';
+import { Stepper, Step } from '../../../components/Stepper/Stepper';
 
 /**
  * LMAppShell — LM 專案頁面最外層版面樣板。
@@ -335,6 +336,67 @@ export const LocaleToggle: Story = {
       );
     };
     return <LocaleDemo />;
+  },
+};
+
+export const WithStepper: Story = {
+  name: 'With Stepper — 介於 FeatureTitle 與 SwitchPanel 之間',
+  render: () => {
+    const WithStepperDemo: React.FC = () => {
+      const [activeKey, setActiveKey] = useState('realtime');
+      const [line,      setLine]      = useState('line-a');
+      const [scope,     setScope]     = useState<string>('line-a');
+      const [zones,     setZones]     = useState<LMQuadrantKey[]>(['topLeft']);
+      const [step,      setStep]      = useState(1);
+
+      const switchItems = buildSwitchItems(line);
+      const effectiveScope = switchItems.some((t) => t.key === scope) ? scope : line;
+
+      return (
+        <LMAppShell
+          appName="LM Console"
+          userInitial="L"
+          menuItems={demoMenuItems}
+          activeKey={activeKey}
+          onMenuItemClick={(key) => setActiveKey(key)}
+          version="v1.0.0"
+          lineOptions={LINE_OPTIONS}
+          lineValue={line}
+          onLineChange={(next) => { setLine(next); setScope(next); }}
+          stepper={
+            <Stepper activeStep={step} labelPosition="right">
+              <Step label="選擇範本" />
+              <Step label="設定參數" />
+              <Step label="確認送出" />
+            </Stepper>
+          }
+          switchItems={switchItems}
+          switchValue={effectiveScope}
+          onSwitchChange={(key) => setScope(key)}
+          switchRightSlot={<LMQuadrantSelector value={zones} onChange={setZones} size={52} />}
+          footer={
+            <LMFooter
+              onHelp={() => alert('open help')}
+              onPrev={step > 0 ? () => setStep((s) => Math.max(0, s - 1)) : undefined}
+              onNext={() => setStep((s) => Math.min(2, s + 1))}
+              nextLabel={step === 2 ? '完成' : '下一步'}
+              prevDisabled={step === 0}
+              nextDisabled={false}
+            />
+          }
+        >
+          <Card variant="elevated">
+            <h3 style={{ margin: '0 0 12px', color: 'var(--text-high)' }}>主內容區</h3>
+            <p style={{ margin: 0, color: 'var(--text-medium)' }}>
+              透過 <code>stepper</code> 屬性傳入一個 <code>&lt;Stepper&gt;</code>，
+              它會佔據 LMFeatureTitle 下方、LMSwitchPanel 上方的獨立一列。
+              當前 step：<strong style={{ color: 'var(--primary)' }}>{step}</strong>
+            </p>
+          </Card>
+        </LMAppShell>
+      );
+    };
+    return <WithStepperDemo />;
   },
 };
 
