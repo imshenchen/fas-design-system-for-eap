@@ -133,11 +133,19 @@ export type { FeatureTitleProps, FeatureTitleItem } from './FeatureTitle/Feature
 
 // NavigationBar
 export { NavigationBar } from './NavigationBar/NavigationBar';
-export type { NavigationBarProps } from './NavigationBar/NavigationBar';
+export type { NavigationBarProps, NavigationBarVariant } from './NavigationBar/NavigationBar';
+
+// DeltaLogo
+export { DeltaLogo } from './DeltaLogo/DeltaLogo';
+export type { DeltaLogoProps } from './DeltaLogo/DeltaLogo';
+
+// CorpIcon
+export { CorpIcon } from './CorpIcon/CorpIcon';
+export type { CorpIconProps, CorpIconName } from './CorpIcon/CorpIcon';
 
 // SideMenu
 export { SideMenu } from './SideMenu/SideMenu';
-export type { SideMenuProps, SideNavItem } from './SideMenu/SideMenu';
+export type { SideMenuProps, SideNavItem, SideMenuVariant } from './SideMenu/SideMenu';
 
 // FileBrowser
 export { FileBrowser } from './FileBrowser/FileBrowser';

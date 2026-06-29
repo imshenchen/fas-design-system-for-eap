@@ -28,7 +28,21 @@ import { FeatureTitle } from '../../components/FeatureTitle/FeatureTitle';
 import type { FeatureTitleItem } from '../../components/FeatureTitle/FeatureTitle';
 import './AppShell.css';
 
+/**
+ * AppShell 視覺樣式。`corp` 會同時將內建的 NavigationBar 與 SideMenu 切換為
+ * Delta 企業樣式（藍色 App Name + 品牌漸層下緣線、選單採 Delta 企業圖示集）。
+ */
+export type AppShellVariant = 'default' | 'corp';
+
 export interface AppShellProps {
+  /**
+   * 視覺樣式，預設 `default`；`corp` 為 Delta 企業樣式。
+   * 設為 `corp` 時，NavigationBar 與 SideMenu 皆套用 `variant="corp"`：
+   *  - NavigationBar：未指定 `logo` 時預設使用 Delta 企業標誌、App Name 採 Delta 藍、下緣品牌漸層線
+   *  - SideMenu：模組 `icon` 改用 Delta 企業圖示集（CorpIcon 名稱）
+   */
+  variant?: AppShellVariant;
+
   // ── NavigationBar ────────────────────────────────────────
   /** App 名稱，顯示於 Logo 右側 */
   appName?: string;
@@ -82,6 +96,7 @@ export interface AppShellProps {
 }
 
 export const AppShell: React.FC<AppShellProps> = ({
+  variant = 'default',
   // NavBar
   appName,
   logo,
@@ -126,6 +141,7 @@ export const AppShell: React.FC<AppShellProps> = ({
       style={style}
     >
       <NavigationBar
+        variant={variant}
         appName={appName}
         logo={logo}
         userInitial={userInitial}
@@ -136,6 +152,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
       <div className="fas-app-shell__body">
         <SideMenu
+          variant={variant}
           items={menuItems}
           activeKey={activeKey}
           onItemClick={onMenuItemClick}

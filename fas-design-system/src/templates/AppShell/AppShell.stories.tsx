@@ -237,3 +237,115 @@ const DarkModeDemo: React.FC = () => {
 };
 
 export const DarkMode: Story = { render: () => <DarkModeDemo /> };
+
+// ---------------------------------------------------------------------------
+// Corp — Delta 企業樣式（corp NavigationBar + corp SideMenu）
+// ---------------------------------------------------------------------------
+
+/** corp 樣式下，menu item 的 `icon` 為 Delta 企業圖示集（CorpIcon）名稱 */
+const corpMenuItems: SideNavItem[] = [
+  {
+    key: 'dev',
+    label: '開發者工具',
+    isSection: true,
+    children: [
+      {
+        key: 'nodes',
+        label: '節點',
+        icon: 'node',
+        defaultOpen: true,
+        children: [
+          { key: 'node-mgmt', label: '節點管理' },
+          { key: 'device-templates', label: '設備連線模板' },
+        ],
+      },
+      {
+        key: 'data-processing',
+        label: '數據處理',
+        icon: 'data_processing',
+        children: [{ key: 'pipelines', label: '資料管線' }],
+      },
+      {
+        key: 'low-code',
+        label: '低代碼工具',
+        icon: 'low_code_tool',
+        children: [{ key: 'flows', label: '流程設計' }],
+      },
+      {
+        key: 'apps',
+        label: '應用程式',
+        icon: 'application',
+        children: [{ key: 'app-list', label: '應用列表' }],
+      },
+      {
+        key: 'alerts',
+        label: '告警管理',
+        icon: 'alert_management',
+        children: [{ key: 'alert-rules', label: '告警規則' }],
+      },
+      {
+        key: 'ai-service',
+        label: 'AI服務',
+        icon: 'ai_service',
+        children: [{ key: 'ai-models', label: '模型管理' }],
+      },
+      { key: 'logs', label: '日誌', icon: 'log' },
+      { key: 'images', label: '映像檔', icon: 'image_file' },
+    ],
+  },
+  {
+    key: 'ops',
+    label: '維運助手',
+    isSection: true,
+    children: [
+      {
+        key: 'monitoring',
+        label: '系統監控',
+        icon: 'system_monitoring',
+        children: [{ key: 'machine-status', label: '機台監控' }],
+      },
+      { key: 'storage', label: '儲存空間', icon: 'storage_space' },
+      { key: 'settings', label: '系統設定', icon: 'settings' },
+    ],
+  },
+];
+
+const CorpDemo: React.FC = () => {
+  const [activeKey, setActiveKey] = useState('node-mgmt');
+
+  return (
+    <AppShell
+      variant="corp"
+      appName="設備自動化控制系統控制台"
+      userInitial="K"
+      menuItems={corpMenuItems}
+      activeKey={activeKey}
+      onMenuItemClick={(key) => setActiveKey(key)}
+      version="v1.2.0"
+      breadcrumb={[
+        { label: '節點管理', onClick: () => setActiveKey('node-mgmt') },
+        { label: '節點清單' },
+      ]}
+      actions={
+        <>
+          <Button variant="text" color="secondary" size="s">
+            取消
+          </Button>
+          <Button variant="contained" size="s">
+            創建
+          </Button>
+        </>
+      }
+    >
+      <Card variant="elevated">
+        <h3 style={{ margin: '0 0 12px', color: 'var(--text-high)' }}>Corp 樣式</h3>
+        <p style={{ margin: 0, color: 'var(--text-medium)' }}>
+          NavigationBar 與 SideMenu 皆套用 <strong>variant="corp"</strong>。當前選中：
+          <strong style={{ color: 'var(--primary)' }}>{activeKey}</strong>
+        </p>
+      </Card>
+    </AppShell>
+  );
+};
+
+export const Corp: Story = { render: () => <CorpDemo /> };

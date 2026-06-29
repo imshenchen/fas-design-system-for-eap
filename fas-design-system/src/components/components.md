@@ -504,7 +504,7 @@
 ---
 
 ## NavigationBar
-固定在頁面頂端的全寬導覽列（高度 60px，sticky，z-index 100）。
+固定在頁面頂端的全寬導覽列（高度 60px，sticky，z-index 100）。`variant` 決定視覺樣式。
 
 ```tsx
 <NavigationBar
@@ -514,16 +514,44 @@
   onMenuToggle={() => setCollapsed(v => !v)}
   onUserClick={handleUserMenu}
 />
+
+{/* Corp — Delta 企業樣式（未指定 logo 時預設使用 DeltaLogo） */}
+<NavigationBar
+  variant="corp"
+  appName="設備自動化控制系統控制台"
+  userInitial="K"
+/>
 ```
 
 | Prop | Type | Default |
 |------|------|---------|
+| `variant` | `'default' \| 'corp'` | `'default'` |
 | `appName` | `string` | `'APP Name'` |
 | `logo` | `ReactNode` | 藍色占位方塊 |
 | `onMenuToggle` | `() => void` | — |
 | `actions` | `ReactNode` | — |
 | `userInitial` | `string` | `'K'` |
 | `onUserClick` | `() => void` | — |
+
+- **`default`**：標準導覽列 —— 黑色 App Name、單線（`--divider`）下緣。
+- **`corp`**：Delta 企業樣式 —— 預設使用 Delta 企業標誌（`DeltaLogo`）、App Name 採 Delta 藍（`--delta-blue`）、Logo 與 App Name 間加垂直分隔線、下緣改為品牌漸層線（`--delta-blue` → `--delta-brand-cyan` → `--delta-brand-lime`）。右側按鈕組與 `default` 相同，可用 `actions` / `showDefaults` 客製；亦可傳 `logo` 覆寫預設標誌。
+- Corp 漸層用到的新 Token：`--delta-brand-cyan`（#64d7d7）、`--delta-brand-lime`（#b9eb5f），與既有 `--delta-blue` 同屬 Brand 色，無 Dark Mode 變體。
+
+---
+
+## DeltaLogo
+Delta 企業品牌標誌（三角標 + DELTA 字標），以 inline SVG 提供。`NavigationBar` 的 `corp` 樣式預設使用此標誌；也可單獨用於 Footer、登入頁等情境。
+
+```tsx
+<DeltaLogo />                 {/* 預設 105×28 */}
+<DeltaLogo height={24} />     {/* 等比縮放，寬度自動 */}
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `width` / `height` | `number \| string` | `105` / `28` | 尺寸（沿用 SVG 屬性） |
+| `title` | `string` | `'Delta'` | 無障礙標籤（`aria-label`） |
+| `...rest` | `SVGProps` | — | 其餘 SVG 屬性（`className`、`style` 等）皆可傳入 |
 
 ---
 
@@ -544,11 +572,30 @@
 三層結構：**群組（Group）→ 模組（Module）→ 功能（Feature）**
 
 ```ts
-{ key, label, icon?,        // Material Symbol name（模組層使用）
+{ key, label, icon?,        // 模組層圖示；default 樣式為 Material Symbol name、corp 樣式為 CorpIcon name
   children?,                // 模組下的功能；或群組下的模組
   isSection?,               // true → 群組（藍色標題，可點擊展開／收合）
   defaultOpen?,             // 模組層預設展開
   defaultExpanded? }        // 群組預設展開
+```
+
+**`variant`**（`'default' | 'corp'`，預設 `default`）決定模組圖示來源：
+
+- **`default`**：`icon` 為 Material Symbol 名稱。
+- **`corp`**：Delta 企業樣式 —— `icon` 改用 Delta 企業圖示集（{@link CorpIcon} 名稱，如 `'node'`、`'data_processing'`）。**版面與互動行為與 `default` 完全相同**，僅圖示換為兩色 SVG。通常與 `NavigationBar variant="corp"` 搭配。
+
+```tsx
+<SideMenu
+  variant="corp"
+  items={[
+    { key: 'dev', label: '開發者工具', isSection: true, children: [
+      { key: 'nodes', label: '節點', icon: 'node', children: [/* ... */] },
+      { key: 'data', label: '數據處理', icon: 'data_processing', children: [/* ... */] },
+    ]},
+  ]}
+  activeKey="node-mgmt"
+  version="v1.2.0"
+/>
 ```
 
 - **群組**（`isSection: true`）：藍色標題，整列可點擊展開／收合該群組內的模組。**整個 SideMenu 一次只展開一個群組**，點擊另一個群組會收合先前展開的；其 `children` 為該群組下的模組。
@@ -557,7 +604,27 @@
 - 群組預設展開順序：`defaultExpanded` > 含 `activeKey` 的群組 > 第一個群組。
 - `collapsedMode='narrow'`（80px）下隱藏群組標題，模組 icon 平鋪顯示；hover 模組會在右側浮出 flyout。
 - `collapsedMode='hidden'` 下 SideMenu 寬度為 0、視覺上完全消失（`visibility: hidden`），用於需要將整個版面讓出來的情境。
-- `version` 字串固定顯示在底部，不隨選單捲動。
+- `version` 字串固定顯示在底部，不隨選單捲動；底部版本列圖示固定為 Material Symbol（`deployed_code`），不受 `variant` 影響。
+
+---
+
+## CorpIcon
+Delta 企業樣式選單圖示集（24×24，兩色：灰 `#727171` + Delta 藍 `#0087DC`）。主要供 `SideMenu variant="corp"` 以名稱引用，也可單獨使用。
+
+```tsx
+<CorpIcon name="node" />          {/* 預設 24×24 */}
+<CorpIcon name="data_processing" width={20} height={20} />
+```
+
+| Prop | Type | Default | 說明 |
+|------|------|---------|------|
+| `name` | `CorpIconName` | — | 圖示名稱（見下） |
+| `width` / `height` | `number \| string` | `24` | 尺寸 |
+| `...rest` | `SVGProps` | — | 其餘 SVG 屬性（`className`、`style` 等） |
+
+`CorpIconName`：`ai_service`、`alert_management`、`application`、`data_processing`、`image_file`、`log`、`low_code_tool`、`module`、`node`、`settings`、`storage_space`、`system_monitoring`
+
+- 圖示為設計固定兩色（灰 + 藍），不隨 active／hover 變色（`corp` 樣式暫不調整互動著色）。
 
 ---
 
@@ -598,8 +665,13 @@
 
 `children` 即主內容區（FeatureTitle 下方的可滾動區）。SideMenu 收折狀態由 AppShell 內建管理，點擊 NavBar 的漢堡按鈕即可切換；也可改傳 `collapsed` / `onCollapsedChange` 改為受控模式。
 
+`variant`（`'default' | 'corp'`，預設 `default`）一次切換整個 Shell 的樣式：傳 `corp` 會同時把內建的 NavigationBar 與 SideMenu 套用 `variant="corp"`（藍色 App Name + 品牌漸層下緣線、未指定 `logo` 時用 Delta 企業標誌；SideMenu 模組 `icon` 改用 Delta 企業圖示集名稱）。
+
 ```tsx
 import { AppShell, Button, Card } from '@imshenchen/fas-design-system';
+
+{/* Corp 樣式：menuItems 的 icon 改用 CorpIcon 名稱（如 'node'、'data_processing'） */}
+<AppShell variant="corp" appName="設備自動化控制系統控制台" menuItems={corpMenuItems} /* ...其餘同下 */ />
 
 <AppShell
   appName="APP Name"
@@ -625,8 +697,9 @@ import { AppShell, Button, Card } from '@imshenchen/fas-design-system';
 
 | Prop | Type | Default | 說明 |
 |------|------|---------|------|
+| `variant` | `'default' \| 'corp'` | `'default'` | 整體樣式；`corp` 同時切換內建 NavigationBar 與 SideMenu 為 Delta 企業樣式 |
 | `appName` | `string` | `'APP Name'` | NavBar 顯示的 App 名稱 |
-| `logo` | `ReactNode` | 占位方塊 | 自訂 Logo |
+| `logo` | `ReactNode` | 占位方塊 | 自訂 Logo（`corp` 未指定時用 Delta 企業標誌） |
 | `userInitial` | `string` | `'K'` | NavBar Avatar 顯示文字 |
 | `onUserClick` | `() => void` | — | 點擊 Avatar callback |
 | `navActions` | `ReactNode` | — | NavBar 右側 Avatar 左方的自訂操作區 |

@@ -11,7 +11,9 @@
 // 在 React 元件中使用這組，而非寫死色碼
 export const cssVars = {
   // Brand
-  deltaBlue: 'var(--delta-blue)',
+  deltaBlue:       'var(--delta-blue)',
+  deltaBrandCyan:  'var(--delta-brand-cyan)',
+  deltaBrandLime:  'var(--delta-brand-lime)',
   primary:   'var(--primary)',
   secondary: 'var(--secondary)',
 
@@ -96,7 +98,9 @@ export type CssVar = typeof cssVars[keyof typeof cssVars];
 // ─── Raw Token Values (Light Mode) ──────────────────────────────────────────
 // 用於 JS 邏輯（如圖表配色、動態計算），不用於 React 元件樣式
 export const rawTokens = {
-  deltaBlue: '#0087dc',
+  deltaBlue:      '#0087dc',
+  deltaBrandCyan: '#64d7d7',
+  deltaBrandLime: '#b9eb5f',
   primary:   '#00adef',
   secondary: '#727171',
 

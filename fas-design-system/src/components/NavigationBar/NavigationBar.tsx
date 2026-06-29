@@ -7,9 +7,20 @@
  */
 import React from 'react';
 import { IconButton } from '../IconButton/IconButton';
+import { DeltaLogo } from '../DeltaLogo/DeltaLogo';
 import './NavigationBar.css';
 
+/**
+ * NavigationBar 視覺樣式。
+ * - `default`：標準導覽列（黑色 App Name、單線下緣分隔）。
+ * - `corp`：Delta 企業樣式（App Name 採 Delta 藍、Logo 與 App Name 間加垂直分隔線、
+ *   下緣為品牌漸層線 blue → cyan → lime）。
+ */
+export type NavigationBarVariant = 'default' | 'corp';
+
 export interface NavigationBarProps {
+  /** 視覺樣式，預設 `default`；`corp` 為 Delta 企業樣式 */
+  variant?: NavigationBarVariant;
   /** 應用程式名稱，顯示於 Logo 右側 */
   appName?: string;
   /** 自訂 Logo，預設顯示占位方塊 */
@@ -33,6 +44,7 @@ export interface NavigationBarProps {
 }
 
 export const NavigationBar: React.FC<NavigationBarProps> = ({
+  variant = 'default',
   appName = 'APP Name',
   logo,
   onMenuToggle,
@@ -42,9 +54,15 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   showDefaults = true,
   className,
   style,
-}) => (
+}) => {
+  // Corp 樣式預設使用 Delta 企業標誌；其餘樣式無 logo 時顯示占位方塊
+  const resolvedLogo = logo ?? (variant === 'corp' ? <DeltaLogo height={28} /> : null);
+
+  return (
   <header
-    className={['fas-navbar', className].filter(Boolean).join(' ')}
+    className={['fas-navbar', `fas-navbar--${variant}`, className]
+      .filter(Boolean)
+      .join(' ')}
     style={style}
   >
     {/* ── Left ── */}
@@ -57,11 +75,13 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
         onClick={onMenuToggle}
       />
       <div className="fas-navbar__brand">
-        {logo ? (
-          <div className="fas-navbar__logo">{logo}</div>
+        {resolvedLogo ? (
+          <div className="fas-navbar__logo">{resolvedLogo}</div>
         ) : (
           <div className="fas-navbar__logo-placeholder" aria-hidden />
         )}
+        {/* Corp 樣式於 Logo 與 App Name 間顯示垂直分隔線；default 下隱藏 */}
+        <span className="fas-navbar__brand-divider" aria-hidden />
         <span className="fas-navbar__appname">{appName}</span>
       </div>
     </div>
@@ -106,4 +126,5 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       )}
     </div>
   </header>
-);
+  );
+};

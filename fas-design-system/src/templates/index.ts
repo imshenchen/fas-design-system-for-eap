@@ -4,7 +4,7 @@
  */
 
 export { AppShell } from './AppShell/AppShell';
-export type { AppShellProps } from './AppShell/AppShell';
+export type { AppShellProps, AppShellVariant } from './AppShell/AppShell';
 
 export { SectionedForm, FormSection } from './SectionedForm/SectionedForm';
 export type { SectionedFormProps, FormSectionProps } from './SectionedForm/SectionedForm';

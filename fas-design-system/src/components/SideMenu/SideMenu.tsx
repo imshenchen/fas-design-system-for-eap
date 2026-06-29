@@ -11,7 +11,33 @@
  */
 import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { CorpIcon, CorpIconName } from '../CorpIcon/CorpIcon';
 import './SideMenu.css';
+
+/** SideMenu 視覺樣式：`default` 用 Material Symbols；`corp` 用 Delta 企業圖示集（CorpIcon） */
+export type SideMenuVariant = 'default' | 'corp';
+
+/**
+ * 依 variant 渲染模組圖示。
+ * - `default`：`icon` 為 Material Symbol 名稱
+ * - `corp`：`icon` 為 CorpIcon 名稱（{@link CorpIconName}），以 inline SVG 呈現
+ */
+const renderNavIcon = (
+  icon: string | undefined,
+  variant: SideMenuVariant,
+  className: string,
+  size: number,
+): React.ReactNode => {
+  if (!icon) return null;
+  if (variant === 'corp') {
+    return <CorpIcon name={icon as CorpIconName} className={className} width={size} height={size} />;
+  }
+  return (
+    <span className={`material-symbols-outlined ${className}`} aria-hidden>
+      {icon}
+    </span>
+  );
+};
 
 export interface SideNavItem {
   /** 唯一識別鍵，用於 activeKey 比對 */
@@ -33,6 +59,12 @@ export interface SideNavItem {
 }
 
 export interface SideMenuProps {
+  /**
+   * 視覺樣式，預設 `default`。
+   * `corp` 為 Delta 企業樣式 —— 模組 `icon` 改以 Delta 企業圖示集（{@link CorpIconName}）呈現，
+   * 其餘版面與互動行為與 `default` 相同。
+   */
+  variant?: SideMenuVariant;
   /** 選單項目結構 */
   items: SideNavItem[];
   /** 目前選中的 item key */
@@ -64,9 +96,10 @@ const ModuleItem: React.FC<{
   activeKey?: string;
   onItemClick?: SideMenuProps['onItemClick'];
   collapsed?: boolean;
+  variant: SideMenuVariant;
   onFlyoutEnter?: (key: string, anchor: HTMLElement) => void;
   onFlyoutLeave?: () => void;
-}> = ({ item, activeKey, onItemClick, collapsed, onFlyoutEnter, onFlyoutLeave }) => {
+}> = ({ item, activeKey, onItemClick, collapsed, variant, onFlyoutEnter, onFlyoutLeave }) => {
   // 預設展開：明確的 defaultOpen 優先，其次自動展開含 activeKey 的模組。
   // 之後完全由使用者控制（點擊 chevron 可任意展開／收合）。
   const [open, setOpen] = useState(
@@ -95,11 +128,7 @@ const ModuleItem: React.FC<{
         }
         onMouseLeave={flyoutEnabled ? onFlyoutLeave : undefined}
       >
-        {item.icon && (
-          <span className="material-symbols-outlined fas-sidemenu__icon" aria-hidden>
-            {item.icon}
-          </span>
-        )}
+        {renderNavIcon(item.icon, variant, 'fas-sidemenu__icon', 20)}
         {!collapsed && (
           <>
             <span className="fas-sidemenu__label">{item.label}</span>
@@ -149,7 +178,8 @@ const LeafItem: React.FC<{
   activeKey?: string;
   onItemClick?: SideMenuProps['onItemClick'];
   collapsed?: boolean;
-}> = ({ item, activeKey, onItemClick, collapsed }) => {
+  variant: SideMenuVariant;
+}> = ({ item, activeKey, onItemClick, collapsed, variant }) => {
   const isActive = activeKey === item.key;
 
   return (
@@ -164,11 +194,7 @@ const LeafItem: React.FC<{
       onClick={() => onItemClick?.(item.key, item)}
       title={collapsed ? item.label : undefined}
     >
-      {item.icon && (
-        <span className="material-symbols-outlined fas-sidemenu__icon" aria-hidden>
-          {item.icon}
-        </span>
-      )}
+      {renderNavIcon(item.icon, variant, 'fas-sidemenu__icon', 20)}
       {!collapsed && <span className="fas-sidemenu__label">{item.label}</span>}
     </button>
   );
@@ -180,6 +206,7 @@ const renderModule = (
   activeKey: string | undefined,
   onItemClick: SideMenuProps['onItemClick'],
   collapsed: boolean | undefined,
+  variant: SideMenuVariant,
   onFlyoutEnter: (key: string, anchor: HTMLElement) => void,
   onFlyoutLeave: () => void,
 ) =>
@@ -190,6 +217,7 @@ const renderModule = (
       activeKey={activeKey}
       onItemClick={onItemClick}
       collapsed={collapsed}
+      variant={variant}
       onFlyoutEnter={onFlyoutEnter}
       onFlyoutLeave={onFlyoutLeave}
     />
@@ -200,6 +228,7 @@ const renderModule = (
       activeKey={activeKey}
       onItemClick={onItemClick}
       collapsed={collapsed}
+      variant={variant}
     />
   );
 
@@ -236,6 +265,7 @@ const findGroupKeyForActive = (
 };
 
 export const SideMenu: React.FC<SideMenuProps> = ({
+  variant = 'default',
   items,
   activeKey,
   onItemClick,
@@ -302,7 +332,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
               return (
                 <div key={item.key} className="fas-sidemenu__section">
                   {item.children?.map((child) =>
-                    renderModule(child, activeKey, onItemClick, collapsed, handleFlyoutEnter, handleFlyoutLeave),
+                    renderModule(child, activeKey, onItemClick, collapsed, variant, handleFlyoutEnter, handleFlyoutLeave),
                   )}
                 </div>
               );
@@ -328,13 +358,13 @@ export const SideMenu: React.FC<SideMenuProps> = ({
                 </button>
                 {isGroupOpen &&
                   item.children?.map((child) =>
-                    renderModule(child, activeKey, onItemClick, collapsed, handleFlyoutEnter, handleFlyoutLeave),
+                    renderModule(child, activeKey, onItemClick, collapsed, variant, handleFlyoutEnter, handleFlyoutLeave),
                   )}
               </div>
             );
           }
 
-          return renderModule(item, activeKey, onItemClick, collapsed, handleFlyoutEnter, handleFlyoutLeave);
+          return renderModule(item, activeKey, onItemClick, collapsed, variant, handleFlyoutEnter, handleFlyoutLeave);
         })}
       </div>
 
@@ -380,11 +410,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
             role="menu"
           >
             <div className="fas-sidemenu__flyout-header">
-              {flyoutItem.icon && (
-                <span className="material-symbols-outlined fas-sidemenu__flyout-icon" aria-hidden>
-                  {flyoutItem.icon}
-                </span>
-              )}
+              {renderNavIcon(flyoutItem.icon, variant, 'fas-sidemenu__flyout-icon', 24)}
               <span className="fas-sidemenu__flyout-title">{flyoutItem.label}</span>
             </div>
             <div className="fas-sidemenu__flyout-children">

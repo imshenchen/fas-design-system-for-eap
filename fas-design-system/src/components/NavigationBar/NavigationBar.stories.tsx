@@ -58,6 +58,18 @@ export const WithCustomActions: Story = {
   },
 };
 
+/**
+ * Delta 企業樣式：Delta 藍 App Name、垂直分隔線、品牌漸層下緣線。
+ * `corp` 樣式未指定 `logo` 時，預設使用 Delta 企業標誌（`DeltaLogo`）。
+ */
+export const Corp: Story = {
+  args: {
+    variant: 'corp',
+    appName: '設備自動化控制系統控制台',
+    userInitial: 'K',
+  },
+};
+
 export const DarkMode: Story = {
   args: {
     appName: 'APP Name',
