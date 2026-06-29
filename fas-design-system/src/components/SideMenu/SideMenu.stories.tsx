@@ -362,7 +362,7 @@ export const Corp: Story = {
     variant: 'corp',
     items: corpItems,
     activeKey: 'node-mgmt',
-    version: 'v1.2.0',
+    version: '2.0.0',
   },
   render: (args) => {
     const [activeKey, setActiveKey] = useState(args.activeKey);
@@ -385,6 +385,47 @@ export const Corp: Story = {
           >
             <p style={{ color: 'var(--text-medium)', fontFamily: 'Roboto, sans-serif' }}>
               Active: <strong style={{ color: 'var(--primary)' }}>{activeKey}</strong>
+            </p>
+          </main>
+        </div>
+      </div>
+    );
+  },
+};
+
+/**
+ * Corp 收折：narrow rail 只顯示產品 Logo（底部）；hover 模組會浮出與 SideMenu
+ * 等高的「固定整條」面板，面板底部顯示版本。
+ */
+export const CorpCollapsed: Story = {
+  args: {
+    variant: 'corp',
+    items: corpItems,
+    activeKey: 'node-mgmt',
+    collapsed: true,
+    version: '2.0.0',
+  },
+  render: (args) => {
+    const [activeKey, setActiveKey] = useState(args.activeKey);
+    return (
+      <div style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}>
+        <NavigationBar variant="corp" appName="設備自動化控制系統控制台" />
+        <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+          <SideMenu
+            {...args}
+            activeKey={activeKey}
+            onItemClick={(key) => setActiveKey(key)}
+          />
+          <main
+            style={{
+              flex: 1,
+              padding: 32,
+              background: 'var(--bg-surface-dim)',
+              overflow: 'auto',
+            }}
+          >
+            <p style={{ color: 'var(--text-medium)', fontFamily: 'Roboto, sans-serif' }}>
+              Hover 左側模組 icon 會浮出固定整條面板（底部顯示版本）。
             </p>
           </main>
         </div>

@@ -8,7 +8,8 @@
   flex-direction: column;
   width: 280px;
   height: 100%;
-  background: var(--bg-surface);
+  /* 抬升表面：Light = 白、Dark = #333333（elevation 08dp），比 content 亮 */
+  background: var(--elevation-08dp);
   border-right: 1px solid var(--divider);
   flex-shrink: 0;
   transition: width 0.2s ease;
@@ -200,7 +201,7 @@
   font-weight: 500;
 }
 
-/* ── Footer (pinned version) ── */
+/* ── Footer ── */
 .fas-sidemenu__footer {
   flex-shrink: 0;
   padding: 0 8px 8px;
@@ -212,6 +213,7 @@
   margin: 0 4px 4px;
 }
 
+/* Default 版本列（原樣保留，不受 corp 改動影響） */
 .fas-sidemenu__item--version {
   color: var(--primary);
   font-size: 13px;
@@ -219,6 +221,90 @@
 
 .fas-sidemenu__item--version:hover {
   background: var(--comp-hover);
+}
+
+/* ── Corp footer：產品 Logo（左）＋ 版本（右） ──
+   高度與分隔線對齊收折 hover 面板底部的版本區（皆 56px、頂部 border 為分隔線） */
+.fas-sidemenu.fas-sidemenu--corp .fas-sidemenu__footer {
+  padding: 0;
+}
+/* corp footer 改用 row 的 border-top 當分隔線（與 flyout 版本區對齊），隱藏原 divider 元素 */
+.fas-sidemenu--corp .fas-sidemenu__footer-divider {
+  display: none;
+}
+
+.fas-sidemenu__footer-row--corp {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 56px;
+  padding: 0 16px;
+}
+/* 分隔線：左右各留 8px 間距（與 flyout 版本區一致、同高對齊） */
+.fas-sidemenu__footer-row--corp::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: var(--divider);
+}
+
+/* 收折時：footer 只有產品 Logo，置中 */
+.fas-sidemenu--collapsed .fas-sidemenu__footer-row--corp {
+  justify-content: center;
+}
+
+/* 產品 Logo（左側） */
+.fas-sidemenu__product-logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.fas-sidemenu__product-logo svg,
+.fas-sidemenu__product-logo img {
+  display: block;
+  height: 28px;
+  width: auto;
+}
+
+/* 版本群組（右側） */
+.fas-sidemenu__version-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fas-sidemenu__version {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.fas-sidemenu__version-icon {
+  font-size: 20px;
+  color: var(--secondary);
+  flex-shrink: 0;
+}
+
+.fas-sidemenu__version-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-high);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fas-sidemenu__version-action {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 /* ── Collapsed mode ── */
@@ -241,7 +327,8 @@
 .fas-sidemenu__flyout {
   position: fixed;
   width: 240px;
-  background: var(--bg-surface);
+  /* 與 SideMenu rail 同層（elevation 08dp）；Dark 比 content 亮 */
+  background: var(--elevation-08dp);
   border-radius: 4px;
   box-shadow:
     0 -1px 3px rgba(46, 46, 46, 0.05),
@@ -323,6 +410,45 @@
 .fas-sidemenu__flyout-item--active {
   background: var(--comp-focus);
   color: var(--primary);
+}
+
+/* ── Corp flyout：與 SideMenu 等高的固定整條面板，底部顯示版本 ── */
+.fas-sidemenu__flyout--corp {
+  width: 200px;
+  padding: 0;
+  border-radius: 0;
+  border-right: 1px solid var(--divider);
+  /* 兩層連接處（rail ↔ 面板）不要陰影；以 border 區隔即可 */
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.fas-sidemenu__flyout--corp .fas-sidemenu__flyout-main {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 16px 16px 8px;
+}
+
+.fas-sidemenu__flyout-version {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 56px;
+  padding: 0 16px;
+}
+/* 分隔線：左右各留 8px 間距（與 rail footer 一致、同高對齊） */
+.fas-sidemenu__flyout-version::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: var(--divider);
 }
 
 .fas-sidemenu--collapsed .fas-sidemenu__footer {

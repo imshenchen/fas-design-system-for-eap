@@ -8,7 +8,8 @@
   justify-content: space-between;
   height: 60px;
   padding: 0 24px 0 12px;
-  background: var(--bg-surface);
+  /* 抬升表面：Light = 白、Dark = #292929（elevation 04dp），比 content 亮 */
+  background: var(--elevation-04dp);
   border-bottom: 1px solid var(--divider);
   position: sticky;
   top: 0;
@@ -107,13 +108,13 @@
 /* ── Corp Variant (Delta 企業樣式) ──────────────────────────────────────────
  * - App Name 採 Delta 藍
  * - Logo 與 App Name 間加垂直分隔線
- * - 下緣改為品牌漸層線：blue → cyan → lime（取代單色 divider）
+ * - 下緣改為品牌三段色帶：blue → cyan → lime（取代單色 divider）
  */
 .fas-navbar--corp {
   border-bottom: none;
 }
 
-/* 品牌漸層下緣線（3px） */
+/* 品牌三段色帶下緣線（3px）：三個實色區段、硬邊不漸層，比例約 56% / 22% / 22% */
 .fas-navbar--corp::after {
   content: '';
   position: absolute;
@@ -124,15 +125,17 @@
   background: linear-gradient(
     90deg,
     var(--delta-blue) 0%,
-    var(--delta-blue) 50%,
-    var(--delta-brand-cyan) 72%,
+    var(--delta-blue) 56%,
+    var(--delta-brand-cyan) 56%,
+    var(--delta-brand-cyan) 78%,
+    var(--delta-brand-lime) 78%,
     var(--delta-brand-lime) 100%
   );
 }
 
-/* App Name 改用 Delta 藍 */
+/* App Name 改用 Corp 品牌前景色（Light = Delta 藍、Dark = 白） */
 .fas-navbar--corp .fas-navbar__appname {
-  color: var(--delta-blue);
+  color: var(--corp-brand-fg);
 }
 
 /* Logo 與 App Name 間的垂直分隔線 */
@@ -142,4 +145,13 @@
   height: 24px;
   background: var(--divider);
   flex-shrink: 0;
+}
+
+/* 右側操作按鈕間距 24px（含 avatar） */
+.fas-navbar--corp .fas-navbar__right {
+  gap: 24px;
+}
+
+.fas-navbar--corp .fas-navbar__avatar {
+  margin-left: 0;
 }

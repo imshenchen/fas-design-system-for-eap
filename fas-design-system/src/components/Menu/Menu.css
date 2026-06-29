@@ -3,7 +3,8 @@
 .fas-menu {
   z-index: 1300;
   min-width: 160px;
-  background: var(--bg-surface);
+  /* 下拉浮層用 elevation token：Dark Mode 比底色更亮（與 Dialog / Drawer 一致） */
+  background: var(--elevation-08dp);
   border-radius: 4px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
   overflow: hidden;

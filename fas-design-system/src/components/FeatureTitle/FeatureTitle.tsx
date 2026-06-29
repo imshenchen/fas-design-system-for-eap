@@ -56,7 +56,8 @@ export const FeatureTitle = React.forwardRef<HTMLDivElement, FeatureTitleProps>(
           gap:             spacing[4],
           minHeight:       '56px',
           padding:         `${spacing[2]} ${spacing[6]}`,
-          backgroundColor: cssVars.bgSurface,
+          // 抬升表面：Light = 白、Dark = #292929（elevation 04dp），與 NavBar 同層
+          backgroundColor: cssVars.elevation04dp,
           borderBottom:    `1px solid ${cssVars.divider}`,
           boxSizing:       'border-box',
         }}

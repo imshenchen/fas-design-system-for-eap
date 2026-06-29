@@ -143,6 +143,10 @@ export type { DeltaLogoProps } from './DeltaLogo/DeltaLogo';
 export { CorpIcon } from './CorpIcon/CorpIcon';
 export type { CorpIconProps, CorpIconName } from './CorpIcon/CorpIcon';
 
+// DiaAutoLogo
+export { DiaAutoLogo } from './DiaAutoLogo/DiaAutoLogo';
+export type { DiaAutoLogoProps } from './DiaAutoLogo/DiaAutoLogo';
+
 // SideMenu
 export { SideMenu } from './SideMenu/SideMenu';
 export type { SideMenuProps, SideNavItem, SideMenuVariant } from './SideMenu/SideMenu';

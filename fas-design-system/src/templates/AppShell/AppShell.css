@@ -24,7 +24,8 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  background: var(--bg-surface-dim);
+  /* content 區用 surface dim variable（Light #f6f7f9 / Dark #1a1a1a），對齊 Figma */
+  background: var(--bg-surface-dim-var);
 }
 
 /* 主內容區（不含 FeatureTitle）。padding 由 prop 控制 */

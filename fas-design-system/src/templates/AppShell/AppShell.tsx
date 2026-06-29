@@ -64,6 +64,8 @@ export interface AppShellProps {
   onMenuItemClick?: SideMenuProps['onItemClick'];
   /** SideMenu 底部顯示的版本字串 */
   version?: string;
+  /** SideMenu footer 左側的產品 Logo（產品專屬）；收折時只顯示此 Logo、不顯示版本 */
+  productLogo?: React.ReactNode;
   /** 受控收折狀態；若未傳則由內部管理（搭配 NavBar 漢堡按鈕） */
   collapsed?: boolean;
   /** 非受控模式下的初始收折狀態，預設 false */
@@ -108,6 +110,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   activeKey,
   onMenuItemClick,
   version,
+  productLogo,
   collapsed,
   defaultCollapsed = false,
   onCollapsedChange,
@@ -159,6 +162,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           collapsed={isCollapsed}
           collapsedMode={collapsedMode}
           version={version}
+          productLogo={productLogo}
         />
 
         <div

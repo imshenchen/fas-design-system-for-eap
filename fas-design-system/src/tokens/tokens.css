@@ -12,6 +12,10 @@
   --delta-blue: #0087dc;
   --delta-brand-cyan: #64d7d7;
   --delta-brand-lime: #b9eb5f;
+  /* Corp 圖示（CorpIcon）藍色重點色；Dark Mode 提亮以維持可讀性 */
+  --corp-icon-accent: #0087dc;
+  /* Corp 品牌前景色（Delta Logo + corp NavigationBar App Name）；Dark Mode 轉白 */
+  --corp-brand-fg: #0087dc;
   --primary: #00adef;
   --secondary: #727171;
 
@@ -188,6 +192,10 @@
 
 /* ─── Dark Mode ─────────────────────────────────────────────────────────────── */
 [data-theme="dark"] {
+  /* Brand */
+  --corp-icon-accent: #a5e2fa;
+  --corp-brand-fg: #ffffff;
+
   /* Primary / Secondary */
   --primary: #57cfff;
   --secondary: #cccccc;

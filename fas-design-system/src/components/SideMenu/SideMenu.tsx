@@ -12,6 +12,7 @@
 import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CorpIcon, CorpIconName } from '../CorpIcon/CorpIcon';
+import { DiaAutoLogo } from '../DiaAutoLogo/DiaAutoLogo';
 import './SideMenu.css';
 
 /** SideMenu 視覺樣式：`default` 用 Material Symbols；`corp` 用 Delta 企業圖示集（CorpIcon） */
@@ -81,6 +82,11 @@ export interface SideMenuProps {
   collapsedMode?: 'narrow' | 'hidden';
   /** 顯示在底部的版本號文字 */
   version?: string;
+  /**
+   * 底部產品 Logo（產品專屬，由消費方提供）。顯示在 footer 左側；
+   * **收折時只顯示此 Logo、不顯示版本**。
+   */
+  productLogo?: React.ReactNode;
   /**
    * 版本號右側的 action slot —— 通常放置 icon button、安裝引導等。
    * 收折狀態（narrow / hidden）下不顯示。
@@ -272,6 +278,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   collapsed = false,
   collapsedMode = 'narrow',
   version,
+  productLogo,
   versionAction,
   className,
   style,
@@ -287,8 +294,10 @@ export const SideMenu: React.FC<SideMenuProps> = ({
 
   const [openGroupKey, setOpenGroupKey] = useState<string | undefined>(initialGroupKey);
 
+  const navRef = useRef<HTMLElement>(null);
   // 收折模式下，hover 模組會在右側浮出 flyout 顯示模組標題＋功能列表
-  const [flyout, setFlyout] = useState<{ key: string; top: number; left: number } | null>(null);
+  // corp 樣式：flyout 為與 SideMenu 等高的固定整條面板（底部顯示版本），故帶 height
+  const [flyout, setFlyout] = useState<{ key: string; top: number; left: number; height?: number } | null>(null);
   const closeTimerRef = useRef<number | null>(null);
 
   const cancelClose = () => {
@@ -299,8 +308,14 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   };
   const handleFlyoutEnter = (key: string, anchor: HTMLElement) => {
     cancelClose();
-    const rect = anchor.getBoundingClientRect();
-    setFlyout({ key, top: rect.top - 4, left: rect.right });
+    if (variant === 'corp' && navRef.current) {
+      // corp：固定整條 —— 貼齊 narrow rail 右緣、與 SideMenu 等高
+      const navRect = navRef.current.getBoundingClientRect();
+      setFlyout({ key, top: navRect.top, left: navRect.right, height: navRect.height });
+    } else {
+      const rect = anchor.getBoundingClientRect();
+      setFlyout({ key, top: rect.top - 4, left: rect.right });
+    }
   };
   const handleFlyoutLeave = () => {
     cancelClose();
@@ -311,8 +326,10 @@ export const SideMenu: React.FC<SideMenuProps> = ({
 
   return (
     <nav
+      ref={navRef}
       className={[
         'fas-sidemenu',
+        variant === 'corp' ? 'fas-sidemenu--corp' : '',
         isNarrow ? 'fas-sidemenu--collapsed' : '',
         isHidden ? 'fas-sidemenu--hidden' : '',
         className,
@@ -369,33 +386,65 @@ export const SideMenu: React.FC<SideMenuProps> = ({
       </div>
 
       {/* ── Pinned footer ── */}
-      {version && (
-        <div className="fas-sidemenu__footer">
-          <div className="fas-sidemenu__footer-divider" />
-          <div className="fas-sidemenu__footer-row" style={{ display: 'flex', alignItems: 'center' }}>
-            <button
-              className="fas-sidemenu__item fas-sidemenu__item--l1 fas-sidemenu__item--version"
-              title={collapsed ? version : undefined}
-              style={{ flex: 1, minWidth: 0 }}
-            >
-              <span className="material-symbols-outlined fas-sidemenu__icon" aria-hidden>
-                deployed_code
-              </span>
-              {!collapsed && <span className="fas-sidemenu__label">{version}</span>}
-            </button>
-            {!collapsed && versionAction && (
-              <span
-                className="fas-sidemenu__version-action"
-                style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, paddingRight: 8 }}
+      {variant === 'corp'
+        ? /* Corp：左側產品 Logo（預設 DiaAutoLogo）+ 右側版本（tag icon + 版號）。
+             收折時只顯示產品 Logo（置中）；展開 + versionAction 顯示於版本右側。 */
+          (collapsed ? true : !!(version || versionAction)) && (
+            <div className="fas-sidemenu__footer">
+              <div className="fas-sidemenu__footer-divider" />
+              <div className="fas-sidemenu__footer-row fas-sidemenu__footer-row--corp">
+                <span className="fas-sidemenu__product-logo" aria-hidden>
+                  {productLogo ?? <DiaAutoLogo height={28} />}
+                </span>
+                {!collapsed && (version || versionAction) && (
+                  <span className="fas-sidemenu__version-group">
+                    {version && (
+                      <span className="fas-sidemenu__version" title={version}>
+                        <CorpIcon name="version" width={20} height={20} className="fas-sidemenu__version-icon" />
+                        <span className="fas-sidemenu__version-text">{version}</span>
+                      </span>
+                    )}
+                    {versionAction && (
+                      <span className="fas-sidemenu__version-action">{versionAction}</span>
+                    )}
+                  </span>
+                )}
+              </div>
+            </div>
+          )
+        : /* Default：原本的版本列（deployed_code icon），不受 corp 改動影響 */
+          version && (
+            <div className="fas-sidemenu__footer">
+              <div className="fas-sidemenu__footer-divider" />
+              <div
+                className="fas-sidemenu__footer-row"
+                style={{ display: 'flex', alignItems: 'center' }}
               >
-                {versionAction}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
+                <button
+                  className="fas-sidemenu__item fas-sidemenu__item--l1 fas-sidemenu__item--version"
+                  title={collapsed ? version : undefined}
+                  style={{ flex: 1, minWidth: 0 }}
+                >
+                  <span className="material-symbols-outlined fas-sidemenu__icon" aria-hidden>
+                    deployed_code
+                  </span>
+                  {!collapsed && <span className="fas-sidemenu__label">{version}</span>}
+                </button>
+                {!collapsed && versionAction && (
+                  <span
+                    className="fas-sidemenu__version-action"
+                    style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, paddingRight: 8 }}
+                  >
+                    {versionAction}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
-      {/* ── Hover flyout (僅 narrow 收折模式) ── */}
+      {/* ── Hover flyout (僅 narrow 收折模式) ──
+          default：貼齊 hover 項目的小浮層
+          corp：與 SideMenu 等高的固定整條面板，底部顯示版本 */}
       {isNarrow &&
         flyout &&
         flyoutItem &&
@@ -403,37 +452,54 @@ export const SideMenu: React.FC<SideMenuProps> = ({
         typeof document !== 'undefined' &&
         createPortal(
           <div
-            className="fas-sidemenu__flyout"
-            style={{ top: flyout.top, left: flyout.left }}
+            className={[
+              'fas-sidemenu__flyout',
+              variant === 'corp' ? 'fas-sidemenu__flyout--corp' : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+            style={
+              variant === 'corp'
+                ? { top: flyout.top, left: flyout.left, height: flyout.height }
+                : { top: flyout.top, left: flyout.left }
+            }
             onMouseEnter={cancelClose}
             onMouseLeave={handleFlyoutLeave}
             role="menu"
           >
-            <div className="fas-sidemenu__flyout-header">
-              {renderNavIcon(flyoutItem.icon, variant, 'fas-sidemenu__flyout-icon', 24)}
-              <span className="fas-sidemenu__flyout-title">{flyoutItem.label}</span>
+            <div className="fas-sidemenu__flyout-main">
+              <div className="fas-sidemenu__flyout-header">
+                {renderNavIcon(flyoutItem.icon, variant, 'fas-sidemenu__flyout-icon', 24)}
+                <span className="fas-sidemenu__flyout-title">{flyoutItem.label}</span>
+              </div>
+              <div className="fas-sidemenu__flyout-children">
+                <div className="fas-sidemenu__flyout-guide" aria-hidden />
+                {flyoutItem.children.map((child) => (
+                  <button
+                    key={child.key}
+                    className={[
+                      'fas-sidemenu__flyout-item',
+                      activeKey === child.key ? 'fas-sidemenu__flyout-item--active' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    onClick={() => {
+                      onItemClick?.(child.key, child);
+                      setFlyout(null);
+                    }}
+                    role="menuitem"
+                  >
+                    {child.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="fas-sidemenu__flyout-children">
-              <div className="fas-sidemenu__flyout-guide" aria-hidden />
-              {flyoutItem.children.map((child) => (
-                <button
-                  key={child.key}
-                  className={[
-                    'fas-sidemenu__flyout-item',
-                    activeKey === child.key ? 'fas-sidemenu__flyout-item--active' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                  onClick={() => {
-                    onItemClick?.(child.key, child);
-                    setFlyout(null);
-                  }}
-                  role="menuitem"
-                >
-                  {child.label}
-                </button>
-              ))}
-            </div>
+            {variant === 'corp' && version && (
+              <div className="fas-sidemenu__flyout-version">
+                <CorpIcon name="version" width={20} height={20} className="fas-sidemenu__version-icon" />
+                <span className="fas-sidemenu__version-text">{version}</span>
+              </div>
+            )}
           </div>,
           document.body,
         )}

@@ -14,6 +14,8 @@ export const cssVars = {
   deltaBlue:       'var(--delta-blue)',
   deltaBrandCyan:  'var(--delta-brand-cyan)',
   deltaBrandLime:  'var(--delta-brand-lime)',
+  corpIconAccent:  'var(--corp-icon-accent)',
+  corpBrandFg:     'var(--corp-brand-fg)',
   primary:   'var(--primary)',
   secondary: 'var(--secondary)',
 
@@ -35,6 +37,8 @@ export const cssVars = {
 
   // Elevation
   elevation02dp: 'var(--elevation-02dp)',
+  elevation04dp: 'var(--elevation-04dp)',
+  elevation06dp: 'var(--elevation-06dp)',
   elevation08dp: 'var(--elevation-08dp)',
   elevation24dp: 'var(--elevation-24dp)',
 
@@ -101,6 +105,8 @@ export const rawTokens = {
   deltaBlue:      '#0087dc',
   deltaBrandCyan: '#64d7d7',
   deltaBrandLime: '#b9eb5f',
+  corpIconAccent: '#0087dc',
+  corpBrandFg:    '#0087dc',
   primary:   '#00adef',
   secondary: '#727171',
 

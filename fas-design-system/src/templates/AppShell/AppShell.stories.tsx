@@ -321,7 +321,7 @@ const CorpDemo: React.FC = () => {
       menuItems={corpMenuItems}
       activeKey={activeKey}
       onMenuItemClick={(key) => setActiveKey(key)}
-      version="v1.2.0"
+      version="2.0.0"
       breadcrumb={[
         { label: '節點管理', onClick: () => setActiveKey('node-mgmt') },
         { label: '節點清單' },

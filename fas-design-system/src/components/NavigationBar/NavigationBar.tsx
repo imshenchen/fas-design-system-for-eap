@@ -8,6 +8,7 @@
 import React from 'react';
 import { IconButton } from '../IconButton/IconButton';
 import { DeltaLogo } from '../DeltaLogo/DeltaLogo';
+import { CorpIcon } from '../CorpIcon/CorpIcon';
 import './NavigationBar.css';
 
 /**
@@ -55,8 +56,9 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   className,
   style,
 }) => {
-  // Corp 樣式預設使用 Delta 企業標誌；其餘樣式無 logo 時顯示占位方塊
-  const resolvedLogo = logo ?? (variant === 'corp' ? <DeltaLogo height={28} /> : null);
+  // Corp 樣式預設使用 Delta 企業標誌（高度略小於品牌分隔線 24px，等比例 105:28 → 75×20）；
+  // 其餘樣式無 logo 時顯示占位方塊
+  const resolvedLogo = logo ?? (variant === 'corp' ? <DeltaLogo height={20} width={75} /> : null);
 
   return (
   <header
@@ -91,30 +93,62 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       {actions}
       {showDefaults && (
         <>
-          <IconButton
-            size="l"
-            tooltipPlacement="bottom"
-            aria-label="User guide"
-            icon={<span className="material-symbols-outlined">help</span>}
-          />
-          <IconButton
-            size="l"
-            tooltipPlacement="bottom"
-            aria-label="Settings"
-            icon={<span className="material-symbols-outlined">settings</span>}
-          />
-          <IconButton
-            size="l"
-            tooltipPlacement="bottom"
-            aria-label="Language"
-            icon={<span className="fas-navbar__lang">En</span>}
-          />
-          <IconButton
-            size="l"
-            tooltipPlacement="bottom"
-            aria-label="Notifications"
-            icon={<span className="material-symbols-outlined">notifications</span>}
-          />
+          {variant === 'corp' ? (
+            // Corp 樣式：information / theme / language / notification（採 Delta 企業圖示）
+            <>
+              <IconButton
+                size="l"
+                tooltipPlacement="bottom"
+                aria-label="Information"
+                icon={<CorpIcon name="information" width={24} height={24} />}
+              />
+              <IconButton
+                size="l"
+                tooltipPlacement="bottom"
+                aria-label="Theme"
+                icon={<CorpIcon name="theme" width={24} height={24} />}
+              />
+              <IconButton
+                size="l"
+                tooltipPlacement="bottom"
+                aria-label="Language"
+                icon={<span className="fas-navbar__lang">En</span>}
+              />
+              <IconButton
+                size="l"
+                tooltipPlacement="bottom"
+                aria-label="Notifications"
+                icon={<CorpIcon name="notification" width={24} height={24} />}
+              />
+            </>
+          ) : (
+            <>
+              <IconButton
+                size="l"
+                tooltipPlacement="bottom"
+                aria-label="User guide"
+                icon={<span className="material-symbols-outlined">help</span>}
+              />
+              <IconButton
+                size="l"
+                tooltipPlacement="bottom"
+                aria-label="Settings"
+                icon={<span className="material-symbols-outlined">settings</span>}
+              />
+              <IconButton
+                size="l"
+                tooltipPlacement="bottom"
+                aria-label="Language"
+                icon={<span className="fas-navbar__lang">En</span>}
+              />
+              <IconButton
+                size="l"
+                tooltipPlacement="bottom"
+                aria-label="Notifications"
+                icon={<span className="material-symbols-outlined">notifications</span>}
+              />
+            </>
+          )}
           <button
             className="fas-navbar__avatar"
             onClick={onUserClick}
