@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.18.0] - 2026-06-29
+
+### Added
+- **Corp 企業樣式** — `NavigationBar`、`SideMenu`、`AppShell` 新增 `variant?: 'default' | 'corp'`（預設 `'default'`，向後相容）：
+  - `NavigationBar variant="corp"`：App Name 採 Delta 藍、Logo 與 App Name 間加垂直分隔線、下緣改為品牌漸層線（blue → cyan → lime）；未指定 `logo` 時預設使用 Delta 企業標誌。匯出新型別 `NavigationBarVariant`。
+  - `SideMenu variant="corp"`：模組 `icon` 改用 Delta 企業圖示集（`CorpIcon` 名稱）呈現，版面與互動行為與 `default` 完全相同。匯出新型別 `SideMenuVariant`。
+  - `AppShell variant="corp"`：一次將內建的 NavigationBar 與 SideMenu 切換為 corp 樣式。匯出新型別 `AppShellVariant`。
+- **`DeltaLogo`** — Delta 企業品牌標誌（inline SVG，可調尺寸），為 `NavigationBar` corp 樣式的預設 logo，亦可單獨使用。
+- **`CorpIcon`** — Delta 企業樣式選單圖示集（24×24 兩色 SVG，12 個圖示：`ai_service`、`alert_management`、`application`、`data_processing`、`image_file`、`log`、`low_code_tool`、`module`、`node`、`settings`、`storage_space`、`system_monitoring`）。匯出 `CorpIconName` 型別。
+- 新增品牌 Token `--delta-brand-cyan`（#64d7d7）、`--delta-brand-lime`（#b9eb5f），供 corp NavigationBar 的漸層下緣線使用。
+
+### Changed
+- `LMMobileInstallButton` 觸發按鈕改用共用的 `IconButton`（取代手寫 button + inline styles）。
+
 ## [0.17.0] - 2026-05-26
 
 ### Added
