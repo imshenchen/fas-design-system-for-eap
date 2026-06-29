@@ -7,6 +7,7 @@
  * 通常放在 LMAppShell 的 SideMenu 版本號右側（透過 LMAppShell 的 `versionAction` prop）。
  */
 import React, { useState, useRef, useEffect } from 'react';
+import { IconButton } from '../../../components/IconButton/IconButton';
 import { cssVars, spacing, zIndex } from '../../../tokens/tokens';
 
 export interface LMMobileInstallButtonProps {
@@ -80,40 +81,25 @@ export const LMMobileInstallButton: React.FC<LMMobileInstallButtonProps> = ({
 
   return (
     <>
-      <button
+      <IconButton
         ref={triggerRef}
-        type="button"
+        size="m"
         aria-label={ariaLabel}
         aria-expanded={open}
+        selected={open}
+        // 點擊改由本元件管理 popover；停用 IconButton 內建 tooltip 避免和 popover 互相干擾
+        tooltip={false}
         onClick={(e) => {
           e.stopPropagation();
           setOpen((o) => !o);
         }}
         className={['lm-mobile-install-trigger', className].filter(Boolean).join(' ')}
-        style={{
-          width:           '32px',
-          height:          '32px',
-          padding:         0,
-          border:          'none',
-          background:      open ? cssVars.compHover : 'transparent',
-          color:           cssVars.textBody,
-          cursor:          'pointer',
-          display:         'inline-flex',
-          alignItems:      'center',
-          justifyContent:  'center',
-          borderRadius:    '4px',
-          transition:      'background 0.15s ease',
-          outline:         'none',
-        }}
-      >
-        <span
-          className="material-symbols-outlined"
-          aria-hidden="true"
-          style={{ fontSize: '20px', lineHeight: 1 }}
-        >
-          smartphone
-        </span>
-      </button>
+        icon={
+          <span className="material-symbols-outlined" aria-hidden="true">
+            smartphone
+          </span>
+        }
+      />
 
       {open && pos && (
         <div
