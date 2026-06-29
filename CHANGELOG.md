@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Changes will be documented here before the next release -->
 
+## [0.18.1] - 2026-06-29
+
+### Added
+- **`DiaAutoLogo`** — DIA Auto 產品標誌（inline SVG）；為 `SideMenu variant="corp"` footer 的預設產品 Logo。
+- `CorpIcon` 新增 `information`、`theme`、`notification`、`version` 圖示。
+- 新增品牌 Token `--corp-icon-accent`（Dark `#a5e2fa`）、`--corp-brand-fg`（Dark `#ffffff`）。
+- `SideMenu` 新增 `productLogo` prop（corp 樣式）；`AppShell` 透傳同名 prop。
+
+### Changed
+- **Corp NavigationBar**：右側內建按鈕改為 information / theme / language / notification / avatar（採 `CorpIcon`），按鈕間距 24px；Delta Logo 縮小至 20px、下緣色帶改為三段實色（blue / cyan / lime）；Logo 與 App Name Dark Mode 轉白（`--corp-brand-fg`）。
+- **Corp SideMenu**：模組圖示改用 `CorpIcon`；footer 改為「產品 Logo（左）＋ 版本 tag icon（右）」，收折時只顯示產品 Logo；收折 hover 由小浮層改為與 SideMenu 等高的固定整條面板（底部顯示版本）。
+- **Dark Mode 表面層級修正**：抬升表面改用 elevation token —— `NavigationBar` / `FeatureTitle` → `--elevation-04dp`、`SideMenu` → `--elevation-08dp`、`Card`（elevated）→ `--elevation-02dp`、`Menu` → `--elevation-08dp`；`AppShell` content 改用 `--bg-surface-dim-var`。Light Mode 不受影響。
+- `CorpIcon` 灰色改走 `--secondary`（Dark Mode `#cccccc`）、藍色走 `--corp-icon-accent`（Dark Mode `#a5e2fa`）。
+- `LMMobileInstallButton` 觸發按鈕改用共用的 `IconButton`。
+
 ## [0.18.0] - 2026-06-29
 
 ### Added
